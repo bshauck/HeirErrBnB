@@ -43,11 +43,25 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: [60, 60]
       }
-
     },
 }, {
     sequelize,
     modelName: 'User',
+    defaultScope: {
+      attributes: {exclude: ['hashedPassword', 'email', 'updatedAt', 'createdAt']}
+    },
+    // scopes: {
+    //   keyboards: {where: {type: 'keyboard'}},
+    //   strings: {where: {type: 'string'}},
+    //   woodwinds: {where: {type: 'woodwind'}},
+    //   findByStoreId(storeId) {
+    //     const {Store} = require('../models');
+    //     return {
+    //       include: { model:Store, where: { id: storeId }},
+    //       order: [['name']]}
+    //   }
+    // }
+
   });
   return User;
 };
