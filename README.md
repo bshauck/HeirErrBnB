@@ -1,4 +1,4 @@
-# [title]
+# [HeirErrBnB]
 
 ## Database Schema Design
 
@@ -70,7 +70,7 @@ correct role(s) or permission(s).
 
 Returns the information about the current user that is logged in.
 
-* Require Authentication: true
+* Require Authentication: false
 * Request
   <!--!!START SILENT -->
   * Method: GET
@@ -239,10 +239,11 @@ user's information.
 
     ```json
     {
-      "message": "User already exists",
+      "title": "Validation error",
+      "message": "Validation error",
       "errors": {
-        "email": "User with that email already exists"
-      }
+          "email": "email must be unique"
+      },
     }
     ```
 
@@ -254,10 +255,11 @@ user's information.
 
     ```json
     {
-      "message": "User already exists",
+      "title": "Validation error",
+      "message": "Validation error",
       "errors": {
-        "username": "User with that username already exists"
-      }
+          "username": "username must be unique"
+      },
     }
     ```
 
@@ -411,7 +413,7 @@ Returns the details of a spot specified by its id.
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-19 20:39:36" ,
       "numReviews": 5,
-      "avgStarRating": 4.5,
+      "avgRating": 4.5,
       "SpotImages": [
         {
           "id": 1,
