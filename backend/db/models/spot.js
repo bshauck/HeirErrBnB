@@ -31,15 +31,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     country: {
       allowNull: false,
+      defaultValue: 'USA',
       type: DataTypes.STRING
     },
     lat: {
-      allowNull: false,
-      type: DataTypes.DECIMAL(4.6)
+      type: DataTypes.DECIMAL(10,6)
     },
     lng: {
-      allowNull: false,
-      type: DataTypes.DECIMAL(4,6)
+      type: DataTypes.DECIMAL(10,6)
     },
     name: {
       allowNull: false,
@@ -50,7 +49,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT
     },
     price: {
-      allowNull: false,
       type: DataTypes.DECIMAL(4,2)
     },
 }, {

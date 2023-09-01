@@ -35,15 +35,14 @@ module.exports = {
       },
       country: {
         allowNull: false,
+        defaultValue: 'USA',
         type: Sequelize.STRING
       },
       lat: {
-        allowNull: false,
-        type: Sequelize.DECIMAL(4.6)
+        type: Sequelize.DECIMAL(10,6)
       },
       lng: {
-        allowNull: false,
-        type: Sequelize.DECIMAL(4,6)
+        type: Sequelize.DECIMAL(10,6)
       },
       name: {
         allowNull: false,
@@ -54,8 +53,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       price: {
-        allowNull: false,
-        type: Sequelize.DECIMAL(4,2)
+        type: Sequelize.DECIMAL(6,2)
       },
       createdAt: {
         allowNull: false,
