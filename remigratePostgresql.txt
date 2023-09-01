@@ -1,0 +1,9 @@
+#When you need to have database rebuilt, change this directory's package.json scripts/build definition to be:
+
+npm install && 
+npm run build && 
+npm run sequelize --prefix backend db:seed:undo:all && 
+npm run sequelize --prefix backend db:migrate:undo:all && 
+npm run sequelize --prefix backend db:migrate && 
+npm run sequelize --prefix backend db:seed:all
+
