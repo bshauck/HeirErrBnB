@@ -1,5 +1,6 @@
 'use strict';
 const options = {};
+options.tableName = 'Users';
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 };
@@ -50,7 +51,6 @@ module.exports = {
     options);
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = 'Users';
     await queryInterface.dropTable(options);
   }
 };
