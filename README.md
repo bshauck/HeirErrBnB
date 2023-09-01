@@ -186,8 +186,8 @@ information.
 
 ### Sign Up a User
 
-Creates a new user, logs them in as the current user, and returns the current
-user's information.
+Creates a new user, logs them in as current,
+and returns the current user's information.
 
 * Require Authentication: false
 * Request
@@ -674,7 +674,7 @@ Updates and returns an existing spot.
 Deletes an existing spot.
 
 * Require Authentication: true
-* Require proper authorization: Spot must belong to the current user
+* Require proper authorization: Spot owned by current user
 * Request
   <!--!!START SILENT -->
   * Method: DELETE

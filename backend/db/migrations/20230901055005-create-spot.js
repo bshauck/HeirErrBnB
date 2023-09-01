@@ -1,6 +1,6 @@
 'use strict';
 const options = {};
-options.tableName = 'Users';
+options.tableName = 'Spots';
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 };
@@ -8,34 +8,52 @@ if (process.env.NODE_ENV === 'production') {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Spots', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
+      ownerId: {
         allowNull: false,
-        type: Sequelize.STRING(30)
+        type: Sequelize.INTEGER,
+        references: {model: 'Users'},
+        onDelete: 'CASCADE'
       },
-      lastName: {
+      address: {
         allowNull: false,
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING
       },
-      username: {
+      city: {
         allowNull: false,
-        unique: true,
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING
       },
-      email: {
+      state: {
         allowNull: false,
-        unique: true,
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING
       },
-      hashedPassword: {
+      country: {
         allowNull: false,
-        type: Sequelize.STRING(60).BINARY
+        defaultValue: 'USA',
+        type: Sequelize.STRING
+      },
+      lat: {
+        type: Sequelize.DECIMAL(10,6)
+      },
+      lng: {
+        type: Sequelize.DECIMAL(10,6)
+      },
+      name: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      description: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
+      price: {
+        type: Sequelize.DECIMAL(6,2)
       },
       createdAt: {
         allowNull: false,
@@ -47,8 +65,7 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         type: Sequelize.DATE
       }
-    },
-    options);
+    }, options);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable(options);

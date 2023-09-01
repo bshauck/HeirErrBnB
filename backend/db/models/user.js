@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.hasMany(models.Spot,
+                  {foreignKey: 'ownerId'})
     }
   }
   User.init({
@@ -42,7 +43,6 @@ module.exports = (sequelize, DataTypes) => {
         len: [3, 255],
         isEmail: true
       }
-
     },
     hashedPassword: {
       allowNull: false,
