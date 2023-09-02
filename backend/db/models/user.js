@@ -3,19 +3,17 @@ const { Model, Validator } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       this.hasMany(models.Spot,
-                  {foreignKey: 'ownerId'})
+        {foreignKey: 'ownerId'}),
       this.belongsToMany(models.Spot, {
         through: models.Booking,
         foreignKey: 'userId',
-        otherKey: 'spotId'})
-    }
+        otherKey: 'spotId'}),
+      this.belongsToMany(models.Spot, {
+        through: models.Review,
+        foreignKey: 'userId',
+        otherKey: 'spotId'})                              }
   }
   User.init({
     username: {

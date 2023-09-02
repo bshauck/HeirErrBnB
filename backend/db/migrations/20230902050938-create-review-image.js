@@ -1,9 +1,8 @@
 'use strict';
 const options = {};
 options.tableName = 'ReviewImages';
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production')
   options.schema = process.env.SCHEMA;
-};
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -38,7 +37,7 @@ module.exports = {
       }
     }, options);
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, _Sequelize) {
     await queryInterface.dropTable(options);
   }
 };

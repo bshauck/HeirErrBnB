@@ -1,9 +1,8 @@
 'use strict';
 const options = {};
 options.tableName = 'Reviews';
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production')
   options.schema = process.env.SCHEMA;
-};
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -18,14 +17,15 @@ module.exports = {
       spotId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: 'Spots',
+        references: {model: 'Spots',
+                    foreignKey: 'id'},
         onDelete: 'CASCADE'
       },
       userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {model: 'Users',
-          foreignKey: 'userId'},
+                    foreignKey: 'id'},
         onDelete: 'CASCADE'
       },
       review: {
@@ -48,7 +48,7 @@ module.exports = {
       }
     }, options);
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, _Sequelize) {
     await queryInterface.dropTable(options);
   }
 };

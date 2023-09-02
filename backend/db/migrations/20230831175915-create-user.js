@@ -1,9 +1,8 @@
 'use strict';
 const options = {};
 options.tableName = 'Users';
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production')
   options.schema = process.env.SCHEMA;
-};
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -47,10 +46,9 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         type: Sequelize.DATE
       }
-    },
-    options);
+    }, options);
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, _Sequelize) {
     await queryInterface.dropTable(options);
   }
 };

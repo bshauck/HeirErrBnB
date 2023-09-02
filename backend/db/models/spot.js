@@ -2,19 +2,19 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Spot extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      this.hasMany(models.SpotImage),
+      this.hasMany(models.SpotImage,
+        {foreignKey: 'spotId'}),
       this.belongsTo(models.User, {
-        foreignKey: 'ownerId'},
+        foreignKey: 'ownerId'}),
       this.belongsToMany(models.User, {
         through: models.Booking,
         foreignKey: 'spotId',
-        otherKey: 'userId'}))
+        otherKey: 'userId'}),
+      this.belongsToMany(models.User, {
+        through: models.Review,
+        foreignKey: 'spotId',
+        otherKey: 'userId'})
     }
   }
   Spot.init({

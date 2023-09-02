@@ -4,7 +4,6 @@ const { requireAuth } = require('../../utils/auth');
 const { Booking } = require('../../db/models');
 const router = require('express').Router();
 
-
 // Return all of current user's bookings.
 router.get('/current', requireAuth, async (req, res) => {
     return res.status(500).json("Implementation TBD")
