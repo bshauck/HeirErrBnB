@@ -24,7 +24,8 @@ module.exports = {
       userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: 'Users',
+        references: {model: 'Users',
+          foreignKey: 'userId'},
         onDelete: 'CASCADE'
       },
       review: {
