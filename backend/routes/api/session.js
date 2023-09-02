@@ -23,8 +23,8 @@ const validateLogin = [
 router.route('')
   .get((req, res) => {
     const response = {};
-    response.user =
-      (req.user) ? getSafeUser(req.user) : req.user;
+    response.user = req.user
+      ? getSafeUser(req.user) : req.user;
     return res.json(response);
   })
   // Log in

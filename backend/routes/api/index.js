@@ -16,11 +16,13 @@ router.use('/session', sessionRouter);
 router.use('/spots', spotsRouter);
 router.use('/users', usersRouter);
 
-router.delete('/spot-images', requireAuth, (req, res) => {
+router.delete('/review-images/:imageId(\\d+)', requireAuth, (req, res) => {
+  return res.status(500).json("Implementation TBD")
+});
+router.delete('/spot-images/:imageId(\\d+)', requireAuth, (req, res) => {
+  return res.status(500).json("Implementation TBD")
 });
 
-router.delete('/review-images', requireAuth, (req, res) => {
-});
 
 
 router.post('/test', (req, res) => {
