@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       this.hasMany(models.Spot,
-        {foreignKey: 'ownerId'}),
+        {foreignKey: 'ownerId',
+        as: 'Owner'}),
       this.belongsToMany(models.Spot, {
         through: models.Booking,
         foreignKey: 'userId',

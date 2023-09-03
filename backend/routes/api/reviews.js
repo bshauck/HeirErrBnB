@@ -22,7 +22,8 @@ router.route('/:reviewId(\\d+)')
 
 // Returns all reviews written by current user.
 router.get('/current', requireAuth, async (req, res) => {
-    return res.status(500).json("Implementation TBD")
+    const reviews = await Review.findAll({where: {userId: req.user.id}});
+    return res.json(reviews);
 });
 
 

@@ -11,6 +11,10 @@
     "start": "npm start --prefix backend",
     "build": "npm run --prefix backend build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bshauck/API-Project.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"
