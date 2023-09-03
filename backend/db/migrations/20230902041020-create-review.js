@@ -1,40 +1,40 @@
 'use strict';
 const options = {};
-options.tableName = 'Users';
+options.tableName = 'Reviews';
 if (process.env.NODE_ENV === 'production')
   options.schema = process.env.SCHEMA;
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Reviews', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
+      spotId: {
         allowNull: false,
-        type: Sequelize.STRING(30)
+        type: Sequelize.INTEGER,
+        references: {model: 'Spots',
+                    foreignKey: 'id'},
+        onDelete: 'CASCADE'
       },
-      lastName: {
+      userId: {
         allowNull: false,
-        type: Sequelize.STRING(30)
+        type: Sequelize.INTEGER,
+        references: {model: 'Users',
+                    foreignKey: 'id'},
+        onDelete: 'CASCADE'
       },
-      username: {
+      review: {
         allowNull: false,
-        unique: true,
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING
       },
-      email: {
+      stars: {
         allowNull: false,
-        unique: true,
-        type: Sequelize.STRING(255)
-      },
-      hashedPassword: {
-        allowNull: false,
-        type: Sequelize.STRING(60).BINARY
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

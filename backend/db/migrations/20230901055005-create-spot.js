@@ -1,9 +1,8 @@
 'use strict';
 const options = {};
 options.tableName = 'Spots';
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production')
   options.schema = process.env.SCHEMA;
-};
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -18,7 +17,8 @@ module.exports = {
       ownerId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: 'Users'},
+        references: {model: 'Users',
+                    foreignKey: 'id'},
         onDelete: 'CASCADE'
       },
       address: {
@@ -67,7 +67,7 @@ module.exports = {
       }
     }, options);
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, _Sequelize) {
     await queryInterface.dropTable(options);
   }
 };

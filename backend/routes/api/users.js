@@ -1,7 +1,7 @@
 // backend/routes/api/users.js
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { setTokenCookie } = require('../../utils/auth');
 const { getSafeUser } = require('../../utils/safeUser');
 const { User } = require('../../db/models');
 const bcrypt = require('bcryptjs');

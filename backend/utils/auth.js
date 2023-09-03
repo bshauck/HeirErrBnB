@@ -73,5 +73,16 @@ const requireAuth = function (req, _res, next) {
     return next(err);
 };
 
+/* Go to error handling if compare fails */
+const fitsAuthor = function (req, next, compare, result=true) {
+    if ((req.user.id === compare) === result) return;
 
-module.exports = { setTokenCookie, restoreUser, requireAuth };
+    const err = new Error('Forbidden');
+    err.title = 'Forbidden';
+    err.errors = { message: 'Forbidden' };
+    err.status = 403;
+    return next(err);
+};
+
+
+module.exports = { fitsAuthor, restoreUser, requireAuth, setTokenCookie };

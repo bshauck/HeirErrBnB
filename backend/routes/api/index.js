@@ -22,11 +22,13 @@ router.delete('/review-images/:imageId(\\d+)', requireAuth, (req, res) => {
 router.delete('/spot-images/:imageId(\\d+)', requireAuth, (req, res) => {
   return res.status(500).json("Implementation TBD")
 });
-
-
-
-router.post('/test', (req, res) => {
-  res.json({ requestBody: req.body });
+// Add a XSRF-TOKEN cookie
+router.get("/csrf/restore", (req, res) => {
+  const csrfToken = req.csrfToken();
+  res.cookie("XSRF-TOKEN", csrfToken);
+  return res.status(200).json({'XSRF-Token': csrfToken})
 });
+router.post('/test',
+  (req, res) => res.json({ requestBody: req.body }));
 
 module.exports = router;
