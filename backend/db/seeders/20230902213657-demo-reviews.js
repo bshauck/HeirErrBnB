@@ -1,6 +1,6 @@
 'use strict';
 const { Review } = require('../models');
-const { seederSpotIds, seederUserIds } = require('../../utils/seeder');
+const { seederSpotIdAndOwners, seederUserIds } = require('../../utils/seeder');
 
 const options = {};
 options.tableName = 'Reviews';
@@ -9,25 +9,27 @@ if (process.env.NODE_ENV === 'production')
 
 module.exports = {
   async up (_queryInterface, _Sequelize) {
-    const spotIds = await seederSpotIds();
+    const spotIdsAndOwners = await seederSpotIdAndOwners();
+    const spotIds = spotIdsAndOwners.map(e=>e.id);
+    const spotOwners = spotIdsAndOwners.map(e=>e.ownerId);
     const userIds = await seederUserIds();
 
     await Review.bulkCreate([
       {
-        spotId: spotIds[0],
         userId: userIds[0],
+        spotId: spotIds[0],
         review: "Best place I've ever stayed at.",
         stars: 5,
       },
       {
-        spotId: spotIds[2],
         userId: userIds[1],
+        spotId: spotIds[2],
         review: "Worst place I've ever stayed at.",
         stars: 1,
       },
       {
-        spotId: spotIds[2],
         userId: userIds[2],
+        spotId: spotIds[2],
         review: "Most mediocre place I've ever stayed at.",
         stars: 3,
       }

@@ -2,7 +2,8 @@ const express = require('express');
 require('express-async-errors');
 const morgan = require('morgan');
 const cors = require('cors');
-const csurf = require('csurf');
+// const csurf = require('csurf');
+const { csrfMiddleware } = require('./utils/auth');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { ValidationError } = require('sequelize');
@@ -19,13 +20,18 @@ app.use(express.json());
 if (!isProduction) // enable cors only in development
     app.use(cors());
 app.use(helmet.crossOriginResourcePolicy({policy: "cross-origin"}));
-app.use(csurf({ // Set the _csrf token; req.csrfToken method
-      cookie: {
-        secure: isProduction,
-        sameSite: isProduction && "Lax",
-        httpOnly: true
-      }
-}));
+
+// Create middleware to check request url
+// allow login and signup without token
+app.use(csrfMiddleware);
+// app.use(csurf({ // Set the _csrf token; req.csrfToken method
+//       cookie: {
+//         secure: isProduction,
+//         sameSite: isProduction && "Lax",
+//         httpOnly: true
+//       }
+// }));
+
 
 // backend/app.js
 const routes = require('./routes');

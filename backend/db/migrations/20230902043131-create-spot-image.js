@@ -17,8 +17,7 @@ module.exports = {
       spotId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: 'Spots',
-                    foreignKey: 'id'},
+        references: {model: 'Spots'},
         onDelete: 'CASCADE'
       },
       url: {
