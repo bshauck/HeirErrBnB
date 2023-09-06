@@ -17,15 +17,13 @@ module.exports = {
       spotId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: 'Spots',
-                    foreignKey: 'spotId'},
+        references: {model: 'Spots'},
         onDelete: 'CASCADE'
       },
       userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: 'Users',
-                    foreignKey: 'userId'},
+        references: {model: 'Users'},
         onDelete: 'CASCADE'
       },
       startDate: {

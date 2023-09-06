@@ -3,18 +3,21 @@ const { check } = require('express-validator');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 const { handleValidationErrors } = require('../../utils/validation');
-const { setTokenCookie } = require('../../utils/auth');
+const { restoreUser, setTokenCookie } = require('../../utils/auth');
 const { getSafeUser } = require('../../utils/safeUser');
 const { User } = require('../../db/models');
 const router = require('express').Router();
 
 const validateLogin = [
     check('credential')
-      .exists({ checkFalsy: true })
+      .trim()
+      .exists({ values: "falsy" })
       .notEmpty()
       .withMessage('Please provide a valid email or username.'),
     check('password')
-      .exists({ checkFalsy: true })
+      .trim()
+      .exists({ values: "falsy" })
+      .notEmpty()
       .withMessage('Please provide a password.'),
     handleValidationErrors
   ];
@@ -50,6 +53,8 @@ router.route('')
 
     const safeUser = getSafeUser(user);
     await setTokenCookie(res, safeUser);
+    req.user = user;
+    if (req.csrfToken) res.cookie('XSRF-TOKEN', req.csrfToken())
     return res.json({ user: safeUser });
     }
   )

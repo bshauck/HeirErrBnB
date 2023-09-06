@@ -6,25 +6,39 @@ const seederUserNames = [
     'FakeUser2'
 ];
 const seederSpotNames = [
-    'Cheap Apartment',
-    'Mountain Home',
+    'Cheap Denton House',
+    'Boulder Shack',
     'Ski Out'
 ];
 
-const seederUserIds = async () => (await User.findAll({
+const seederUserIds = async () => {
+  let users = await User.findAll({
     attributes: ['id'],
     where: {username: seederUserNames}
-  })).map(e=>e.id);
+  });
+  users = users.map(u=>u.toJSON())
+  return users.map(e=>e.id);
+}
 
-const seederSpotIds = async () => (await Spot.findAll({
-    attributes: ['id'],
+const seederSpotIdAndOwners = async () => {
+  let spots = await Spot.findAll({
+    attributes: ['id','ownerId'],
     where: {name: seederSpotNames}
-  })).map(e=>e.id);
+  });
+  spots = spots.map(e=>e.toJSON());
+  return spots
+}
 
-  const seederReviewIds = async () => (await Review.findAll({
+  const seederReviewIds = async () => {
+    let idsAndOwners = await seederSpotIdAndOwners();
+    let spotIds = idsAndOwners.map(e=>e.id)
+    let reviews = await Review.findAll({
     attributes: ['id'],
-    where: {spotId: await seederSpotIds()}
-  })).map(e=>e.id);
+    where: {spotId: spotIds}
+  });
+  reviews = reviews.map(r=>r.toJSON())
+  return reviews.map(e=>e.id);
+}
 
   let aDate = Date.now();
   const dayMilliseconds = 1000 * 60 * 60 * 24;
@@ -36,4 +50,4 @@ const seederImageURLs = [
 'https://a0.muscache.com/im/pictures/cbf6ff83-dc6e-4da0-b68c-75c0e6139560.jpg?im_w=720'
 ];
 
-module.exports = {seederImageURLs, seederNextDate, seederReviewIds, seederSpotIds, seederSpotNames, seederUserIds, seederUserNames }
+module.exports = {seederImageURLs, seederNextDate, seederReviewIds, seederSpotIdAndOwners, seederSpotNames, seederUserIds, seederUserNames }

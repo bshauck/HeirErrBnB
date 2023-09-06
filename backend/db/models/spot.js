@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.SpotImage,
         {foreignKey: 'spotId'}),
       this.hasMany(models.Review, {foreignKey: 'spotId'}),
+      this.hasMany(models.Booking, {foreignKey: 'spotId'}),
       this.belongsTo(models.User, {
         foreignKey: 'ownerId',
         as: 'Owner'}),
@@ -20,6 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Spot.init({
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
     ownerId: {
       allowNull: false,
       type: DataTypes.INTEGER,
@@ -49,13 +56,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(50)
     },
     description: {
       allowNull: false,
       type: DataTypes.TEXT
     },
     price: {
+      allowNull: false,
       type: DataTypes.DECIMAL(4,2)
     },
 }, {

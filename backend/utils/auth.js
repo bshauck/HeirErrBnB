@@ -1,13 +1,34 @@
 // backend/utils/auth.js
+const csurf = require('csurf');
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
+const { secret, expiresIn } = jwtConfig;
 const { User } = require('../db/models');
 
-const { secret, expiresIn } = jwtConfig;
+const isProduction = process.env.NODE_ENV === "production";
+const tokenCookie = {
+  secure: isProduction,
+  sameSite: isProduction && "Lax",
+  httpOnly: true
+};
 
+let csrfFunction=undefined;
+function setCSRF() {
+  if (!csrfFunction)
+    csrfFunction = csurf({ cookie: tokenCookie });
+}
+const ROOT_IGNORE_LIST = ["/api/users", "/api/session"];
+function csrfMiddleware(req, res, next) {
+  if (ROOT_IGNORE_LIST.includes(req.url) && 'POST' === req.method) {
+    next();
+  } else {
+    setCSRF();
+    csrfFunction(req, res, next);
+  }
+};
 
 // Sends a JWT Cookie
-const setTokenCookie = (res, user) => {
+const setTokenCookie = async (res, user) => {
     // Create the token.
     const safeUser = {
       id: user.id,
@@ -20,14 +41,11 @@ const setTokenCookie = (res, user) => {
       { expiresIn: parseInt(expiresIn) } // 604,800 seconds = 1 week
     );
 
-    const isProduction = process.env.NODE_ENV === "production";
 
     // Set the token cookie
-    res.cookie('token', token, {
+    await res.cookie('token', token, {
       maxAge: expiresIn * 1000, // maxAge in milliseconds
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction && "Lax"
+      ...tokenCookie
     });
 
     return token;
@@ -56,7 +74,6 @@ const restoreUser = (req, res, next) => {
     }
 
     if (!req.user) res.clearCookie('token');
-
     return next();
   });
 };
@@ -75,7 +92,7 @@ const requireAuth = function (req, _res, next) {
 
 /* Go to error handling if compare fails */
 const fitsAuthor = function (req, next, compare, result=true) {
-    if ((req.user.id === compare) === result) return;
+    if ((req.user.id === compare) === result) return true;
 
     const err = new Error('Forbidden');
     err.title = 'Forbidden';
@@ -84,5 +101,11 @@ const fitsAuthor = function (req, next, compare, result=true) {
     return next(err);
 };
 
+async function getCSRFToken(req, res) {
+  const csrfToken = req.csrfToken();
+  await res.cookie("XSRF-TOKEN", csrfToken);
+  return csrfToken;
+}
 
-module.exports = { fitsAuthor, restoreUser, requireAuth, setTokenCookie };
+
+module.exports = { csrfMiddleware, fitsAuthor, getCSRFToken, restoreUser, requireAuth, setCSRF, setTokenCookie };

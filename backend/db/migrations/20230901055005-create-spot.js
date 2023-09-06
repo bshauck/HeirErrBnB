@@ -17,8 +17,7 @@ module.exports = {
       ownerId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {model: 'Users',
-                    foreignKey: 'id'},
+        references: {model: 'Users'},
         onDelete: 'CASCADE'
       },
       address: {
@@ -46,13 +45,14 @@ module.exports = {
       },
       name: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING(50)
       },
       description: {
         allowNull: false,
         type: Sequelize.TEXT
       },
       price: {
+        allowNull: false,
         type: Sequelize.DECIMAL(6,2)
       },
       createdAt: {

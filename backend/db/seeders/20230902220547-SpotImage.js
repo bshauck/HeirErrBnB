@@ -1,6 +1,6 @@
 'use strict';
 const { SpotImage } = require('../models');
-const { seederSpotIds, seederImageURLs } = require('../../utils/seeder');
+const { seederSpotIdAndOwners, seederImageURLs } = require('../../utils/seeder');
 
 const options = {};
 options.tableName = 'SpotImages';
@@ -10,7 +10,8 @@ if (process.env.NODE_ENV === 'production')
 
 module.exports = {
   async up (_queryInterface, _Sequelize) {
-    const spotIds = await seederSpotIds();
+    const spotIdAndOwners = await seederSpotIdAndOwners();
+    const spotIds = spotIdAndOwners.map(e=>e.id);
     const urls = seederImageURLs;
 
     await SpotImage.bulkCreate([
