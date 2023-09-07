@@ -9,6 +9,11 @@ async (req, res, next) => {
     const oldReview = await Review.findByPk(req.params.reviewId);
     if (!oldReview) return res.status(404).json({message: "Review couldn't be found"});
     else if (fitsAuthor(req, next, oldReview.userId)) {
+        const existingImages = await ReviewImage.count({
+            where: {reviewId: req.params.reviewId}
+        });
+        if (existingImages >= 10)
+            return res.status(403).json({message: "Maximum number of images for this resource was reached"});
         const {url} = req.body;
         let newImage = await ReviewImage.create({url, reviewId: oldReview.id});
         if (newImage) {
@@ -56,7 +61,7 @@ router.get('/current', requireAuth, async (req, res) => {
         ],
         where: {userId: req.user.id}
     });
-    return res.json(reviews);
+    return res.json({Reviews: reviews});
 });
 
 

@@ -1,27 +1,55 @@
 const { validateBooking } = require('../../utils/validation');
-const { requireAuth, fitsAuthor } = require('../../utils/auth');
+const { fitsAuthor, requireAuth, unauthor } = require('../../utils/auth');
+const { dayDate, ymd } = require('../../utils/normalizeDate')
 const { Booking, Spot } = require('../../db/models');
+const { Op } = require('sequelize');
+const { adjustPojo } = require('../../utils/pojo')
 const router = require('express').Router();
 
-function adjustPojo(pojo, array) {
-    // Take existing attributes one at a time from array, and
-    // grab the value, delete the key, and reinsert it at end
-    // with original value.
-    array.forEach(k=>{
-        let tmp = pojo[k];
-        delete pojo[k];
-        pojo[k] = tmp;
-    });
-}
+
+
+// DUPLICATED: refactor
+async function bookingOk(startDate, endDate, next) {
+    const specificErrText = "Sorry, this spot is already booked for the specified dates";
+    const err = Error("Part of date range is already booked");
+    console.log('bookingOk')
+    console.log(startDate, endDate)
+    startDate = dayDate(startDate);
+    endDate = dayDate(endDate);
+    const errors = {};
+    const conflict = await Booking.findOne({
+    where: {startDate: {[Op.lt]: ymd(endDate)},
+            endDate: {[Op.gt]: ymd(startDate)}
+    }});
+    if (conflict) {
+        const conflict2 = await Booking.findOne({
+            where: {startDate: {[Op.lte]: ymd(startDate)},
+                    endDate: {[Op.gt]: ymd(startDate)}
+        }});
+        if (conflict2) {errors.startDate = "Start date conflicts with an existing booking"; err.message = specificErrText;}
+        const conflict3 = await Booking.findOne({
+            where: {startDate: {[Op.lt]: ymd(endDate)},
+                    endDate: {[Op.gte]: ymd(endDate)}
+        }});
+        if (conflict3) {errors.endDate = "End date conflicts with an existing booking"; err.message = specificErrText;}
+    }
+    if (conflict) {
+        err.title = "Bad request";
+        err.errors = errors;
+        return unauthor(next, err);
+    }
+    else return true;
+};
+
+
 // Return all of current user's bookings.
 router.get('/current', requireAuth, async (req, res) => {
-    let bookings = await Booking.findAll({
+    let Bookings = await Booking.findAll({
         include: {model: Spot, attributes: {exclude: ['description', 'createdAt', 'updatedAt']}},
         where: {userId: req.user.id}
     });
-    bookings = bookings.map(e=>e.toJSON());
-    bookings.forEach(b=>adjustPojo(b,['userId', 'startDate', 'endDate', 'createdAt', 'updatedAt']));
-    return res.json(bookings);
+    Bookings = Bookings.map(e=>adjustPojo(e.toJSON(),['id', 'spotId', 'Spot','userId', 'startDate', 'endDate', 'createdAt', 'updatedAt']));
+    return res.json({Bookings});
 });
 
 router.route('/:bookingId(\\d+)')
@@ -31,12 +59,17 @@ router.route('/:bookingId(\\d+)')
         if (booking) {
             if (fitsAuthor(req, next, booking.userId)) {
                 const {startDate, endDate} = req.body;
-                if (startDate) booking.startDate = startDate;
-                if (endDate) booking.endDate = endDate;
-                await booking.save();
-                return res.json(booking);
+                if (startDate) booking.startDate = dayDate(startDate);
+                if (endDate) booking.endDate = dayDate(endDate);
+                if (endDate >= dayDate(new Date())) {
+                    return unauthor(next, Error("Past bookings can't be modified"));
+                }
+                if (await bookingOk(booking.startDate, booking.endDate, next)) {
+                    await booking.save();
+                    return res.json(booking);
+                }
             } else console.log('fitsAuthor', req.user.id, booking.userId, booking)
-        } else console.log('no booking in PUT /bookings/:id')
+        } else return res.status(404).json({message: "Booking couldn't be found"})
         return next(new Error('PUT /bookings/:id error'))
     })
     // Delete an existing booking (current user's, or Spot's if owner's)
@@ -44,7 +77,7 @@ router.route('/:bookingId(\\d+)')
         let booking = await Booking.findByPk(req.params.bookingId);
         if (!booking) return res.status(404).json({message: "Booking couldn't be found"});
 
-        if (Date.now() > booking.startDate) return res.status(403).json({message: "Bookings that have been started can't be deleted"});
+        if (dayDate(new Date()) > booking.startDate) return unauthor(next, Error("Bookings that have been started can't be deleted"));
 
         if (booking.userId == req.user.id ||
             (await Spot.findByPk(booking.spotId).ownerId == req.user.id)) {

@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const { dayDate, dayLTE, dayGTE } = require('../../utils/normalizeDate')
 
 module.exports = (sequelize, DataTypes) => {
   class Booking extends Model {
@@ -28,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       validate: {
         later(value) {
-          this.startDate = new Date(value.toDateString())
-          if (this.startDate.getTime() <= (new Date((new Date()).toDateString())).getTime())
+          this.startDate = dayDate(value);
+          if (dayLTE(this.startDate, dayDate(new Date())))
             throw new Error('Start date must be in the future.')
         }
       }
@@ -39,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       validate: {
         laterThan(value) {
-          this.endDate = new Date(value.toDateString())
-          if (this.startDate.getTime() >= this.endDate.getTime())
+          this.endDate = dayDate(value);
+          if (dayGTE(this.startDate, this.endDate))
             throw new Error('End date must be later than start date.')
         }
       }
