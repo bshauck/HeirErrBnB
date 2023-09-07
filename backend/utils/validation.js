@@ -1,5 +1,76 @@
 // backend/utils/validation.js
-const { body, check, validationResult } = require('express-validator');
+const { body, check, query, validationResult } = require('express-validator');
+const { /*dayDate,*/ ymd } = require('./normalizeDate')
+
+const validateQuery = [
+  query('page')
+    .optional()
+    .notEmpty()
+    .bail()
+    .isNumeric()
+    .isInt({min: 1})
+    .withMessage("Page must be greater than or equal to 1"),
+    query('size')
+    .optional()
+    .notEmpty()
+    .bail()
+    .isNumeric()
+    .isInt({min: 1})
+    .withMessage("Size must be greater than or equal to 1"),
+    query('maxLat')
+    .optional()
+    .exists({values: "null"})
+    .bail()
+    .isFloat({min:-90, max:90})
+    .withMessage("Maximum latitude is invalid"),
+    query('minLat')
+    .optional()
+    .exists({values: "null"})
+    .bail()
+    .isFloat({min:-90, max:90})
+    .withMessage("Minimum latitude is invalid"),
+    query('maxLng')
+    .optional()
+    .exists({values: "null"})
+    .bail()
+    .isFloat({min:-180, max:180})
+    .withMessage("Maximum longitude is invalid"),
+    query('minLng')
+    .optional()
+    .exists({values: "null"})
+    .bail()
+    .isFloat({min:-180, max:180})
+    .withMessage("Minimum longitude is invalid"),
+    query('minPrice')
+    .optional()
+    .exists({values: "null"})
+    .bail()
+    .isFloat({min: 0})
+    .withMessage("Minimum price must be greater than or equal to 0"),
+    query('maxPrice')
+    .optional()
+    .exists({values: "null"})
+    .bail()
+    .isFloat({min: 0})
+    .withMessage("Maximum price must be greater than or equal to 0"),
+    handleValidationErrors
+];
+
+const validateLogin = [
+  check('credential')
+    .trim()
+    .exists({ values: "falsy" })
+    .notEmpty()
+    .withMessage('Please provide a valid email or username.'),
+  check('password')
+    .trim()
+    .exists({ values: "falsy" })
+    .notEmpty()
+    .withMessage('Please provide a password.')
+    .isLength({ min: 6 })
+    .withMessage('Password must be 6 characters or more'),
+  handleValidationErrors
+];
 
 const validateSignup = [
   check('email')
@@ -7,13 +78,20 @@ const validateSignup = [
     .exists({ checkFalsy: true })
     .isEmail()
     .withMessage('Please provide a valid email.'),
+  check('firstName')
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("First Name is required"),
+  check('lasstName')
+    .trim()
+    .exists({values: ''})
+    .withMessage("Last Name is required"),
   check('username')
     .trim()
     .exists({ checkFalsy: true })
+    .withMessage("Username is required")
     .isLength({ min: 4 })
-    .withMessage('Please provide a username with at least 4 characters.'),
-  check('username')
-    .trim()
+    .withMessage('Please provide a username with at least 4 characters.')
     .not()
     .isEmail()
     .withMessage('Username cannot be an email.'),
@@ -55,7 +133,8 @@ const validateSpot = [
   check('name')
     .trim()
     .notEmpty()
-    .isLength({max: 50})
+    .withMessage('Name is required')
+    .isLength({max: 49})
     .withMessage('Name must be less than 50 characters'),
   check('description')
     .trim()
@@ -86,18 +165,29 @@ const validateReview = [
 const validateBooking = [
   check('startDate')
     .trim()
+    .exists({checkFalsy: true})
     .notEmpty()
-    // .isDate()
-    .withMessage('startDate must be a Date')
-    // .isAfter((new Date()).toString())
-    .withMessage('Must book in the future')
-    // .isBefore(body('endDate').toDate())
-    .withMessage('endDate cannot be on or before startDate'),
-  check('endDate')
+    .withMessage('Start date is required')
+    .bail()
+    // .isDate(new Date(body('startDate')))
+    // .withMessage('startDate must be a Date')
+    // .bail()
+    .isAfter(ymd(new Date()))
+    .withMessage('Must book in the future'),
+    check('endDate')
     .trim()
+    .exists({checkFalsy: true})
     .notEmpty()
-    // .isDate()
-    .withMessage('endDate must be a Date'),
+    .withMessage('End date is required')
+    .bail()
+    // .isDate(dayDate(new Date(body('endDate'))))
+    // .withMessage('End date must be a Date')
+    // .bail()
+    .isAfter(ymd(new Date()))
+    .withMessage('Must book in the future'),
+    // .bail()
+    // .isBefore(body('startDate').toDate().toDateString())
+    // .withMessage('endDate cannot be on or before startDate'),
   handleValidationErrors
 ];
 
@@ -113,15 +203,14 @@ function handleValidationErrors(req, _res, next){
       .array()
       .forEach(error => errors[error.path] = error.msg);
 
-    const err = Error("Bad request.");
+    const err = Error("Bad request");
     err.errors = errors;
     err.status = 400;
-    err.title = "Bad request.";
     next(err);
   }
   next();
 };
 
 module.exports = {
-  handleValidationErrors, validateBooking, validateReview, validateSignup, validateSpot
+  handleValidationErrors, validateBooking, validateLogin, validateQuery, validateReview, validateSignup, validateSpot
 };

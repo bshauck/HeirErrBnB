@@ -1,4 +1,5 @@
 const { Review, Spot, User } = require('../db/models');
+const { dayDate } = require('./normalizeDate');
 
 const seederUserNames = [
     'Demo-lition',
@@ -40,9 +41,9 @@ const seederSpotIdAndOwners = async () => {
   return reviews.map(e=>e.id);
 }
 
-  let aDate = Date.now();
+  let aDate = dayDate(new Date());
   const dayMilliseconds = 1000 * 60 * 60 * 24;
-  const seederNextDate = () => aDate = new Date(aDate.valueOf() + dayMilliseconds);
+  const seederNextDate = () => aDate = dayDate(new Date(aDate.valueOf() + dayMilliseconds));
   seederNextDate();
 
 const seederImageURLs = [

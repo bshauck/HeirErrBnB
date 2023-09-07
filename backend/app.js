@@ -50,8 +50,16 @@ app.use((_req, _res, next) => {
 app.use((err, _req, _res, next) => {
     if (err instanceof ValidationError) {
       let errors = {};
+      err.status = 400;
+      allegedServerErrorMessages = [
+        "email must be unique",
+        "username must be unique"
+      ];
       for (let error of err.errors) {
         errors[error.path] = error.message;
+        for (const m of allegedServerErrorMessages)
+          if (m.includes(err.message.toLowerCase()))
+            err.status = 500;
       }
       err.title = 'Validation error';
       err.errors = errors;
@@ -63,11 +71,14 @@ app.use((err, _req, _res, next) => {
 app.use((err, _req, res, _next) => {
     res.status(err.status || 500);
     console.error(err);
+    const stack = isProduction ? {} : {stack: err.stack};
+    const title = err.status === 500 ? {title: (err.title || "Server Error")} : {};
+    const errors = err.errors ? {errors: err.errors} : {};
     res.json({
-      title: err.title || 'Server Error',
+      ...title,
       message: err.message,
-      errors: err.errors,
-      stack: isProduction ? null : err.stack
+      ...errors,
+      ...stack
     });
   });
 

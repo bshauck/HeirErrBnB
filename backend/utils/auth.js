@@ -90,15 +90,20 @@ const requireAuth = function (req, _res, next) {
     return next(err);
 };
 
+function unauthor(next, err) {
+  if (!err) {
+    err = Error('Forbidden');
+  }
+  err.status = 403;
+  next(err);
+  return false;
+}
+
 /* Go to error handling if compare fails */
 const fitsAuthor = function (req, next, compare, result=true) {
     if ((req.user.id === compare) === result) return true;
 
-    const err = new Error('Forbidden');
-    err.title = 'Forbidden';
-    err.errors = { message: 'Forbidden' };
-    err.status = 403;
-    return next(err);
+    unauthor(next);
 };
 
 async function getCSRFToken(req, res) {
@@ -107,5 +112,4 @@ async function getCSRFToken(req, res) {
   return csrfToken;
 }
 
-
-module.exports = { csrfMiddleware, fitsAuthor, getCSRFToken, restoreUser, requireAuth, setCSRF, setTokenCookie };
+module.exports = { csrfMiddleware, fitsAuthor, getCSRFToken, restoreUser, requireAuth, setCSRF, setTokenCookie, unauthor };

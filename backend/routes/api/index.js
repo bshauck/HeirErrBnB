@@ -36,7 +36,7 @@ async function deleteImage(req, res, next, imageModel, holderModel, upStr, downS
   if (fitsAuthor(req, next, holder[referStr])) {
     await image.destroy();
     return res.json({message: "Successfully deleted"})
-  } else return next(new Error(`DELETE /${upStr}-images/:id error`))
+  } else return next(new Error(`DELETE /${upStr.toLowerCase()}-images/:id error`))
 }
 
 // Add a XSRF-TOKEN cookie
