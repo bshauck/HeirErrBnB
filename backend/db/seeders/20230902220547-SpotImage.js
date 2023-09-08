@@ -46,9 +46,11 @@ module.exports = {
   },
 
   async down (queryInterface, _Sequelize) {
+    const spotIdAndOwners = await seederSpotIdAndOwners();
+    const seederSpotIds = spotIdAndOwners.map(e=>e.id);
     return await queryInterface.bulkDelete(
       options,
-      { spotId: await seederSpotIds() },
+      { spotId: seederSpotIds },
       {});
   }
 };

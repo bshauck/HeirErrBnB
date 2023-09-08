@@ -4,15 +4,12 @@
 // more easily
 
 function dayDate(date) {
-    console.log(date)
     if (typeof date === 'string') date = new Date(date);
-    console.log(date)
     return new Date(date.toDateString())
 }
 
 function ymd(date) {
     if (typeof date === 'string') date = new Date(date);
-    else console.log(date)
     return date.toISOString().split('T')[0]
 }
 

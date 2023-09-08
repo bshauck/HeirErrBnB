@@ -58,7 +58,7 @@ app.use((err, _req, _res, next) => {
       for (let error of err.errors) {
         errors[error.path] = error.message;
         for (const m of allegedServerErrorMessages)
-          if (m.includes(err.message.toLowerCase()))
+          if (m.includes(error.message.toLowerCase()))
             err.status = 500;
       }
       err.title = 'Validation error';
