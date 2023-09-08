@@ -198,10 +198,6 @@ router.route('/:spotId(\\d+)')
             if (price) spot.price = price;
             await spot.save();
             spot = spot.toJSON();
-            delete spot.id;
-            delete spot.ownerId;
-            delete spot.createdAt;
-            delete spot.updatedAt;
             return res.json(spot)
             }
         } else return res.status(404).json({message: "Spot couldn't be found"});
