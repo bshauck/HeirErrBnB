@@ -1,7 +1,7 @@
-const { validateBooking } = require('../../utils/validation');
+const { validateEditBooking } = require('../../utils/validation');
 const { fitsAuthor, requireAuth, unauthor } = require('../../utils/auth');
 const { dayDate, ymd } = require('../../utils/normalizeDate')
-const { Booking, Spot } = require('../../db/models');
+const { Booking, Spot, SpotImage } = require('../../db/models');
 const { Op } = require('sequelize');
 const { adjustPojo } = require('../../utils/pojo')
 const router = require('express').Router();
@@ -9,27 +9,30 @@ const router = require('express').Router();
 
 
 // DUPLICATED: refactor
-async function bookingOk(startDate, endDate, next) {
+async function bookingOk(startDate, endDate, next, id) {
     const specificErrText = "Sorry, this spot is already booked for the specified dates";
     const err = Error("Part of date range is already booked");
-    console.log('bookingOk')
-    console.log(startDate, endDate)
     startDate = dayDate(startDate);
     endDate = dayDate(endDate);
+    const idClause = id === undefined
+        ? {} : {id: {[Op.ne]: id}};
     const errors = {};
     const conflict = await Booking.findOne({
     where: {startDate: {[Op.lt]: ymd(endDate)},
-            endDate: {[Op.gt]: ymd(startDate)}
+            endDate: {[Op.gt]: ymd(startDate),
+            ...idClause}
     }});
     if (conflict) {
         const conflict2 = await Booking.findOne({
             where: {startDate: {[Op.lte]: ymd(startDate)},
-                    endDate: {[Op.gt]: ymd(startDate)}
+                    endDate: {[Op.gt]: ymd(startDate),
+                    ...idClause}
         }});
         if (conflict2) {errors.startDate = "Start date conflicts with an existing booking"; err.message = specificErrText;}
         const conflict3 = await Booking.findOne({
             where: {startDate: {[Op.lt]: ymd(endDate)},
-                    endDate: {[Op.gte]: ymd(endDate)}
+                    endDate: {[Op.gte]: ymd(endDate),
+                    ...idClause}
         }});
         if (conflict3) {errors.endDate = "End date conflicts with an existing booking"; err.message = specificErrText;}
     }
@@ -45,30 +48,32 @@ async function bookingOk(startDate, endDate, next) {
 // Return all of current user's bookings.
 router.get('/current', requireAuth, async (req, res) => {
     let Bookings = await Booking.findAll({
-        include: {model: Spot, attributes: {exclude: ['description', 'createdAt', 'updatedAt']}},
+        include: {model: Spot, attributes: {exclude: ['description', 'createdAt', 'updatedAt']},
+                include: SpotImage},
         where: {userId: req.user.id}
     });
     Bookings = Bookings.map(e=>adjustPojo(e.toJSON(),['id', 'spotId', 'Spot','userId', 'startDate', 'endDate', 'createdAt', 'updatedAt']));
+    Bookings.forEach(b=> { let value = b.Spot && b.Spot.SpotImages && b.Spot.SpotImages.length ? b.Spot.SpotImages[0].url : null; b.Spot.previewImage = value; delete b.Spot.SpotImages});
     return res.json({Bookings});
 });
 
 router.route('/:bookingId(\\d+)')
     // Update and return current user's existing booking.
-    .put(requireAuth, validateBooking, async (req, res, next) => {
+    .put(requireAuth, validateEditBooking, async (req, res, next) => {
         const booking = await Booking.findByPk(req.params.bookingId);
         if (booking) {
             if (fitsAuthor(req, next, booking.userId)) {
                 const {startDate, endDate} = req.body;
                 if (startDate) booking.startDate = dayDate(startDate);
                 if (endDate) booking.endDate = dayDate(endDate);
-                if (endDate >= dayDate(new Date())) {
+                if (booking.endDate.getTime() <= dayDate(new Date()).getTime()) {
                     return unauthor(next, Error("Past bookings can't be modified"));
                 }
-                if (await bookingOk(booking.startDate, booking.endDate, next)) {
+                if (await bookingOk(booking.startDate, booking.endDate, next, booking.bookingId)) {
                     await booking.save();
                     return res.json(booking);
-                }
-            } else console.log('fitsAuthor', req.user.id, booking.userId, booking)
+                } else return;
+            }
         } else return res.status(404).json({message: "Booking couldn't be found"})
         return next(new Error('PUT /bookings/:id error'))
     })

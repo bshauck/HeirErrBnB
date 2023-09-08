@@ -1,6 +1,6 @@
 const { validateReview } = require('../../utils/validation');
 const { fitsAuthor, requireAuth } = require('../../utils/auth');
-const { Review, ReviewImage, Spot, User  } = require('../../db/models');
+const { Review, ReviewImage, Spot, SpotImage, User  } = require('../../db/models');
 const router = require('express').Router();
 
 // Create and return a new image for current user's review by reviewId.
@@ -52,16 +52,21 @@ router.route('/:reviewId(\\d+)')
 
 // Returns all reviews written by current user.
 router.get('/current', requireAuth, async (req, res) => {
-    console.log("making sure hitting this spot ******")
-    const reviews = await Review.findAll({
+    let Reviews = await Review.findAll({
         include: [
             {model: User, attributes: ['id', 'firstName', 'lastName']},
-            {model: Spot, attributes: {exclude: ['description', 'createdAt', 'updatedAt']}},
+            {model: Spot,
+            attributes: {exclude: ['description', 'createdAt', 'updatedAt']},
+            include: {model: SpotImage,
+                        where: {preview: true}}
+            },
             {model: ReviewImage, attributes: ['id', 'url']}
         ],
         where: {userId: req.user.id}
     });
-    return res.json({Reviews: reviews});
+    Reviews = Reviews.map(e=>e.toJSON());
+    Reviews.forEach(b=> { let value = b.Spot && b.Spot.SpotImages && b.Spot.SpotImages.length ? b.Spot.SpotImages[0].url : null; b.Spot.previewImage = value; delete b.Spot.SpotImages});
+    return res.json({Reviews});
 });
 
 

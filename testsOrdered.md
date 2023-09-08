@@ -191,7 +191,7 @@ returns the current user's information.
     }
     ```
 
-* Error Response: Invalid credentials
+* Error Response: Invalid credentials (or password)
   * Status Code: 401
   * Headers:
     * Content-Type: application/json

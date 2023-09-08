@@ -1,37 +1,38 @@
 const { fitsAuthor, requireAuth, unauthor } = require('../../utils/auth');
-const { validateBooking, validateQuery, validateReview, validateSpot } = require('../../utils/validation');
+const { validateBooking, validateEditSpot, validateQuery, validateReview, validateSpot } = require('../../utils/validation');
 const { sequelize, Booking, Review, ReviewImage, Spot, SpotImage, User } = require('../../db/models');
 const { Op } = require('sequelize');
-
 const { adjustPojo } = require('../../utils/pojo')
 const {dayDate, ymd} = require('../../utils/normalizeDate');
-const { check } = require('express-validator');
 
 const router = require('express').Router();
 
 
 // DUPLICATED: refactor
-async function bookingOk(startDate, endDate, next) {
+async function bookingOk(startDate, endDate, next, id) {
     const specificErrText = "Sorry, this spot is already booked for the specified dates";
     const err = Error("Part of date range is already booked");
-    console.log('bookingOk')
-    console.log(startDate, endDate)
     startDate = dayDate(startDate);
     endDate = dayDate(endDate);
+    const idClause = id === undefined
+        ? {} : {id: {[Op.ne]: id}};
     const errors = {};
     const conflict = await Booking.findOne({
     where: {startDate: {[Op.lt]: ymd(endDate)},
-            endDate: {[Op.gt]: ymd(startDate)}
+            endDate: {[Op.gt]: ymd(startDate),
+            ...idClause}
     }});
     if (conflict) {
         const conflict2 = await Booking.findOne({
             where: {startDate: {[Op.lte]: ymd(startDate)},
-                    endDate: {[Op.gt]: ymd(startDate)}
+                    endDate: {[Op.gt]: ymd(startDate),
+                    ...idClause}
         }});
         if (conflict2) {errors.startDate = "Start date conflicts with an existing booking"; err.message = specificErrText;}
         const conflict3 = await Booking.findOne({
             where: {startDate: {[Op.lt]: ymd(endDate)},
-                    endDate: {[Op.gte]: ymd(endDate)}
+                    endDate: {[Op.gte]: ymd(endDate),
+                    ...idClause}
         }});
         if (conflict3) {errors.endDate = "End date conflicts with an existing booking"; err.message = specificErrText;}
     }
@@ -81,11 +82,11 @@ router.route('/:spotId(\\d+)/bookings')
                     userId: req.user.id,
                     startDate,
                     endDate
-          })};
+          })} else return;
           if (booking) return res.json(booking);
-          else console.log('no booking in post bookings')
-        }} else console.log('no fits: ', `${req.user.id} != ${spot.id}`)
-      } else console.log('no spot in post bookings')
+          else return res.status(500).json({message: 'Booking creation failed'});
+        }}
+      } else return res.status(404).json({message: "Spot couldn't be found"})
       return next(new Error('POST /spots/:id/bookinngs error'))
     });
 
@@ -181,7 +182,7 @@ router.route('/:spotId(\\d+)')
         spot = adjustPojo(spot, ['id', 'ownerId', 'address', 'city','state', 'country', 'lat', 'lng', 'name', 'description', 'price', 'createdAt', 'updatedAt', 'numReviews', 'avgRating', 'SpotImages', 'Owner']);
         return res.json(spot);
     })
-    .put(requireAuth, validateSpot, async (req, res, next) => {
+    .put(requireAuth, validateEditSpot, async (req, res, next) => {
         let spot = await Spot.findByPk(req.params.spotId);
         if (spot) {
             if (fitsAuthor(req, next, spot.ownerId)) {
@@ -235,8 +236,6 @@ router.route('')
     const options = {};
     options.where = {};
 
-    console.log (page,size,minLat,maxLat,minLng,maxLng,minPrice,maxPrice);
-
     if (minLat !== undefined) {
       if (maxLat !== undefined) {
         options.where.lat = {[Op.between]: [minLat, maxLat]};
@@ -257,9 +256,6 @@ router.route('')
       else options.where.price = {[Op.gte]: minPrice};
     } else if (maxPrice !== undefined)
       options.where.price = {[Op.lte]: maxPrice};
-
-    console.log(options)
-
 
     let Spots = await Spot.findAll({
         include: [
@@ -301,7 +297,7 @@ router.route('')
 
 
 async function spotsWhere(req, res, where={}) {
-    let spots = await Spot.findAll({
+    let Spots = await Spot.findAll({
         include: [
             { model: SpotImage,
                 required: false,
@@ -316,8 +312,8 @@ async function spotsWhere(req, res, where={}) {
         // group: ['Reviews.spotId']
     });
     /* any better approach than this fix up after? */
-    spots = spots.map(e=>e.toJSON());
-    spots.forEach(s=>{s.avgRating =
+    Spots = Spots.map(e=>e.toJSON());
+    Spots.forEach(s=>{s.avgRating =
         s.Reviews && s.Reviews.length && s.Reviews[0] && s.Reviews[0].avgRating
             ? s.Reviews[0].avgRating : null;
         delete s.Reviews;
@@ -325,7 +321,7 @@ async function spotsWhere(req, res, where={}) {
         s.SpotImages && s.SpotImages.length && s.SpotImages[0] && s.SpotImages[0].url
             ? s.SpotImages[0].url : null;
         delete s.SpotImages});
-    return res.json(spots);
+    return res.json({Spots});
 };
 
 module.exports = router;

@@ -67,6 +67,7 @@ const validateLogin = [
     .exists({ values: "falsy" })
     .notEmpty()
     .withMessage('Please provide a password.')
+    .bail()
     .isLength({ min: 6 })
     .withMessage('Password must be 6 characters or more'),
   handleValidationErrors
@@ -82,72 +83,103 @@ const validateSignup = [
     .trim()
     .exists({ checkFalsy: true })
     .withMessage("First Name is required"),
-  check('lasstName')
+  check('lastName')
     .trim()
-    .exists({values: ''})
+    .exists({values: "falsy"})
     .withMessage("Last Name is required"),
   check('username')
     .trim()
     .exists({ checkFalsy: true })
     .withMessage("Username is required")
+    .bail()
     .isLength({ min: 4 })
     .withMessage('Please provide a username with at least 4 characters.')
+    .bail()
     .not()
     .isEmail()
     .withMessage('Username cannot be an email.'),
   check('password')
     .trim()
     .exists({ checkFalsy: true })
+    .withMessage("Username is required")
+    .bail()
     .isLength({ min: 6 })
     .withMessage('Password must be 6 characters or more.'),
   handleValidationErrors
 ];
 
-const validateSpot = [
+const spotAddress =
   check('address')
     .trim()
     .notEmpty()
-    .withMessage('Street address is required'),
+    .withMessage('Street address is required');
+const spotCity =
   check('city')
     .trim()
     .notEmpty()
-    .withMessage('City is required'),
+    .withMessage('City is required');
+const spotState =
   check('state')
     .trim()
     .notEmpty()
-    .withMessage('State is required'),
+    .withMessage('State is required');
+const spotCountry =
   check('country')
     .trim()
     .notEmpty()
-    .withMessage('Country is required'),
+    .withMessage('Country is required');
+const spotLat =
   check('lat')
     .trim()
     .if(body('lat').notEmpty())
     .isFloat({min: -90, max: 90})
-    .withMessage('Latitude is not valid'),
+    .withMessage('Latitude is not valid');
+const spotLng =
   check('lng')
     .trim()
     .if(body('lng').notEmpty())
     .isFloat({min: -180, max: 180})
-    .withMessage('Longitude is not valid'),
+    .withMessage('Longitude is not valid');
+const spotName =
   check('name')
     .trim()
     .notEmpty()
     .withMessage('Name is required')
+    .bail()
     .isLength({max: 49})
-    .withMessage('Name must be less than 50 characters'),
+    .withMessage('Name must be less than 50 characters');
+const spotDescription =
   check('description')
     .trim()
     .notEmpty()
-    .withMessage('Description is required'),
+    .withMessage('Description is required');
+const spotPrice =
   check('price')
     .trim()
     .exists({ values: "falsy" })
     .notEmpty()
-    .isInt()
-    .withMessage('Price per day is required'),
+    .isInt({min: 0})
+    .withMessage('Price per day is required');
+
+const validateSpot = [
+  spotAddress, spotCity, spotState, spotCountry, spotLat,
+  spotLng, spotName, spotDescription, spotPrice,
   handleValidationErrors
 ];
+const validateEditSpot = [
+  spotAddress.optional(),
+  spotCity.optional(),
+  spotState.optional(),
+  spotCountry.optional(),
+  spotLat.optional(),
+  spotLng.optional(),
+  spotName.optional(),
+  spotDescription.optional(),
+  spotPrice.optional(),
+  handleValidationErrors
+];
+
+
 
 const validateReview = [
   check('review')
@@ -162,7 +194,7 @@ const validateReview = [
   handleValidationErrors
 ];
 
-const validateBooking = [
+const bookingStartDate =
   check('startDate')
     .trim()
     .exists({checkFalsy: true})
@@ -173,7 +205,8 @@ const validateBooking = [
     // .withMessage('startDate must be a Date')
     // .bail()
     .isAfter(ymd(new Date()))
-    .withMessage('Must book in the future'),
+    .withMessage('Must book in the future');
+const bookingEndDate =
     check('endDate')
     .trim()
     .exists({checkFalsy: true})
@@ -184,13 +217,22 @@ const validateBooking = [
     // .withMessage('End date must be a Date')
     // .bail()
     .isAfter(ymd(new Date()))
-    .withMessage('Must book in the future'),
+    .withMessage('Must book in the future');
     // .bail()
     // .isBefore(body('startDate').toDate().toDateString())
     // .withMessage('endDate cannot be on or before startDate'),
-  handleValidationErrors
+
+const validateBooking = [
+      bookingStartDate,
+      bookingEndDate,
+      handleValidationErrors
 ];
 
+const validateEditBooking = [
+  bookingStartDate.optional(),
+  bookingEndDate.optional(),
+  handleValidationErrors
+];
 
 // middleware for formatting errors from express-validator middleware
 // (to customize, see express-validator's documentation)
@@ -212,5 +254,5 @@ function handleValidationErrors(req, _res, next){
 };
 
 module.exports = {
-  handleValidationErrors, validateBooking, validateLogin, validateQuery, validateReview, validateSignup, validateSpot
+  handleValidationErrors, validateBooking, validateEditBooking, validateEditSpot, validateLogin, validateQuery, validateReview, validateSignup, validateSpot
 };

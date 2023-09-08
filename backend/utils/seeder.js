@@ -41,9 +41,13 @@ const seederSpotIdAndOwners = async () => {
   return reviews.map(e=>e.id);
 }
 
-  let aDate = dayDate(new Date());
-  const dayMilliseconds = 1000 * 60 * 60 * 24;
-  const seederNextDate = () => aDate = dayDate(new Date(aDate.valueOf() + dayMilliseconds));
+  SEEDDATE = new Date(new Date().toDateString());
+  DATEINC = 1;
+  SEEDDATE.setMonth(SEEDDATE.getMonth()+1);
+  function seederNextDate() {
+    SEEDDATE = new Date(SEEDDATE.setDate(SEEDDATE.getDate()+ ++DATEINC));
+    return SEEDDATE
+  };
   seederNextDate();
 
 const seederImageURLs = [
