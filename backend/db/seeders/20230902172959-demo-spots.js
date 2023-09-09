@@ -21,7 +21,7 @@ module.exports = {
         lng: -97.1398609,
         name: seederSpotNames[0],
         description: 'Descript 1',
-        price: 10
+        price: 110
       },
       {
         ownerId: userIds[1],
@@ -32,7 +32,7 @@ module.exports = {
         lng: -105.4124487,
         name: seederSpotNames[1],
         description: 'Descript 2',
-        price: 20
+        price: 120
       },
       {
         ownerId: userIds[2],
@@ -43,7 +43,7 @@ module.exports = {
         lng: -106.4324849,
         name: seederSpotNames[2],
         description: 'Descript 3',
-        price: 30
+        price: 130
       }
     ], { validate: true });
   },

@@ -2,9 +2,18 @@ const { Review, Spot, User } = require('../db/models');
 const { dayDate } = require('./normalizeDate');
 
 const seederUserNames = [
-    'Demo-lition',
-    'FakeUser1',
-    'FakeUser2'
+    'FrancoPortin',
+    'AlecKeeler',
+    'AnthonyLovern',
+    'JoshGoldberg',
+    'AdamTifrit',
+    'ElliotStarr',
+    'HaydenGogan',
+    'JonDiez',
+    'MasonAustin',
+    'SteveNielson',
+    'LanOribello',
+    'MiraBorkowska'
 ];
 const seederSpotNames = [
     'Cheap Denton House',
