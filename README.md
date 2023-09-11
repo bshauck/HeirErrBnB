@@ -4,7 +4,7 @@
 
 ![db-schema]
 
-[db-schema]: ./images/heirerrbnb-db-schema.png
+[db-schema]: ./images/HeirErrBnB.png
 
 ## API Documentation
 
