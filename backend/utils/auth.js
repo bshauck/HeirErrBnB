@@ -101,7 +101,8 @@ function unauthor(next, err) {
 
 /* Go to error handling if compare fails */
 const fitsAuthor = function (req, next, compare, result=true) {
-    if ((req.user.id === compare) === result) return true;
+    if ((req.user.id === compare) === result)
+      return true;
 
     unauthor(next);
 };
