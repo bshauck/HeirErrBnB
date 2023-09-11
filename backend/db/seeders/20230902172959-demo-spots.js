@@ -47,12 +47,12 @@ module.exports = {
       },
       {
         ownerId: userIds[3],
-        address:  "4457 Little Acres Lane",
+        address:  "5403 Little Acres Ln",
         city:     "Jacksonville",
-        state:    "Illinois",
+        state:    "FL",
         country:  "USA",
-        lat:      30.2483073,
-        lng:      -81.7206393,
+        lat:      30.2482933,
+        lng:      -81.7183706,
         name: seederSpotNames[3],
         description: 'Strange Place',
         price: 110
@@ -63,8 +63,8 @@ module.exports = {
         city:     "München",
         state:    "Freistaat Bayern",
         country:  "Germany",
-        lat:      30.2483073,
-        lng:      -81.7206393,
+        lat:      48.1673572,
+        lng:      11.5793442,
         name: seederSpotNames[4],
         description: 'Great Apartment',
         price: 80
@@ -87,8 +87,8 @@ module.exports = {
         city:     "Loos",
         state:    "Hauts-de-France",
         country:  "France",
-        lat:      50.6107948,
-        lng:      3.0053762,
+        lat:      50.6107573,
+        lng:      3.0056504,
         name: seederSpotNames[6],
         description: "Oblong Place",
         price: 110
