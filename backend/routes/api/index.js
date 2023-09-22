@@ -40,10 +40,11 @@ async function deleteImage(req, res, next, imageModel, holderModel, upStr, downS
 }
 
 // Add a XSRF-TOKEN cookie
-router.get("/csrf/restore", async (req, res) => {
-  const csrfToken = await getCSRFToken(req,res);
-  return res.status(200).json({'XSRF-Token': csrfToken})
-});
+if (process.env.NODE_ENV !== 'production')
+  router.get("/csrf/restore", async (req, res) => {
+    const csrfToken = await getCSRFToken(req,res);
+    return res.json({/*'XSRF-Token': csrfToken*/})
+  });
 router.post('/test',
   (req, res) => res.json({ requestBody: req.body }));
 
