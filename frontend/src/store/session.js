@@ -6,17 +6,16 @@
     username,
     firstName,
     lastName,
-    createdAt,
-    updatedAt
+    createdAt,  /// TODO?
+    updatedAt   /// TODO?
   }
 }
 
-and without user
+and without logged-in user
 
 {
   user: null
 }
-
 */
 
 import { csrfFetch } from "./csrf";
@@ -54,6 +53,25 @@ export const login = (user) => async (dispatch) => {
   dispatch(setUser(data.user));
   return response;
 };
+export const thunkLogin=login;
+
+export const signup = (user) => async (dispatch) => {
+  const { username, firstName, lastName, email, password } = user;
+  const response = await csrfFetch("/api/users", {
+    method: "POST",
+    body: JSON.stringify({
+      username,
+      firstName,
+      lastName,
+      email,
+      password,
+    }),
+  });
+  const data = await response.json();
+  dispatch(setUser(data.user));
+  return response;
+};
+export const thunkSignup = signup;
 
 const initialState = { user: null };
 
@@ -72,6 +90,13 @@ const sessionReducer = (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+export const restoreUser = () => async (dispatch) => {
+  const response = await csrfFetch("/api/session");
+  const data = await response.json();
+  dispatch(setUser(data.user));
+  return response;
 };
 
 export default sessionReducer;
