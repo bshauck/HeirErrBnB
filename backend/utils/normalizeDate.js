@@ -1,16 +1,34 @@
-
 // A "dayDate" is a Date whose time value is
 // exactly midnight. This lets you compare dates
-// more easily
+// more easily with getTime() / valueOf()
 
-function dayDate(date) {
-    if (typeof date === 'string') date = new Date(date);
+// Note: all JS dates are numbers: milliseconds
+// since UNIX epoch Jan 1, 1970 UTC. The various
+// string representations are just what Date.parse()
+// can turn into such a millisecond value. That
+// function will return NaN if unable to parse argument.
+
+function typeCheck(date) {
+    return (typeof date === 'string' || typeof date === 'number')
+        ? new Date(date) : date
+}
+function dayDate(date) { // return Date instance with local time 0
+    date = typeCheck(date);
     return new Date(date.toDateString())
 }
 
-function ymd(date) {
-    if (typeof date === 'string') date = new Date(date);
+function ymd(date) { // return a string of YYYY-MM-DD of the date
+    date = typeCheck(date);
     return date.toISOString().split('T')[0]
+}
+
+function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
+    // date = typeCheck(date); // not required; within dayDate
+    return new Date(ymd(date)).toISOString().replace('T', ' ').split('.')[0]
+}
+
+function addDays(dDate, numDays) { // mutates receiver
+    dDate.setDate(dDate.getDate() + numDays)
 }
 
 /* the following functions all assume d1 and d2
@@ -73,4 +91,4 @@ some existing range, then you need the original
 query as well.
 */
 
-module.exports = { dayDate, dayGTE, dayLTE, ymd }
+module.exports = { addDays, dayDate, dayGTE, dayLTE, ymd }

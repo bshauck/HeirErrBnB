@@ -1,15 +1,35 @@
 const { Review, Spot, User } = require('../db/models');
-const { dayDate } = require('./normalizeDate');
 
 const seederUserNames = [
-    'Demo-lition',
-    'FakeUser1',
-    'FakeUser2'
+    'FrancoPortin',
+    'AlecKeeler',
+    'AnthonyLovern',
+    'JoshGoldberg',
+    'AdamTifrit',
+    'ElliotStarr',
+    'HaydenGogan',
+    'JonDiez',
+    'MasonAustin',
+    'SteveNielson',
+    'LanOribello',
+    'MiraBorkowska'
 ];
 const seederSpotNames = [
     'Cheap Denton House',
     'Boulder Shack',
-    'Ski Out'
+    'Ski Out',
+    'Warmth in Winter',
+    'Summer Passion',
+    'Winter Paradise',
+    'A Steal at Any Price',
+    'Extravaganza',
+    'Humble Beginnings',
+    'Pride of the Center',
+    'Rampaging Fun',
+    'Serenity',
+    'Courage',
+    'Wisdom',
+    'Peace'
 ];
 
 const seederUserIds = async () => {
@@ -41,18 +61,16 @@ const seederSpotIdAndOwners = async () => {
   return reviews.map(e=>e.id);
 }
 
-  SEEDDATE = new Date(new Date().toDateString());
-  DATEINC = 1;
-  SEEDDATE.setMonth(SEEDDATE.getMonth()+1);
-  function seederNextDate() {
-    SEEDDATE = new Date(SEEDDATE.setDate(SEEDDATE.getDate()+ ++DATEINC));
-    return SEEDDATE
-  };
-  seederNextDate();
 
 const seederImageURLs = [
   'https://a0.muscache.com/im/pictures/miso/Hosting-7742780/original/3bbf8900-9bde-4203-b66c-85e062682cae.jpeg?im_w=960',
 'https://a0.muscache.com/im/pictures/cbf6ff83-dc6e-4da0-b68c-75c0e6139560.jpg?im_w=720'
 ];
 
-module.exports = {seederImageURLs, seederNextDate, seederReviewIds, seederSpotIdAndOwners, seederSpotNames, seederUserIds, seederUserNames }
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+module.exports = { getRandomInt, seederImageURLs, seederReviewIds, seederSpotIdAndOwners, seederSpotNames, seederUserIds, seederUserNames }
