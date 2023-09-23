@@ -1,6 +1,7 @@
 const { Review, Spot, User } = require('../db/models');
 
 const seederUserNames = [
+    'Demo-lition',
     'FrancoPortin',
     'AlecKeeler',
     'AnthonyLovern',
