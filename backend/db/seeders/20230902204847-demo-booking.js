@@ -5,8 +5,14 @@ const { addDays, dayDate, ymd } = require('../../utils/normalizeDate')
 const Op = Sequelize.Op;
 const options = {};
 options.tableName = 'Bookings';
-if (process.env.NODE_ENV === 'production')
+let specialSubqueryLiteralText =
+`AND id NOT IN (SELECT "userId" FROM Bookings)`
+if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
+  specialSubqueryLiteralText =
+  `AND id NOT IN (SELECT "userId" FROM ${options.schema}."Bookings")`
+}
+
 
 module.exports = {
   async up (queryInterface, _Sequelize) {
@@ -22,7 +28,7 @@ module.exports = {
     const expandUserIds = [...userIds].toString();
     let possibleBookingUserIds = await User.findAll({
       attributes: ['id'],
-      where: sequelize.literal(`id IN (${expandUserIds}) AND id NOT IN (SELECT "userId" FROM Bookings)`)});
+      where: sequelize.literal(`id IN (${expandUserIds}) ${specialSubqueryLiteralText}`)});
     possibleBookingUserIds = possibleBookingUserIds.map(e=>e.id)
     const totalPossible = possibleBookingUserIds.length;
     let numberOfBookingUserIds = getRandomInt(totalPossible/2, totalPossible/1.5);
@@ -59,15 +65,15 @@ module.exports = {
     await queryInterface.bulkInsert(options.tableName, [
       {
         spotId: spotIds[2],
-        userId: userIds[1],
-        startDate: '2023-09-01',
-        endDate: '2023-09-02',
+        userId: userIds[0],
+        startDate: '2023-09-20',
+        endDate: '2023-09-22',
       },
       {
         spotId: spotIds[2],
-        userId: userIds[1],
-        startDate: '2023-09-06',
-        endDate: '2023-09-30',
+        userId: userIds[0],
+        startDate: '2023-09-20',
+        endDate: '2023-10-31',
       },
       ...generatedBookings
     ], { /* validate: true */ }); // we turn off validation to allow
