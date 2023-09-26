@@ -83,7 +83,7 @@ router.route('/:spotId(\\d+)/bookings')
                     startDate,
                     endDate
           })} else return;
-          if (booking) return res.json(booking);
+          if (booking) return res.status(201).json(booking);
           else return res.status(500).json({message: 'Booking creation failed'});
         }}
       } else return res.status(404).json({message: "Spot couldn't be found"})
@@ -95,14 +95,24 @@ router.post('/:spotId(\\d+)/images', requireAuth, async (req, res, next) => {
     const spot = await Spot.findByPk(req.params.spotId);
     if (!spot) return res.status(404).json({message: "Spot couldn't be found"});
     if (fitsAuthor(req, next, spot.ownerId)) {
-        const {url, preview} = req.body;
-        let image = await SpotImage.create({spotId: spot.id, url, preview});
-        if (image) {
-            image = image.toJSON();
-            delete image.spotId;
-            delete image.createdAt;
-            delete image.updatedAt;
-            return res.json(image);
+        const oldPreview = await SpotImage.findOne({
+            where: {spotId: spot.id,
+                    preview: true}});
+        let { url, preview } = req.body;
+        let values = [{spotId: spot.id, url, preview}];
+        if (Array.isArray(url)) values = url.map((u,i) => {return {spotId: spot.id, url: u, preview: (!oldPreview && i===0)}})
+        else url = [url];
+        let images = await SpotImage.bulkCreate(values); // may need {returning:true} for PGSQL
+        if (images) {
+            // if (process.env.NODE_ENV !== 'production') // Sqlite3 doesn't return ids on bulkCreate
+            //     images = await SpotImage.findAll({where: {url}})
+            images = images.map(i=>i.toJSON());
+            images.forEach(image => {
+                delete image.spotId;
+                delete image.createdAt;
+                delete image.updatedAt;
+            });
+            return res.status(201).json(images);
         }
     }
     return next(new Error('POST /spot/:id/images error'))
@@ -131,7 +141,7 @@ router.route('/:spotId(\\d+)/reviews')
             where: {userId: req.user.id,
                     spotId: spot.id}
         });
-        if (old) return res.status(500).json({message: "User already has a review for this spot"});
+        if (old) return res.status(403).json({message: "User already has a review for this spot"});
         const {review, stars} = req.body;
         const newReview = await Review.create({
             userId: req.user.id,

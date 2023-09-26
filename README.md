@@ -69,7 +69,7 @@ and returns the current user's information.
     ```
 
 * Successful Response
-  * Status Code: 200
+  * Status Code: 201
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -87,7 +87,7 @@ and returns the current user's information.
     ```
 
 * Error response: User already exists with the specified email
-  * Status Code: 500
+  * Status Code: 400
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -103,7 +103,7 @@ and returns the current user's information.
     ```
 
 * Error response: User already exists with the specified username
-  * Status Code: 500
+  * Status Code: 400
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -505,20 +505,26 @@ Create and return a new image for a spot specified by id.
       "url": "image url",
       "preview": true
     }
+OR
+    {
+      "url": ["url1", "url2", ...] (first url is considered the preview)
+    }
     ```
 
 * Successful Response
-  * Status Code: 200
+  * Status Code: 201
   * Headers:
     * Content-Type: application/json
   * Body:
 
     ```json
-    {
+    [
+      {
       "id": 1,
       "url": "image url",
       "preview": true
-    }
+     }
+    ]
     ```
 
 * Error response: Couldn't find a Spot with the specified id
@@ -833,7 +839,7 @@ Create and return a new review for a spot specified by id.
     ```
 
 * Error response: Review from the current user already exists for the Spot
-  * Status Code: 500
+  * Status Code: 403
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -864,7 +870,7 @@ Create and return a new image for a review specified by id.
     ```
 
 * Successful Response
-  * Status Code: 200
+  * Status Code: 201
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1135,7 +1141,7 @@ Create and return a new booking from a spot specified by id.
     ```
 
 * Successful Response
-  * Status Code: 200
+  * Status Code: 201
   * Headers:
     * Content-Type: application/json
   * Body:
