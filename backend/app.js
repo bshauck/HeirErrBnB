@@ -51,9 +51,9 @@ app.use((err, _req, _res, next) => {
     if (err instanceof ValidationError) {
       let errors = {};
       err.status = 400;
-      allegedServerErrorMessages = [
-        "email must be unique",
-        "username must be unique"
+      allegedServerErrorMessages = [ // Mod4: invalid inputs wrongly made server erros: fixed
+        // "email must be unique",
+        // "username must be unique"
       ];
       for (let error of err.errors) {
         errors[error.path] = error.message;

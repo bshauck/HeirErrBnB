@@ -17,7 +17,7 @@ router.post('', validateSignup, async (req, res, next) => {
     req.user = user;
     if (!req.csrfToken) {try { setCSRF() } catch(e) {}}
     else res.cookie('XSRF-TOKEN', req.csrfToken());
-    return res.json({user: safeUser});
+    return res.status(201).json({user: safeUser});
 });
 
 module.exports = router;

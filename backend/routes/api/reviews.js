@@ -15,16 +15,22 @@ async (req, res, next) => {
         if (existingImages >= 10)
             return res.status(403).json({message: "Maximum number of images for this resource was reached"});
         const {url} = req.body;
-        let newImage = await ReviewImage.create({url, reviewId: oldReview.id});
-        if (newImage) {
-            newImage = newImage.toJSON();
-            delete newImage.reviewId;
-            delete newImage.updatedAt;
-            delete newImage.createdAt;
-            return res.json(newImage);
+        let values;
+        if (!Array.isArray(url)) values = [{url}];
+        values = url.map(u => {return {reviewId: oldReview.id, url: u}});
+        let images = await ReviewImage.bulkCreate(values); // may need {returning:true} for PGSQL
+        if (images) {
+            images = images.map(i=>{
+                let image = i.toJSON()
+                delete image.spotId;
+                delete image.createdAt;
+                delete image.updatedAt;
+                return image });
+        }
+        return res.status(201).json(images);
     }
     return res.status(500).json("Failure of ReviewImage")
-    }});
+});
 
 router.route('/:reviewId(\\d+)')
     // Delete an existing review of current user's.
