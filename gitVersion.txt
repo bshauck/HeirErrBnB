@@ -1,19 +1,6 @@
 commit fe2988f35e0defe1ea51a5fce12d522ff3fd0252
 above is Mod4 API passing version
 
-branch: fixDBErrorCodes
-current feature: fix 2 db table constraint violations
-wrongly put in Mod 4 API as 500s and changed to 400s.
-fix an attempt to put in a review when the user
-already has a review for that spot from status
-code 500 to 403.
-Change 4 row creations given status code of 200 to
-201.
-Change image creation interfaces to take either a
-single url, or to take an array of URLs. If array
-given, then if Spot images, the first is the preview
-image; and the rest are additional images.
-Current frontend API will
-not allow creation of more than 5 spot images anyway.
-Updated backend API documentation to reflect all
-of these changes.
+branch spotForm
+further implementation and testing for SpotForm via Create/Edit
+also testing of the new backend API for bulkCreate of images

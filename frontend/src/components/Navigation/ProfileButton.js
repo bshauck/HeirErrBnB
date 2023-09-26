@@ -4,11 +4,14 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { thunkREADALLUserSpots } from "../../store/spots";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
+  const history = useHistory();
 
   const openMenu = () => {
     if (showMenu) return;
@@ -37,6 +40,14 @@ function ProfileButton({ user }) {
     closeMenu();
   };
 
+  const manageSpots = (e) => {
+    e.preventDefault();
+    dispatch(thunkREADALLUserSpots());
+    closeMenu();
+    if (history.location.pathname !== "/spots/current")
+      history.push("/spots/current")
+  };
+
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
@@ -49,6 +60,10 @@ function ProfileButton({ user }) {
           <>
             <li>Hello, {user.firstName}</li>
             <li>{user.email}</li>
+            <hr></hr>
+            <li>
+              <button onClick={manageSpots}>Manage Spots</button>
+            </li>
             <li>
               <button onClick={logout}>Log Out</button>
             </li>
