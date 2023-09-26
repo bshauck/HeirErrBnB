@@ -1,13 +1,14 @@
 // frontend/src/index.js
-import React from "react";
-
-import "./index.css";
-
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
+
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+
 import { ModalProvider, Modal } from "./context/Modal";
 import App from "./App";
+import "./index.css";
 
 import configureStore from "./store";
 import { restoreCSRF, csrfFetch } from "./store/csrf";
@@ -23,9 +24,10 @@ if (process.env.NODE_ENV !== "production") {
   window.sessionActions = sessionActions;
 }
 
-// Wrap the application with the Modal provider and render the Modal component
-// after the App component so that all the Modal content will be layered as
-// HTML elements on top of the all the other HTML elements:
+// Wrap the application with the Modal provider and render
+// the Modal component after the App component so that all
+// the Modal content will be layered as HTML elements on
+// top of all the other HTML elements:
 function Root() {
   return (
     <ModalProvider>
@@ -39,9 +41,26 @@ function Root() {
   );
 }
 
-ReactDOM.render(
-  <React.StrictMode>
+
+const v18 = false;
+if (v18) { /* unfortunately, using the official v18 createRoot seems to break
+              the provided modals, so for now using older approach */
+
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(
+  <StrictMode>
     <Root />
-  </React.StrictMode>,
-  document.getElementById("root")
+  </StrictMode>
 );
+
+} else { // v17
+
+  ReactDOM.render(
+    <StrictMode>
+      <Root />
+    </StrictMode>,
+    document.getElementById("root")
+  );
+
+} // end if (v18)

@@ -68,6 +68,8 @@ const seederImageURLs = [
 'https://a0.muscache.com/im/pictures/cbf6ff83-dc6e-4da0-b68c-75c0e6139560.jpg?im_w=720'
 ];
 
+// Returns a random integer between min (inclusive) and max (inclusive).
+// Neither max nor min have to be an int.
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);

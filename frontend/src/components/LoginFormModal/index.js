@@ -1,12 +1,16 @@
 // frontend/src/components/LoginFormModal/index.js
 import React, { useState } from "react";
-import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+
+
+import * as sessionActions from "../../store/session";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -21,7 +25,7 @@ function LoginFormModal() {
         const data = await res.json();
         if (data && data.errors) {
           setErrors(data.errors);
-        }
+        } else history.push("/")
       });
   };
 
@@ -34,6 +38,7 @@ function LoginFormModal() {
           <input
             type="text"
             value={credential}
+            autoComplete="username"
             onChange={(e) => setCredential(e.target.value)}
             required
           />
@@ -43,6 +48,7 @@ function LoginFormModal() {
           <input
             type="password"
             value={password}
+            autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
             required
           />

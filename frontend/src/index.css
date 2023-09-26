@@ -1,2 +1,32 @@
-/* TODO Add site wide styles */
-div,header,footer,body {display: flex}
+:root { /* Nunito?. Figtree? cf public/index.html */
+    --fontFamily: "Montserrat", sans-serif;
+    --darkTeal: #00525f;
+    --lightTeal: #E8F0FE; /* this doesn't look like teal at all */
+    --aaDarkGray: #999999; /* this is really close to css darkgray a9a9a9 */
+    --aaLightGray: #CCCCCC; /* this is really close to css lightgray d3d3d3 */
+    --aaRed: #FF5A5F; /* lighter than css red */
+    --abnbRed: #ff385c; /* actual red used on abnb */
+    --headingSize: 24pt;
+    --subheadingSize: 18pt;
+    --subheadingWeight: bold;
+    --defaultSize: 14pt;
+}
+
+.hidden {
+    display: none;
+}
+
+body { /* all from css guidelines AA open */
+    box-sizing: border-box;
+    font-family: var(--fontFamily);
+    font-size: var(--defaultSize);
+}
+
+h1 { /* all from css guidelines AA open */
+    font-size: var(--headingSize);
+}
+
+h2 { /* all from css guidelines AA open */
+    font-size: var(--subheadingSize);
+    font-weight: var(--subheadingWeight);
+}
