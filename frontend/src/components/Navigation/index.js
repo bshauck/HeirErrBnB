@@ -10,14 +10,17 @@ function Navigation({ isLoaded }){
 
   return (
     <header>
+      <nav>
       <div className="logoDiv">
         <NavLink className="logoLink" exact to="/"><i className="fa-brands fa-airbnb"></i>HeirErrBnB</NavLink>
       </div>
-      <div className="menuDiv">
         {isLoaded && (
+        <div className="navMenuDiv">
+            <NavLink className="createSpotLink" exact to="/spots/new">Create a New Spot</NavLink>
             <ProfileButton user={sessionUser} />
+        </div>
         )}
-      </div>
+        </nav>
     </header>
   );
 }

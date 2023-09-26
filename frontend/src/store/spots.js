@@ -163,7 +163,7 @@ export const thunkDELETESpot = id => async dispatch => {
     });
     const data = await response.json();
     console.log("🚀 ~ file: spots.js:159 ~ thunkDELETESpot ~ data:", data)
-    dispatch(deleteSpot(id));
+    dispatch(deleteSpot(data));
     return response;
 };
 

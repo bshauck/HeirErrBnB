@@ -22,6 +22,10 @@ body { /* all from css guidelines AA open */
     font-size: var(--defaultSize);
 }
 
+div {
+    border: 3px black solid;
+}
+
 h1 { /* all from css guidelines AA open */
     font-size: var(--headingSize);
 }

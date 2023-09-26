@@ -21,6 +21,7 @@ header { /* all from css guidelines AA open */
 }
 
 .menuDiv {
-    /* justify-self: flex-end; */
-    margin: unset;
+    display: flex ;
+    justify-self: flex-end ;
+    /* margin: unset; */
 }
