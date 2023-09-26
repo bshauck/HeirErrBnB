@@ -11,7 +11,7 @@ function Navigation({ isLoaded }){
   return (
     <header>
       <div className="logoDiv">
-        <NavLink exact to="/"><i class="fa-brands fa-airbnb"></i>HeirErrBnB</NavLink>
+        <NavLink className="logoLink" exact to="/"><i className="fa-brands fa-airbnb"></i>HeirErrBnB</NavLink>
       </div>
       <div className="menuDiv">
         {isLoaded && (

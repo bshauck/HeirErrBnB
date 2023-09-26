@@ -1,7 +1,3 @@
-.hidden {
-    display: none;
-}
-
 header { /* all from css guidelines AA open */
     display: inline-flex;
     justify-content: space-between;
@@ -16,10 +12,15 @@ header { /* all from css guidelines AA open */
 
 .logoDiv {
     /* justify-self: flex-start; */
+    text-decoration-color: var(--abnbRed);
     color: var(--abnbRed);
+}
+
+.logoLink {
+    text-decoration: none;
 }
 
 .menuDiv {
     /* justify-self: flex-end; */
-    color: var(--abnbRed);
+    margin: unset;
 }

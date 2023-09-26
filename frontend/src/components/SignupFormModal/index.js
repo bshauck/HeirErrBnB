@@ -50,6 +50,7 @@ function SignupFormModal() {
           <input
             type="text"
             value={email}
+            autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -60,6 +61,7 @@ function SignupFormModal() {
           <input
             type="text"
             value={username}
+            autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
             required
           />
@@ -70,6 +72,7 @@ function SignupFormModal() {
           <input
             type="text"
             value={firstName}
+            autoComplete="given-name"
             onChange={(e) => setFirstName(e.target.value)}
             required
           />
@@ -80,6 +83,7 @@ function SignupFormModal() {
           <input
             type="text"
             value={lastName}
+            autoComplete="family-name"
             onChange={(e) => setLastName(e.target.value)}
             required
           />
@@ -90,6 +94,7 @@ function SignupFormModal() {
           <input
             type="password"
             value={password}
+            autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
             required
           />
@@ -100,6 +105,7 @@ function SignupFormModal() {
           <input
             type="password"
             value={confirmPassword}
+            autoComplete="current-password"
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />

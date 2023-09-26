@@ -11,12 +11,13 @@
     --subheadingWeight: bold;
     --defaultSize: 14pt;
 }
-div {
-    display: flex;
-    box-sizing: border-box;
+
+.hidden {
+    display: none;
 }
 
 body { /* all from css guidelines AA open */
+    box-sizing: border-box;
     font-family: var(--fontFamily);
     font-size: var(--defaultSize);
 }
