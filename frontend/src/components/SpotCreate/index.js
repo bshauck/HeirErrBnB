@@ -31,20 +31,8 @@ const SpotCreate = () => {
 const sessionUser = useSelector(state => state.session.user);
 if (!sessionUser) return null;
 
-const spot = {
-    "ownerId": sessionUser.id,
-    "address": "123 Disney Lane",
-    "city": "San Francisco",
-    "state": "California",
-    "country": "United States of America",
-    "name": "App Academy",
-    "description": "Place where web developers are created",
-    "price": 123,
-    "previewImage": "../../images/default.webp"
-  };
-
   return (
-    <SpotForm spot={spot} formType="Create a new Spot" />
+    <SpotForm spot={null} formType="Create a new Spot" />
   );
 }
 

@@ -1,0 +1,52 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+    {
+        "name": "Attach to browser front-end",
+        "type": "chrome",
+        "request": "attach",
+        "url": "http://localhost:3000",
+        "port": 9222
+    },
+    {
+        "name": "Launch backend via NPM",
+        "request": "launch",
+        "runtimeArgs": ["start"],
+        "runtimeExecutable": "npm",
+        "skipFiles": ["<node_internals>/**"],
+        "type": "node"
+    },
+    {
+        "name": "Launch index.html front-end??",
+        "type": "chrome",
+        "request": "launch",
+        "file": "${workspaceFolder}/public/index.html"
+    },
+    {
+        "name": "nodemon",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "nodemon",
+        "program": "${workspaceFolder}/bin/www",
+        "restart": true,
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "env": {
+            "debug": "app:*",
+        }
+    },
+    {
+        "name": "nodemon",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "nodemon",
+        "program": "${workspaceFolder}backend/bin/www",
+        "restart": true,
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "env": {
+            "debug": "app:*",
+        }
+    },
+    ]
+  }

@@ -501,14 +501,11 @@ Create and return a new image for a spot specified by id.
   * Body:
 
     ```json
-    {
-      "url": "image url",
-      "preview": true
-    }
-OR
-    {
-      "url": ["url1", "url2", ...] (first url is considered the preview)
-    }
+    [
+      {
+      "urls": ["str1", "str2", ...] //(first url is considered the preview)
+      }
+    ]
     ```
 
 * Successful Response

@@ -95,7 +95,7 @@ function readAllSpots(spots) {
     }
 }
 
-function readAllUserSpots(spots) {
+export function readAllUserSpots(spots) {
     console.log("🚀 ~ file: spots.js:99 ~ readAllUserSpots ~ spots:", spots)
     return {
         type: READ_USER_SPOTS,
@@ -140,7 +140,7 @@ export const thunkREADAllSpots = () => async (dispatch) => {
   return response;
 };
 
-export const thunkREADALLUserSpots = () => async (dispatch) => {
+export const thunkREADAllUserSpots = () => async (dispatch) => {
   const response = await csrfFetch("/api/spots/current");
   const data = await response.json();
   dispatch(readAllUserSpots(data.Spots));
@@ -190,7 +190,8 @@ export const thunkDELETESpot = id => async dispatch => {
 
 */
 
-export const thunkCREATESpot = (spot, images) => async dispatch => {
+export const thunkCREATESpot = (spot, urls) => async dispatch => {
+  console.log("🚀 ~ file: spots.js:194 ~ thunkCREATESpot ~ urls:", urls)
   console.log("🚀 ~ file: spots.js:194 ~ thunkCREATESpot ~ spot:", spot)
   const { address, city, state, country, lat, lng, name, description, price } = spot;
   const response = await csrfFetch("/api/spots", {
@@ -200,13 +201,24 @@ export const thunkCREATESpot = (spot, images) => async dispatch => {
       name, description, price
     }),
   });
-  /* need to iterate through images, set first as preview, and create them all */
   const data = await response.json();
-  dispatch(createSpot(data.spot));
+  console.log("🚀 ~ file: spots.js:204 ~ thunkCREATESpot ~ data:", data)
+  /* if success, then create images */
+  console.log("🚀 ~ file: spots.js:206 ~ thunkCREATESpot ~ urls:", urls)
+  urls.forEach(u => u.spotId = data.id)
+  for (const u of urls)
+    console.log("🚀 ~ file: spots.js:208 ~ thunkCREATESpot ~ u:", u)
+  const response2 = await csrfFetch(`/api/spots/${data.id}/images`, {
+    method: "POST",
+    body: JSON.stringify(urls)
+  });
+
+  /* const data2 = */ await response2.json();
+  dispatch(createSpot(data));
   return response;
 };
 
-export const thunkUPDATESpot = (spot, images) => async dispatch => {
+export const thunkUPDATESpot = (spot, urls) => async dispatch => {
     console.log("🚀 ~ file: spots.js:210 ~ thunkUPDATESpot ~ spot:", spot)
     const { address, city, state, country, lat, lng, name, description, price } = spot;
     const response = await csrfFetch(`/api/spots/${spot.id}`, {
@@ -216,11 +228,24 @@ export const thunkUPDATESpot = (spot, images) => async dispatch => {
         name, description, price
       }),
   });
-  /* need to iterate through images and add any not present */
+  /* TODO haven't come up with a good approach for URL updating yet
+   * it could be a mixture of updates and creation
+   */
   const data = await response.json();
   dispatch(updateSpot(data.spot));
   return response;
 };
+
+function copyNormWithout(oldNorm, key) {
+  /* if the state doesn't contain the item, then no change is needed;
+   * otherwise, return a newObject that has everything but that
+   * particular key
+   */
+  if (!oldNorm || !oldNorm[key]) return oldNorm;
+  const result = {};
+  oldNorm.forEach(k => {if (k !== key) result[k] = oldNorm[k]});
+  return result;
+}
 
 const initialState = {
     allSpots: {},
@@ -248,16 +273,18 @@ const spotsReducer = (state = initialState, action) => {
         newState.userSpots = normalized;
         return newState;
     }
-    case CREATE_SPOT:
     case READ_SPOT:
+    case CREATE_SPOT:
     case UPDATE_SPOT:
       newState = {...state};
       newState.singleSpot = action.payload;
       return newState;
     case DELETE_SPOT:
-      const newAllSpots = state.allSpots.filter(e => e.id !== action.payload);
       newState = {...state};
+      let newAllSpots = copyNormWithout(state.allSpots, action.payload);
       newState.allSpots = newAllSpots;
+      let newUserSpots = copyNormWithout(state.userSpots, action.payload);
+      newState.userSpots = newUserSpots;
       if (newState.singleSpot?.id === action.payload) newState.singleSpot = {};
       return newState;
     default:

@@ -13,13 +13,17 @@
 }
 
 .hidden {
-    display: none;
+    display: none ;
+}
+
+.error {
+    color: red ;
 }
 
 body { /* all from css guidelines AA open */
-    box-sizing: border-box;
-    font-family: var(--fontFamily);
-    font-size: var(--defaultSize);
+    box-sizing: border-box ;
+    font-family: var(--fontFamily) ;
+    font-size: var(--defaultSize) ;
 }
 
 div {
@@ -27,10 +31,10 @@ div {
 }
 
 h1 { /* all from css guidelines AA open */
-    font-size: var(--headingSize);
+    font-size: var(--headingSize) ;
 }
 
 h2 { /* all from css guidelines AA open */
-    font-size: var(--subheadingSize);
-    font-weight: var(--subheadingWeight);
+    font-size: var(--subheadingSize) ;
+    font-weight: var(--subheadingWeight) ;
 }
