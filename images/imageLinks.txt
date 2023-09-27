@@ -25,3 +25,58 @@ https://www.travelandleisure.com/thmb/aPoF8tuBTH6sMqvcwwGMqtcTNOw=/750x0/filters
 https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
 
 https://images.pexels.com/photos/2581922/pexels-photo-2581922.jpeg
+
+
+
+ISSUES
+
+Understanding entire flow of error-handling and implementing correctly
+from front request with thunk to thunk fetch (I understand backend, and
+csrfFetch checking status code and throwing error when code >= 400)
+
+Better understanding of Promise .then.catch
+Knowing when things may be promises; and why some things that are
+    Promises are sometimes, are also not sometimes
+    e.g., response from fetch does not always understand .JSON
+
+Interface correct for insertion of images with create spot (Postman good)
+
+StarRating
+
+header spacing: added bottom to allow ManageSpots to work: modal apparently
+    NOT on top of other elements
+
+More:
+Reviews added to Spot details
+Create Review
+Delete Review
+
+FINALLY CSS
+
+
+
+image pics, server vs local copies, changing specified
+Making default to show no image present
+Generate large amount of data
+
+
+
+
+Bonus:
+review update
+Bookings
+map API
+store shape efficiency
+caching
+validate images
+
+
+
+
+
+Achieved:
+Chose a different icon / favicon, and set images
+Deleted old tries and commented code
+Did some debugging of Sequelize issue with bulkCreate of Image table rows
+Finalized StarRating component
+Small amout of CSS for nav bar elements

@@ -9,6 +9,7 @@ function SpotList () {
     const spots = useSelector(state => state.spots?.allSpots);
     console.log("🚀 ~ file: index.js:11 ~ SpotList ~ spots:", spots)
     const dispatch = useDispatch();
+    console.log("🚀 ~ file: index.js:12 ~ SpotList ~ useDispatch:", useDispatch)
 
     if (!spots || !Object.keys(spots).length) {
         const result = dispatch(thunkREADAllSpots())

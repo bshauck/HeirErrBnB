@@ -1,3 +1,11 @@
-footer {
-    margin: unset
+
+
+.cityStateDiv {
+    display: flex ;
+    justify-content: space-between ;
+}
+
+.spotLabel,.spotInput {
+    display: flex ;
+    flex-direction: column ;
 }

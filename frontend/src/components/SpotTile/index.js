@@ -12,34 +12,32 @@ function SpotTile ({spot, isManaged}) {
   console.log("🚀 ~ file: index.js:7 ~ SpotTile ~ spot:", spot)
   // const sessionUser = useSelector(state => state.session.user);
 
-  function handleUpdateClick(e) {
+  function handleUpdateClick() {
     history.push(`/spots/${spot.id}/edit`)
   }
 
-  function handleDeleteClick(e) {
-    e.preventDefault();
+  function handleDeleteClick() {
   }
 
-  function handleTileClick(e) {
-    e.preventDefault();
+  function handleTileClick() {
     history.push(`/spots/${spot.id}`)
   }
 
   return (
     <div className="tileDiv">
-    <img className="spotTileImg" alt="preview" src={spot.previewUrl} onClick={handleTileClick}>
+    <img className="spotTileImg" alt="preview" src={spot.previewImage} onClick={handleTileClick}>
     </img>
     <div className="tileLocationAndRatingDiv">
-        <div className="tileLocation">{`${spot.city}, ${spot.state}`}</div>
-        <div className="tileStarRatingDiv"><StarRating avgRating={spot.avgRating} numReviews={spot.numReviews}/></div>
+        <span className="tileLocation">{`${spot.city}, ${spot.state}`}</span>
+        <StarRating avgRating={spot.avgRating}/>
     </div>
     <div className="tilePriceDiv">${spot.price}</div>
     {isManaged &&
     <div className="managedTileButtonDiv">
-        <button type="button" onClick={e=>handleUpdateClick}>Update</button>
+        <button type="button" onClick={handleUpdateClick}>Update</button>
         <OpenModalButton
               buttonText="Delete"
-              onButtonClick={e=>handleDeleteClick}
+              onButtonClick={handleDeleteClick}
               // onModalClose={??}
               modalComponent={<SpotDeleteFormModal id={spot.id}/>}
               />

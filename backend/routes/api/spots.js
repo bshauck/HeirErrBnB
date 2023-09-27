@@ -90,19 +90,23 @@ router.route('/:spotId(\\d+)/bookings')
       return next(new Error('POST /spots/:id/bookinngs error'))
     });
 
-
+// now takes {urls: ["url1", "url2", ...]}; first is preview
 router.post('/:spotId(\\d+)/images', requireAuth, async (req, res, next) => {
     const spot = await Spot.findByPk(req.params.spotId);
+    console.log("🚀 ~ file: spots.js:96 ~ router.post ~ spot:", spot)
     if (!spot) return res.status(404).json({message: "Spot couldn't be found"});
     if (fitsAuthor(req, next, spot.ownerId)) {
         const oldPreview = await SpotImage.findOne({
             where: {spotId: spot.id,
                     preview: true}});
-        let { url, preview } = req.body;
-        let values = [{spotId: spot.id, url, preview}];
-        if (Array.isArray(url)) values = url.map((u,i) => {return {spotId: spot.id, url: u, preview: (!oldPreview && i===0)}})
-        else url = [url];
+        console.log("🚀 ~ file: spots.js:102 ~ router.post ~ oldPreview:", oldPreview)
+        let { urls } = req.body;
+        if (Array.isArray(urls)) values = urls.map((u,i) => {return {spotId: spot.id, url: u, preview: (!oldPreview && i===0)}})
+        // turn urls into {spotId: spot.id, url: "url", preview: boolean}
+        // only 1 preview allowed.
+        console.log("🚀 ~ file: spots.js:108 ~ router.post ~ values:", values)
         let images = await SpotImage.bulkCreate(values); // may need {returning:true} for PGSQL
+        console.log("🚀 ~ file: spots.js:110 ~ router.post ~ images:", images)
         if (images) {
             // if (process.env.NODE_ENV !== 'production') // Sqlite3 doesn't return ids on bulkCreate
             //     images = await SpotImage.findAll({where: {url}})

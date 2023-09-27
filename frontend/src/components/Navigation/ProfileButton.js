@@ -5,7 +5,7 @@ import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { thunkREADALLUserSpots } from "../../store/spots";
+import { thunkREADAllUserSpots } from "../../store/spots";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -42,10 +42,9 @@ function ProfileButton({ user }) {
 
   const manageSpots = (e) => {
     e.preventDefault();
-    dispatch(thunkREADALLUserSpots());
+    dispatch(thunkREADAllUserSpots());
     closeMenu();
-    if (history.location.pathname !== "/spots/current")
-      history.push("/spots/current")
+    history.push("/spots/current");
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
