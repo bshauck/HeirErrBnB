@@ -25,7 +25,8 @@ function SpotTile ({spot, isManaged}) {
 
   return (
     <div className="tileDiv">
-    <img className="spotTileImg" alt="preview" src={spot.previewImage} onClick={handleTileClick}>
+    {/* <img className="spotTileImg" alt="preview" src={spot.previewImage} onClick={handleTileClick}> */}
+    <img className="spotTileImg" alt="preview" src="./public/bar-image-unavailable.png" onClick={handleTileClick}>
     </img>
     <div className="tileLocationAndRatingDiv">
         <span className="tileLocation">{`${spot.city}, ${spot.state}`}</span>

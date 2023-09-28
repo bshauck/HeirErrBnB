@@ -12,7 +12,7 @@ import SpotForm from '../SpotForm';
           "address": "123 Disney Lane",
           "city": "San Francisco",
           "state": "California",
-          "country": "United States of America",
+          "country": "United States",
           "lat": 37.7645358,
           "lng": -122.4730327,
           "name": "App Academy",

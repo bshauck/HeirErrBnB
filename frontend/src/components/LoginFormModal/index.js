@@ -3,10 +3,8 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-
 import * as sessionActions from "../../store/session";
 import { useModal } from "../../context/Modal";
-import "./LoginForm.css";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -15,6 +13,12 @@ function LoginFormModal() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
+
+  function demoUserActivated(e) {
+    setCredential("demo@user.io");
+    setPassword("password");
+    handleSubmit(e);
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,32 +35,33 @@ function LoginFormModal() {
 
   return (
     <>
-      <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username or Email
+      <form className="loginForm" onSubmit={handleSubmit}>
+        <div className="loginDiv">
+          <h2 className="loginTitle">Log In</h2>
           <input
+            className="loginCredentialInput"
             type="text"
             value={credential}
+            placeholder="Username or Email"
             autoComplete="username"
             onChange={(e) => setCredential(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Password
           <input
+            className="loginPasswordInput"
             type="password"
             value={password}
+            placeholder="Password"
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
         {errors.credential && (
-          <p>{errors.credential}</p>
+          <p className="error">{errors.credential}</p>
         )}
-        <button type="submit">Log In</button>
+        <button disabled={credential.length < 4 || password.length < 6} className="loginButton" type="submit">Log In</button>
+        <button className="demoUserButton" type="button" onClick={(e) => demoUserActivated(e)}>Demo User</button>
+        </div>
       </form>
     </>
   );

@@ -12,6 +12,47 @@
     --defaultSize: 14pt;
 }
 
+header { /* all from css guidelines AA open */
+    display: inline-flex ;
+    justify-content: space-between ;
+    align-items: center ;
+    border-bottom: 2px solid lightgrey ;
+    width: 100% ;
+    height: 70px ;
+    padding-left: 20px ;
+    padding-right: 20px ;
+    margin-top: 22px ;
+    margin-bottom: 50px ;
+}
+
+.logoDiv {
+    /* the next two are not aligning as they should */
+    display: flex ;
+    align-items: center ;
+    text-decoration-color: var(--abnbRed) ;
+    color: var(--abnbRed) ;
+}
+
+.logoLink {
+    text-decoration: none ;
+}
+
+.menuDiv {
+    display: flex ;
+    justify-self: flex-end ;
+}
+
+.navMenuDiv {
+    margin-right: 3rem ;
+}
+
+.profileButton {
+    display: flex;
+    gap: 7px;
+    border: 1px solid black ;
+    border-radius: 56px ;
+}
+
 .hidden {
     display: none ;
 }
@@ -26,9 +67,10 @@ body { /* all from css guidelines AA open */
     font-size: var(--defaultSize) ;
 }
 
+/*
 div {
     border: 3px black solid;
-}
+} */
 
 h1 { /* all from css guidelines AA open */
     font-size: var(--headingSize) ;
@@ -37,4 +79,84 @@ h1 { /* all from css guidelines AA open */
 h2 { /* all from css guidelines AA open */
     font-size: var(--subheadingSize) ;
     font-weight: var(--subheadingWeight) ;
+}
+
+.spotTileImage {
+    width: 20% ;
+    min-width: 100px ;
+    height: 20% ;
+    min-height: 100px ;
+
+}
+
+.profile-dropdown {
+    padding: 0px ;
+    z-index: 3 ;
+    position: absolute ;
+    top: 70px ;
+    right: 50px ;
+    background: rgba(255, 255, 255, 1) ;
+    list-style-type: none ;
+    font-size: 12px ;
+    border: 1px solid black ;
+    width: fit-content ;
+}
+
+/* make some buttons look like text */
+.createSpotButton,.manageSpotsButton,.demoUserButton {
+    border: none ;
+    background: none ;
+    background-color: white ;
+}
+
+li:has(.logoutButton) {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.logoutButton {
+    width: fit-content ;
+    align-self: center ;
+    color: white ;
+    background-color: var(--aaRed) ;
+    border-radius: 50px ;
+    margin-top: -4px ;
+    margin-bottom: 3px ;
+}
+
+.loggedInMenuTextItem {
+    padding-left: 6px;
+}
+
+.loginForm {
+    width: 130%;
+    margin-top: -280px ;
+    background-color: rgba(255, 255, 255, 1) ;
+}
+
+.loginDiv {
+    display: flex ;
+    flex-direction: column ;
+    gap: 6px ;
+    justify-content: center ;
+    margin: 10px ;
+}
+
+.loginCredentialInput,.loginPasswordInput,.loginButton {
+    width: 80%% ;
+}
+
+.loginTitle {
+    text-align: center ;
+}
+
+.loginButton {
+    padding-top: 8px ;
+    padding-bottom: 8px ;
+    background-color: var(--aaRed);
+}
+
+.demoUserButton {
+    margin-bottom: 10px ;
 }

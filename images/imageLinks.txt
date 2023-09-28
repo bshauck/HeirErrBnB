@@ -27,8 +27,53 @@ https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress
 https://images.pexels.com/photos/2581922/pexels-photo-2581922.jpeg
 
 
+CSS progress:
+swapped order of signup/login
+ made create a new spot button and manage
+    spots button look like text
+ added divider below manage spots button
+ added opacity to menu
+ positioned absolutely
+ changed z-index
+ removed bullets
+ logout button navigates to /
+ styled logout button and positioned
+ login form adjusted towards wireframe
+ demo user button added
 
 ISSUES
+
+Spots for user should be listed in updateDate order
+(new added to beginning)
+
+Confirm spot image creation working NO
+Delete Spot does not cause update on ManageSpots previewImage
+Successful new Spot creation takes to SpotDetails
+Have reasonable image sizing (tiles should be 5 across, 4 high or 4x5)
+UserMenu has inappropriate items on it
+Reviews add to SpotDetails
+Callout box add to SpotDetails
+StarRatings add to SpotDetails
+CreateReview
+DeleteReview
+Delete Spot CSS
+CSS not-logged-in menu
+CSS sign up dialog form
+
+Adding Fake descriptive text for host
+Adding Callout with price night, small review avg, Reserve button
+Adding divider on Spot details
+List of Review Tiles (in update order; new added to beginning)
+    Review Tile has
+    Star Rating string
+    Post Your Review optional button
+    If No Reviews, then optional Be the first to post a review! string
+    FirstName of reviewer
+    Optional Delete button (if your review)
+Post Your Review opens modal dialog for inputting Review
+Need open star icon for review rating with Paw Print functionality
+Delete button opens modal dialog for deleting Review
+On delete, review counts and averages need to be updated
 
 Understanding entire flow of error-handling and implementing correctly
 from front request with thunk to thunk fetch (I understand backend, and
@@ -39,26 +84,24 @@ Knowing when things may be promises; and why some things that are
     Promises are sometimes, are also not sometimes
     e.g., response from fetch does not always understand .JSON
 
-Interface correct for insertion of images with create spot (Postman good)
-
-StarRating
 
 header spacing: added bottom to allow ManageSpots to work: modal apparently
     NOT on top of other elements
 
 More:
-Reviews added to Spot details
 Create Review
 Delete Review
 
 FINALLY CSS
+Form placeholder text lighter
+price "night", star rating "review" both darker
 
 
 
 image pics, server vs local copies, changing specified
 Making default to show no image present
 Generate large amount of data
-
+Have SpotForm show first 4 validation error messages to side of label
 
 
 
@@ -66,17 +109,12 @@ Bonus:
 review update
 Bookings
 map API
+after map API add read-only lat/long to SpotForm
 store shape efficiency
 caching
 validate images
-
-
-
-
+query search to change what spots are listed
 
 Achieved:
-Chose a different icon / favicon, and set images
-Deleted old tries and commented code
-Did some debugging of Sequelize issue with bulkCreate of Image table rows
-Finalized StarRating component
-Small amout of CSS for nav bar elements
+DeleteSpot correctly removes menu in all cases
+Interface correct for insertion of images with create spot (Postman good)

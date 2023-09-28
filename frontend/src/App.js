@@ -23,9 +23,9 @@ function App() {
       <Navigation isLoaded={isLoaded} />
       {isLoaded &&
       <Switch>
-        <Route path="/spots/:id/edit" component={SpotEdit} />
-        <Route path="/spots/current" component={ManageSpots} />
-        <Route path="/spots/new" component={SpotCreate} />
+        <Route exact path="/spots/:id/edit" component={SpotEdit} />
+        <Route exact path="/spots/current" component={ManageSpots} />
+        <Route exact path="/spots/new" component={SpotCreate} />
         <Route exact path="/spots/:id" component={SpotDetails} />
         <Route exact path="/" component={SpotList} />
       </Switch>
