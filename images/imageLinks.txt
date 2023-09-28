@@ -36,6 +36,9 @@ Worked around bug in autologin for demo user
 
 
 ISSUES
+SpotForm needs to list urls vertically,
+  and ignore them for Update. ANd PUT
+  error messages in them correctly.
 back to some issue with creating a spot
 getting newly created spot id after create spot
   to correctly go to the spot details page
