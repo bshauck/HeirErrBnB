@@ -107,6 +107,9 @@ router.post('/:spotId(\\d+)/images', requireAuth, async (req, res, next) => {
         console.log("🚀 ~ file: spots.js:108 ~ router.post ~ values:", values)
         let images = await SpotImage.bulkCreate(values); // may need {returning:true} for PGSQL
         console.log("🚀 ~ file: spots.js:110 ~ router.post ~ images:", images)
+
+
+
         if (images) {
             // if (process.env.NODE_ENV !== 'production') // Sqlite3 doesn't return ids on bulkCreate
             //     images = await SpotImage.findAll({where: {url}})
