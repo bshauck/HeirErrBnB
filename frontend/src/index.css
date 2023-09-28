@@ -43,6 +43,7 @@ header { /* all from css guidelines AA open */
 }
 
 .navMenuDiv {
+    display: flex ;
     margin-right: 3rem ;
 }
 
@@ -143,9 +144,9 @@ li:has(.logoutButton) {
     margin: 10px ;
 }
 
-.loginCredentialInput,.loginPasswordInput,.loginButton {
-    width: 80%% ;
-}
+/* .loginCredentialInput,.loginPasswordInput,.loginButton {
+    width: 80% ;
+} */
 
 .loginTitle {
     text-align: center ;
