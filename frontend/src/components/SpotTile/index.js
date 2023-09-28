@@ -6,6 +6,8 @@ import StarRating from '../StarRating';
 import OpenModalButton from '../OpenModalButton';
 import SpotDeleteFormModal from '../SpotDeleteFormModal';
 
+const placeholderSrc = "https://placehold.co/100?text=Photo+needed&font=montserrat"
+
 function SpotTile ({spot, isManaged}) {
   const history = useHistory();
   console.log("🚀 ~ file: index.js:7 ~ SpotTile ~ isManaged:", isManaged)
@@ -25,8 +27,7 @@ function SpotTile ({spot, isManaged}) {
 
   return (
     <div className="tileDiv">
-    {/* <img className="spotTileImg" alt="preview" src={spot.previewImage} onClick={handleTileClick}> */}
-    <img className="spotTileImg" alt="preview" src="./public/bar-image-unavailable.png" onClick={handleTileClick}>
+    <img className="spotTileImg" alt="preview" src={spot.previewImage || placeholderSrc} onClick={handleTileClick}>
     </img>
     <div className="tileLocationAndRatingDiv">
         <span className="tileLocation">{`${spot.city}, ${spot.state}`}</span>

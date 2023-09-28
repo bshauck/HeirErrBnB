@@ -45,7 +45,11 @@ export const login = (user) => async (dispatch) => {
       password,
     }),
   });
+  if (response.status >= 400)
+    throw response;
   const data = await response.json();
+  // if (data && data?.errors)
+  //   throw data;
   dispatch(setUser(data.user));
   return response;
 };

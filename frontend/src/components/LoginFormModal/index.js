@@ -17,7 +17,8 @@ function LoginFormModal() {
   function demoUserActivated(e) {
     setCredential("demo@user.io");
     setPassword("password");
-    handleSubmit(e);
+    dispatch(sessionActions.login({ "credential": "demo@user.io", "password": "password" }));
+    setTimeout(closeModal,500)
   }
 
   const handleSubmit = (e) => {
@@ -56,9 +57,7 @@ function LoginFormModal() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        {errors.credential && (
-          <p className="error">{errors.credential}</p>
-        )}
+          <p className="loginError error">{errors.credential ? errors.credential: "                                                "}</p>
         <button disabled={credential.length < 4 || password.length < 6} className="loginButton" type="submit">Log In</button>
         <button className="demoUserButton" type="button" onClick={(e) => demoUserActivated(e)}>Demo User</button>
         </div>

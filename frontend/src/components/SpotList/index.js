@@ -12,31 +12,9 @@ function SpotList () {
     console.log("🚀 ~ file: index.js:12 ~ SpotList ~ useDispatch:", useDispatch)
 
     if (!spots || !Object.keys(spots).length) {
-        const result = dispatch(thunkREADAllSpots())
-            .then((obj) => console.log("🚀 ~ file: index.js:13 ~ SpotList ~ obj, result:", obj, result))
-            .catch(async (res) => {
-                const data = await res.json();
-                if (data && data.errors) {
-                    throw new Error(data.errors)
-                    // return null;
-                }
-            });
+        dispatch(thunkREADAllSpots())
         return null;
     }
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     setErrors({});
-    //     return dispatch(sessionActions.login({ credential, password }))
-    //       .then(closeModal)
-    //       .catch(async (res) => {
-    //         const data = await res.json();
-    //         if (data && data.errors) {
-    //           setErrors(data.errors);
-    //         } else history.push("/")
-    //       });
-    //   };
-
 
     return (
         <div className="spotListDiv">
