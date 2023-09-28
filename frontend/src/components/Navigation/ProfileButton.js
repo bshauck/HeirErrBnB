@@ -38,6 +38,7 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
+    history.push("/");
   };
 
   const manageSpots = (e) => {
@@ -47,37 +48,58 @@ function ProfileButton({ user }) {
     history.push("/spots/current");
   };
 
+  function handleCreateClick() {
+         history.push("/spots/new")
+  }
+
+  const createButtonClassName = "createSpotButton" + (user ? "" : " hidden");
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+
+
+        <div className="navMenuDiv">
+         <button type="button" className={createButtonClassName} onClick={handleCreateClick}>Create a New Spot</button>
+         <button className="profileButton" onClick={openMenu}>
+           <i class="fas fa-bars"></i>
+           <i className="fas fa-user-circle" />
+         </button>
+       </div>
 
   return (
     <>
-      <button onClick={openMenu}>
-        <i className="fas fa-user-circle" />
-      </button>
+      <div className="navMenuDiv">
+        <button type="button" className={createButtonClassName} onClick={handleCreateClick}>Create a New Spot</button>
+        <button className="profileButton" onClick={openMenu}>
+          <i class="fas fa-bars"></i>
+          <i className="fas fa-user-circle" />
+        </button>
+      </div>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-            <li>Hello, {user.firstName}</li>
-            <li>{user.email}</li>
-            <hr></hr>
+            <li className="loggedInMenuTextItem">Hello, {user.firstName}</li>
+            <li className="loggedInMenuTextItem">{user.email}</li>
             <li>
-              <button onClick={manageSpots}>Manage Spots</button>
+            <hr></hr>
+              <button className="manageSpotsButton" onClick={manageSpots}>Manage Spots</button>
+            <hr></hr>
             </li>
             <li>
-              <button onClick={logout}>Log Out</button>
+              <button className="logoutButton" onClick={logout}>Log Out</button>
             </li>
           </>
         ) : (
           <>
             <OpenModalMenuItem
-              itemText="Log In"
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
-            />
-            <OpenModalMenuItem
+              className="profileMenuItem"
               itemText="Sign Up"
               onItemClick={closeMenu}
               modalComponent={<SignupFormModal />}
+            />
+            <OpenModalMenuItem
+              className="profileMenuItem"
+              itemText="Log In"
+              onItemClick={closeMenu}
+              modalComponent={<LoginFormModal />}
             />
           </>
         )}
