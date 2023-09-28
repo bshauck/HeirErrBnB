@@ -10,14 +10,10 @@ function SpotDeleteFormModal({ id }) {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
 
-  const spotYesDelete = (e) => {
+  const spotYesDelete = async (e) => {
     e.preventDefault();
-    return dispatch(thunkDELETESpot(id))
-      .then(closeModal)
-      .catch(async (res) => {
-        console.log("🚀 ~ file: index.js:20 ~ handleSubmit ~ res:", res)
-        throw res
-    });
+    await dispatch(thunkDELETESpot(id))
+    closeModal();
   };
 
   return (

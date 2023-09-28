@@ -4,8 +4,7 @@ import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 import { thunkREADSpot } from "../../store/spots";
 import StarRating from "../StarRating";
-import {getFullImages} from "../../utils/imageUrl"
-
+import { getFullImages, placeholderSrc200 } from "../../utils/imageUrl"
 
 
 function SpotDetails() {
@@ -16,16 +15,8 @@ function SpotDetails() {
     console.log("🚀 ~ file: index.js:15 ~ SpotDetails ~ id:", id)
 
     if (!spot || !Object.keys(spot).length || Number(spot.id) !== Number(id)) {
-        dispatch(thunkREADSpot(id))
-            .then((obj) =>  console.log("🚀 ~ file: index.js:9 ~ SpotDetails ~ obj:", obj))
-            .catch(async (res) => {
-                const data = await res?.json();
-                if (data && data.errors) {
-                    // throw new Error(data.errors)
-                    return null;
-                }
-            });
-        return null;
+       dispatch(thunkREADSpot(id))
+       return null;
     }
 
     let fills = getFullImages();
@@ -47,7 +38,7 @@ function SpotDetails() {
             <h1>{spot.name}</h1>
             <div className="spotDetailsLocationDiv">{spot.city}, {spot.state}, {spot.country}</div>
             <div className="spotDetailsImagesDiv">
-                <div className="spotDetailsPreviewDiv"><img alt='preview' src={previewImage.url}></img></div>
+                <div className="spotDetailsPreviewDiv"><img alt='preview' src={previewImage?.url || placeholderSrc200}></img></div>
                 <div className="spotDetailsImagesDiv">
                     {otherImages && otherImages.length && otherImages.map(i => (
                         <img key={i.id} alt='' src={i.url}></img>

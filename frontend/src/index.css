@@ -12,6 +12,12 @@
     --defaultSize: 14pt;
 }
 
+/* TEMP TODO */
+img {
+    max-height: 200px;
+    max-width: 200px;
+}
+
 header { /* all from css guidelines AA open */
     display: inline-flex ;
     justify-content: space-between ;

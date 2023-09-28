@@ -55,11 +55,10 @@ function ProfileButton({ user }) {
   const createButtonClassName = "createSpotButton" + (user ? "" : " hidden");
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
-
         <div className="navMenuDiv">
          <button type="button" className={createButtonClassName} onClick={handleCreateClick}>Create a New Spot</button>
          <button className="profileButton" onClick={openMenu}>
-           <i class="fas fa-bars"></i>
+           <i className="fas fa-bars"></i>
            <i className="fas fa-user-circle" />
          </button>
        </div>
@@ -69,7 +68,7 @@ function ProfileButton({ user }) {
       <div className="navMenuDiv">
         <button type="button" className={createButtonClassName} onClick={handleCreateClick}>Create a New Spot</button>
         <button className="profileButton" onClick={openMenu}>
-          <i class="fas fa-bars"></i>
+          <i className="fas fa-bars"></i>
           <i className="fas fa-user-circle" />
         </button>
       </div>

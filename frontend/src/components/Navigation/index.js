@@ -13,7 +13,8 @@ function Navigation({ isLoaded }){
   return (
     <header>
       <div className="logoDiv">
-        <NavLink className="logoLink" exact to="/"><img width="32" height="32" src="https://img.icons8.com/color/32/mansion.png" alt="mansion"/>HeirErrBnB</NavLink>
+        <NavLink className="logoLink2" exact to="/"><img width="32" height="32" src="https://img.icons8.com/color/32/mansion.png" alt="mansion"/></NavLink>
+        <NavLink className="logoLink" exact to="/">HeirErrBnB</NavLink>
       </div>
         {isLoaded && (
           <ProfileButton user={sessionUser} />

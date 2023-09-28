@@ -187,50 +187,57 @@ export const thunkDELETESpot = id => async dispatch => {
           "url": "image url",
           "preview": true
         },
-
 */
 
 export const thunkCREATESpot = (spot, urls) => async dispatch => {
   console.log("🚀 ~ file: spots.js:194 ~ thunkCREATESpot ~ urls:", urls)
   console.log("🚀 ~ file: spots.js:194 ~ thunkCREATESpot ~ spot:", spot)
-  const { address, city, state, country, lat, lng, name, description, price } = spot;
+  let data;
+  const { ownerId, address, city, state, country, lat, lng, name, description, price } = spot;
   const response = await csrfFetch("/api/spots", {
     method: "POST",
-    body: JSON.stringify({ /* need user id */
+    body: JSON.stringify({
+      ownerId, address, city, state, country, lat, lng,
+      name, description, price
+  })});
+
+  if (response.status < 400) {
+    data = await response.json();
+    console.log("🚀 ~ file: spots.js:204 ~ thunkCREATESpot ~ data:", data)
+    console.log("🚀 ~ file: spots.js:206 ~ thunkCREATESpot ~ urls:", urls)
+    for (const u of urls.urls)
+      console.log("🚀 ~ file: spots.js:208 ~ thunkCREATESpot ~ u:", u)
+
+    const response2 = await csrfFetch(`/api/spots/${data.id}/images`, {
+      method: "POST",
+      body: JSON.stringify(urls)});
+    if (response2.status < 400)
+      await response2.json();
+  } else return response;
+
+  /* don't need to return this data, just pass any error
+    * officially it all should be in a trnasaction and rolled
+    * back, sigh
+    */
+  dispatch(createSpot(data));
+  return data;
+};
+
+export const thunkUPDATESpot = (spot, urls) => async dispatch => {
+  console.log("🚀 ~ file: spots.js:224 ~ thunkUPDATESpot ~ urls:", urls)
+  const { address, city, state, country, lat, lng, name, description, price } = spot;
+  const response = await csrfFetch(`/api/spots/${spot.id}`, {
+    method: "PUT",
+    body: JSON.stringify({
       address, city, state, country, lat, lng,
       name, description, price
     }),
   });
-  const data = await response.json();
-  console.log("🚀 ~ file: spots.js:204 ~ thunkCREATESpot ~ data:", data)
-  /* if success, then create images */
-  console.log("🚀 ~ file: spots.js:206 ~ thunkCREATESpot ~ urls:", urls)
-  urls.forEach(u => u.spotId = data.id)
-  for (const u of urls)
-    console.log("🚀 ~ file: spots.js:208 ~ thunkCREATESpot ~ u:", u)
-  const response2 = await csrfFetch(`/api/spots/${data.id}/images`, {
-    method: "POST",
-    body: JSON.stringify(urls)
-  });
 
-  /* const data2 = */ await response2.json();
-  dispatch(createSpot(data));
-  return response;
-};
-
-export const thunkUPDATESpot = (spot, urls) => async dispatch => {
-    console.log("🚀 ~ file: spots.js:210 ~ thunkUPDATESpot ~ spot:", spot)
-    const { address, city, state, country, lat, lng, name, description, price } = spot;
-    const response = await csrfFetch(`/api/spots/${spot.id}`, {
-    method: "PUT",
-    body: JSON.stringify({
-        address, city, state, country, lat, lng,
-        name, description, price
-      }),
-  });
   /* TODO haven't come up with a good approach for URL updating yet
-   * it could be a mixture of updates and creation
-   */
+  * it could be a mixture of updates and creation
+  */
+  console.log("🚀 ~ file: spots.js:210 ~ thunkUPDATESpot ~ spot:", spot)
   const data = await response.json();
   dispatch(updateSpot(data.spot));
   return response;
@@ -248,9 +255,9 @@ function copyNormWithout(oldNorm, key) {
 }
 
 const initialState = {
-    allSpots: {},
-    singleSpot: {},
-    userSpots: {}
+    allSpots: {}, /* when filled, normalized by spotId: {spotData} */
+    singleSpot: {}, /* when filled, {spotData} */
+    userSpots: {} /* when filled, normalized by spotId: {spotData} */
 };
 
 const spotsReducer = (state = initialState, action) => {
@@ -258,34 +265,34 @@ const spotsReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
     case READ_SPOTS: {
-        const spots = action.payload;
         const normalized = {};
-        spots.forEach(s => normalized[s.id]=s)
-        newState = {...state};
-        newState.allSpots = normalized;
+        action.payload.forEach(s => normalized[s.id]=s)
+        newState = {...state, allSpots: normalized};
         return newState;
     }
     case READ_USER_SPOTS: {
-        const spots = action.payload;
         const normalized = {};
-        spots.forEach(s => normalized[s.id]=s)
-        newState = {...state};
-        newState.userSpots = normalized;
+        action.payload.forEach(s => normalized[s.id]=s)
+        newState = {...state, userSpots: normalized};
         return newState;
     }
     case READ_SPOT:
     case CREATE_SPOT:
-    case UPDATE_SPOT:
+    case UPDATE_SPOT: {
+      const spot = action.payload
+      const id = spot.id;
       newState = {...state};
-      newState.singleSpot = action.payload;
+      newState.allSpots = {...state.allSpots, [id]: (newState.singleSpot = spot)};
+      if (state.session?.user?.id === spot.ownerId)
+        newState.userSpots = {...state.userSpots, [id]: spot};
       return newState;
+    }
     case DELETE_SPOT:
       newState = {...state};
-      let newAllSpots = copyNormWithout(state.allSpots, action.payload);
-      newState.allSpots = newAllSpots;
-      let newUserSpots = copyNormWithout(state.userSpots, action.payload);
-      newState.userSpots = newUserSpots;
-      if (newState.singleSpot?.id === action.payload) newState.singleSpot = {};
+      newState.allSpots = copyNormWithout(state.allSpots, action.payload);
+      newState.userSpots = copyNormWithout(state.userSpots, action.payload);
+      if (newState.singleSpot?.id === action.payload)
+        newState.singleSpot = {};
       return newState;
     default:
       return state;

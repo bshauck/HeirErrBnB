@@ -1,16 +1,10 @@
 https://media.architecturaldigest.com/photos/64de4bcda5466fe1edbba6da/2:1/w_1280,c_limit/whale%20house.jpeg
 
-https://www.thehousedesigners.com/images/uploads/SiteImage-Landing-house-plansluxury-1.webp
-
-https://cdn.luxe.digital/media/20230126160156/biggest-houses-in-the-world-reviews-luxe-digital-1560x780.jpg.webp
-
 https://www.sunset.com/wp-content/uploads/minecraft-house-exterior-0423-1200x600.jpg
 
 https://www.vacationstravel.com/wp-content/uploads/2021/08/Untitled-design-26-1.jpg
 
 https://media.architecturaldigest.com/photos/5ce2fed704c41e723f9a8839/16:9/w_1600,c_limit/214%20Bubble%20Palace.jpg
-
-https://ychef.files.bbci.co.uk/1600x900/p053m19p.webp
 
 https://upload.wikimedia.org/wikipedia/en/thumb/9/9c/Spadena_Witch_House.jpg/375px-Spadena_Witch_House.jpg
 
@@ -22,43 +16,47 @@ https://spechtarchitects.com/wp-content/uploads/2017/01/Zero_zH_hero_grass_web.j
 
 https://www.travelandleisure.com/thmb/aPoF8tuBTH6sMqvcwwGMqtcTNOw=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/green-o-treehouse-montana_HERO_TREEHOUSE0822-219f8b36f0dd4421993eed3e8de274dc.jpg
 
-https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
+https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg
 
 https://images.pexels.com/photos/2581922/pexels-photo-2581922.jpeg
 
 
-CSS progress:
-swapped order of signup/login
- made create a new spot button and manage
-    spots button look like text
- added divider below manage spots button
- added opacity to menu
- positioned absolutely
- changed z-index
- removed bullets
- logout button navigates to /
- styled logout button and positioned
- login form adjusted towards wireframe
- demo user button added
+Thursday progress:
+found placeholder site for URI
+use placeholder to at least preview image in for
+missing SpotImages (should be fixed in seeder data)
+fixed bug with showing db errors on login after
+changing to "pure" async / await.
+Fixed bugs in multiple places having to do with bad
+initial approach to .then.catch (which I believe eventually
+is the better way to go, but not for this evaluation)
+Changed reducer methods to be more consistent with producing
+new refs
+Worked around bug in autologin for demo user
+
 
 ISSUES
-
+back to some issue with creating a spot
+getting newly created spot id after create spot
+  to correctly go to the spot details page
+Update correctly for Delete Spot for user
 Spots for user should be listed in updateDate order
 (new added to beginning)
+Browser refresh doesn't update Manage Spots
 
 Confirm spot image creation working NO
 Delete Spot does not cause update on ManageSpots previewImage
 Successful new Spot creation takes to SpotDetails
 Have reasonable image sizing (tiles should be 5 across, 4 high or 4x5)
-UserMenu has inappropriate items on it
 Reviews add to SpotDetails
 Callout box add to SpotDetails
 StarRatings add to SpotDetails
 CreateReview
 DeleteReview
-Delete Spot CSS
+CSS Delete Spot modal
 CSS not-logged-in menu
 CSS sign up dialog form
+
 
 Adding Fake descriptive text for host
 Adding Callout with price night, small review avg, Reserve button
@@ -103,6 +101,12 @@ Making default to show no image present
 Generate large amount of data
 Have SpotForm show first 4 validation error messages to side of label
 
+BUGS:
+Login on error (invalid password/credential) changes size,
+and a sliver of a modalDIv appears underneath main modal
+Should seed a SpotImage for preview for every seeded Spot
+(should do a lot for generated photo data, but have a
+placeholder URI now--see frontend utils)
 
 
 Bonus:

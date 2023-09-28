@@ -11,6 +11,7 @@ eventually set lat lng via GoogleMaps api
 
 function SpotForm ({spot, formType}) {
     const sessionUser = useSelector(state => state.session.user);
+    console.log("🚀 ~ file: index.js:14 ~ SpotForm ~ sessionUser:", sessionUser)
     const dispatch = useDispatch();
     const history = useHistory();
     const attemptedSubmission = useRef(false);
@@ -35,7 +36,7 @@ function SpotForm ({spot, formType}) {
 
     if (!spot) spot = {};
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
       e.preventDefault();
       attemptedSubmission.current = true;
       const validations = {};
@@ -57,6 +58,7 @@ function SpotForm ({spot, formType}) {
       if (supportUrl1 && !validImageUrl(supportUrl3)) validations.supportUrl3 = extensionError
       if (supportUrl1 && !validImageUrl(supportUrl4)) validations.supportUrl4 = extensionError
       setErrors(validations);
+      console.log("🚀 ~ file: index.js:61 ~ handleSubmit ~ validations:", validations)
       if (Object.keys(validations).length === 0) {
           const thunkFunc = (formType === "Update your Spot")
             ? thunkUPDATESpot : thunkCREATESpot;
@@ -65,9 +67,13 @@ function SpotForm ({spot, formType}) {
           if (supportUrl2) urls.push(supportUrl2)
           if (supportUrl3) urls.push(supportUrl3)
           if (supportUrl4) urls.push(supportUrl4)
-          dispatch(thunkFunc(spot, {urls}))
+
+          spot = await dispatch(thunkFunc(spot, {urls}))
+          console.log("🚀 ~ file: index.js:72 ~ handleSubmit ~ spot:", spot)
+          console.log("🚀 ~ file: index.js:70 ~ handleSubmit ~ urls:", urls)
           attemptedSubmission.current = false;
-          history.push(`/spots/${spot.id}`);
+          if (spot.id) history.push(`/spots/${spot.id}`);
+          else console.log("still haven't figured the right approach to getting the generated spot id from create spot back to the component")
         }
     };
 
@@ -81,7 +87,7 @@ function SpotForm ({spot, formType}) {
 
     // const isDevelopment = process.env.NODE_ENV !== 'production';
 
-    function defaultFillSpot() {
+    function defaultFillSpot() { /* TODO to be removed before final */
       /* takes too long to fill out a form each time so in dev have a button */
       setPreviewUrl("https://images.pexels.com/photos/2581922/pexels-photo-2581922.jpeg");
       setAddress('123 Main St');
@@ -94,22 +100,9 @@ function SpotForm ({spot, formType}) {
       setPrice('543');
       setSupportUrl1("https://spechtarchitects.com/wp-content/uploads/2017/01/Zero_zH_hero_grass_web.jpg")
       setSupportUrl2("https://tmhmedia.themodernhouse.com/uploads/DGLA9411_EsherHouse.jpg")
-      setSupportUrl3("https://ychef.files.bbci.co.uk/1600x900/p053m19p.webp")
+      setSupportUrl3("https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg")
       setSupportUrl4("https://www.vacationstravel.com/wp-content/uploads/2021/08/Untitled-design-26-1.jpg")
     }
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     setErrors({});
-    //     return dispatch(sessionActions.login({ credential, password }))
-    //       .then(closeModal)
-    //       .catch(async (res) => {
-    //         const data = await res.json();
-    //         if (data && data.errors) {
-    //           setErrors(data.errors);
-    //         } else history.push("/")
-    //       });
-    //   };
 
   return ( /* todo setup form */
   <form onSubmit={handleSubmit} >
