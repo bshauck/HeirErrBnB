@@ -1,53 +1,50 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
-
 import { thunkREADSpot } from "../../store/spots";
 import StarRating from "../StarRating";
-import { getFullImages, placeholderSrc200 } from "../../utils/imageUrl"
-
+import { getFullImages } from "../../utils/imageUrl"
 
 function SpotDetails() {
-    const spot = useSelector(state => state.spots?.singleSpot);
+    const { id } = useParams();
+    const spot = useSelector(state => state.spots.singleSpot)
+    const keyedSpot = useSelector(state => state.spots[id])
     console.log("🚀 ~ file: index.js:12 ~ SpotDetails ~ spot:", spot)
     const dispatch = useDispatch();
-    const { id } = useParams();
-    console.log("🚀 ~ file: index.js:15 ~ SpotDetails ~ id:", id)
 
     if (!spot || !Object.keys(spot).length || Number(spot.id) !== Number(id)) {
-       dispatch(thunkREADSpot(id))
-       return null;
+        if (keyedSpot !== null)
+        (async()=>await dispatch(thunkREADSpot(id)))();
+        return null;
     }
 
     let fills = getFullImages();
-    console.log("🚀 ~ file: index.js:32 ~ SpotDetails ~ fills:", fills)
-    let previewImage = spot?.SpotImages.find(i => i.preview === true);
-    if (!previewImage) {
-        previewImage = fills.find(e => e.preview === true)
-        fills = fills.filter(e => e?.preview !== true);
-    }
-    let otherImages = spot?.SpotImages.filter(i => i.preview !== true);
+    let previewImage = spot?.SpotImages?.find(i => i.preview === true);
+    previewImage = previewImage?.url;
+    if (!previewImage) previewImage = fills[0]
+    let otherImages = spot?.SpotImages?.filter(i => i.preview !== true);
+    otherImages = otherImages?.map(e => e?.url)
+    if (!otherImages) otherImages = [];
     while (otherImages.length < 4) otherImages.push(fills.pop());
     const owner = spot?.Owner;
     console.log("🚀 ~ file: index.js:31 ~ SpotDetails ~ spot:", spot)
     console.log("🚀 ~ file: index.js:37 ~ SpotDetails ~ otherImages:", otherImages)
-
 
     return (
         <div className="spotDetailsDiv">
             <h1>{spot.name}</h1>
             <div className="spotDetailsLocationDiv">{spot.city}, {spot.state}, {spot.country}</div>
             <div className="spotDetailsImagesDiv">
-                <div className="spotDetailsPreviewDiv"><img alt='preview' src={previewImage?.url || placeholderSrc200}></img></div>
+                <div className="spotDetailsPreviewDiv"><img alt='preview' src={previewImage}></img></div>
                 <div className="spotDetailsImagesDiv">
-                    {otherImages && otherImages.length && otherImages.map(i => (
-                        <img key={i.id} alt='' src={i.url}></img>
+                    {otherImages && otherImages.length && otherImages.map((url,i) => (
+                        <img key={i} alt='' src={url}></img>
                     ))
                     }
                 </div>
             </div>
             <section>
-                <h2>{`Hosted by ${owner.firstName} ${owner.lastName}`}</h2>
+                <h2>{`Hosted by ${owner?.firstName} ${owner?.lastName}`}</h2>
                 <p>Wonderful description of unbelievably glowing qualities of our beneficent host</p>
                 <div className="spotDetailsCalloutDiv">
                     <div className="spotDetailsPriceDiv">{`$ ${spot.price} night`}</div>

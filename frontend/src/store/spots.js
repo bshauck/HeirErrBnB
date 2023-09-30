@@ -37,7 +37,7 @@
       "updatedAt": "2021-11-19 20:39:36" ,
       "numReviews": 5,
       "avgRating": 4.5,
-      "SpotImages": [
+      "SpotImages": [ // put into
         {
           "id": 1,
           "url": "image url",
@@ -49,13 +49,13 @@
           "preview": false
         }
       ],
-      "Owner": {
+      "Owner": { // put into session as partialUser
         "id": 1,
         "firstName": "John",
         "lastName": "Smith"
       }
     }
-  userSpots: {
+  userSpots: { // all owner ids are the same
     [spotId]:
       {
         "id": 1,
@@ -82,7 +82,7 @@ import { csrfFetch } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
 const READ_USER_SPOTS = "spots/READ_USER_SPOTS";
-const READ_SPOT = "spots/READ_SPOT";
+export const READ_SPOT = "spots/READ_SPOT";
 const DELETE_SPOT = "spots/DELETE_SPOT";
 const CREATE_SPOT = "spots/CREATE_SPOT";
 const UPDATE_SPOT = "spots/UPDATE_SPOT";
@@ -223,8 +223,9 @@ export const thunkCREATESpot = (spot, urls) => async dispatch => {
   return data;
 };
 
-export const thunkUPDATESpot = (spot, urls) => async dispatch => {
-  console.log("🚀 ~ file: spots.js:224 ~ thunkUPDATESpot ~ urls:", urls)
+export const thunkUPDATESpot = (spot /*, urls */) => async dispatch => {
+  console.log("🚀 ~ file: spots.js:224 ~ thunkUPDATESpot ~ spot:", spot)
+  /* TODO when images added in change */
   const { address, city, state, country, lat, lng, name, description, price } = spot;
   const response = await csrfFetch(`/api/spots/${spot.id}`, {
     method: "PUT",
@@ -254,7 +255,7 @@ function copyNormWithout(oldNorm, key) {
   return result;
 }
 
-const initialState = {
+const initialState = { /* for {} at state.spots */
     allSpots: {}, /* when filled, normalized by spotId: {spotData} */
     singleSpot: {}, /* when filled, {spotData} */
     userSpots: {} /* when filled, normalized by spotId: {spotData} */
@@ -276,9 +277,17 @@ const spotsReducer = (state = initialState, action) => {
         newState = {...state, userSpots: normalized};
         return newState;
     }
-    case READ_SPOT:
     case CREATE_SPOT:
     case UPDATE_SPOT: {
+      const spot = action.payload
+      const id = spot.id;
+      newState = {...state};
+      newState.allSpots = {...state.allSpots, [id]: spot};
+      if (state.session?.user?.id === spot.ownerId)
+        newState.userSpots = {...state.userSpots, [id]: spot};
+      return newState;
+    }
+    case READ_SPOT: {
       const spot = action.payload
       const id = spot.id;
       newState = {...state};
@@ -287,6 +296,7 @@ const spotsReducer = (state = initialState, action) => {
         newState.userSpots = {...state.userSpots, [id]: spot};
       return newState;
     }
+
     case DELETE_SPOT:
       newState = {...state};
       newState.allSpots = copyNormWithout(state.allSpots, action.payload);

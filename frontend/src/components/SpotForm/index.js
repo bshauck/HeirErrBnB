@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { thunkCREATESpot, thunkUPDATESpot } from "../../store/spots"
 import './SpotForm.css';
+import { getFullImages } from '../../utils/imageUrl';
 
 /* TODO
 eventually set lat lng via GoogleMaps api
@@ -28,13 +29,14 @@ function SpotForm ({spot, formType}) {
     const [supportUrl3, setSupportUrl3] = useState('');
     const [supportUrl4, setSupportUrl4] = useState('');
     const [errors, setErrors] = useState({});
+    const isEdit = formType === "Update your Spot";
     let ownerId;
     let title = useRef('abc')
 
     if (!sessionUser) return null
     else ownerId = sessionUser.id;
 
-    if (!spot) spot = {};
+    if (!spot && !isEdit) spot = {};
 
     const handleSubmit = async e => {
       e.preventDefault();
@@ -51,26 +53,30 @@ function SpotForm ({spot, formType}) {
       if (!description || description.length < 30)
         validations.description = "Description must have at least 30 characters"
       if (!price || price < 0) validations.price = "Price per night is required"
+      /* TODO For now; skip images on Update */
+      if (!isEdit) {
       if (!previewUrl) validations.previewUrl = "Preview image URL is required"
       else if (!validImageUrl(previewUrl)) validations.previewUrl = extensionError
       if (supportUrl1 && !validImageUrl(supportUrl1)) validations.supportUrl1 = extensionError
       if (supportUrl1 && !validImageUrl(supportUrl2)) validations.supportUrl2 = extensionError
       if (supportUrl1 && !validImageUrl(supportUrl3)) validations.supportUrl3 = extensionError
       if (supportUrl1 && !validImageUrl(supportUrl4)) validations.supportUrl4 = extensionError
+      }
       setErrors(validations);
       console.log("🚀 ~ file: index.js:61 ~ handleSubmit ~ validations:", validations)
       if (Object.keys(validations).length === 0) {
-          const thunkFunc = (formType === "Update your Spot")
-            ? thunkUPDATESpot : thunkCREATESpot;
+          const thunkFunc = isEdit ? thunkUPDATESpot : thunkCREATESpot;
+          if (!isEdit) {
           const urls = [previewUrl];
           if (supportUrl1) urls.push(supportUrl1)
           if (supportUrl2) urls.push(supportUrl2)
           if (supportUrl3) urls.push(supportUrl3)
           if (supportUrl4) urls.push(supportUrl4)
-
           spot = await dispatch(thunkFunc(spot, {urls}))
+          } else spot = await dispatch(thunkFunc(spot))
+
+
           console.log("🚀 ~ file: index.js:72 ~ handleSubmit ~ spot:", spot)
-          console.log("🚀 ~ file: index.js:70 ~ handleSubmit ~ urls:", urls)
           attemptedSubmission.current = false;
           if (spot.id) history.push(`/spots/${spot.id}`);
           else console.log("still haven't figured the right approach to getting the generated spot id from create spot back to the component")
@@ -89,8 +95,9 @@ function SpotForm ({spot, formType}) {
 
     function defaultFillSpot() { /* TODO to be removed before final */
       /* takes too long to fill out a form each time so in dev have a button */
-      setPreviewUrl("https://images.pexels.com/photos/2581922/pexels-photo-2581922.jpeg");
-      setAddress('123 Main St');
+      const urls = getFullImages();
+      setPreviewUrl(urls[0]);
+      setAddress('432 Main St');
       setCity('Denver');
       setState('Colorado');
       setCountry('United States');
@@ -98,14 +105,16 @@ function SpotForm ({spot, formType}) {
       title.current=title.current+"a"
       setDescription('This is exactly 30 characters.');
       setPrice('543');
-      setSupportUrl1("https://spechtarchitects.com/wp-content/uploads/2017/01/Zero_zH_hero_grass_web.jpg")
-      setSupportUrl2("https://tmhmedia.themodernhouse.com/uploads/DGLA9411_EsherHouse.jpg")
-      setSupportUrl3("https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg")
-      setSupportUrl4("https://www.vacationstravel.com/wp-content/uploads/2021/08/Untitled-design-26-1.jpg")
+      setSupportUrl1(urls[1])
+      setSupportUrl2(urls[2])
+      setSupportUrl3(urls[3])
+      setSupportUrl4(urls[4])
     }
 
-  return ( /* todo setup form */
-  <form onSubmit={handleSubmit} >
+  return (
+  <div className='spotFormDiv'>
+  <form className="spotForm" onSubmit={handleSubmit} >
+    <div className="innerSpotFormDiv">
     <h1>{formType}</h1> <button type="button" onClick={defaultFillSpot}>DEFAULT</button>
     <section className="createSpotSection1">
     <h2>Where's your place located?</h2>
@@ -184,37 +193,40 @@ function SpotForm ({spot, formType}) {
     <section className="createSpotSection4">
     <h2>Set a base price for your spot</h2>
     <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
-    <div className="priceSpotFormDiv"><span>$ </span>
-    <input
+    <div className="priceSpotFormDiv"><span>$
+    <input className="spotFormPriceInput"
       type="number"
       value={price}
       autoComplete='transaction-amount'
       placeholder='Price per night (USD)'
       onChange={e => setPrice(e.target.value)}
-      />
+      /></span>
     </div>
     {attemptedSubmission && errors.price && <p className="error">{errors.price}</p>}
     <hr></hr>
     </section>
+    {isEdit !== true &&
     <section className="createSpotSection5">
     <h2>Liven up your spot with photos</h2>
     <p>Submit a link to at least one photo to publish your spot.</p>
     <input type="text" value={previewUrl} autoComplete="photo" placeholder="Preview Image URL" onChange={e => setPreviewUrl(e.target.value)} />
-    {attemptedSubmission && errors.previewUrl && <p className="error">{errors.previewUrl}</p>}
+    <p className="error"> {attemptedSubmission && errors.previewUrl && errors.previewUrl}</p>
     <fieldset disabled={previewUrl === ''}>
     <input type="text" value={supportUrl1} onChange={e=>setSupportUrl1(e.target.value)} autoComplete="photo" placeholder="Image URL" />
-    {attemptedSubmission && errors.setSupportUrl1 && <p className="error">{errors.supportUrl1}</p>}
+    <p className="error">{attemptedSubmission && errors.setSupportUrl1 && errors.supportUrl1}</p>
     <input type="text" value={supportUrl2} onChange={e=>setSupportUrl2(e.target.value)} autoComplete="photo" placeholder="Image URL" />
-    {attemptedSubmission && errors.setSupportUrl2 && <p className="error">{errors.supportUrl2}</p>}
+    <p className="error">{attemptedSubmission && errors.setSupportUrl2 && errors.supportUrl2}</p>
     <input type="text" value={supportUrl3} onChange={e=>setSupportUrl3(e.target.value)} autoComplete="photo" placeholder="Image URL" />
-    {attemptedSubmission && errors.setSupportUrl3 && <p className="error">{errors.supportUrl3}</p>}
+    <p className="error">{attemptedSubmission && errors.setSupportUrl3 && errors.supportUrl3}</p>
     <input type="text" value={supportUrl4} onChange={e=>setSupportUrl4(e.target.value)} autoComplete="photo" placeholder="Image URL" />
-    {attemptedSubmission && errors.setSupportUrl4 && <p className="error">{errors.supportUrl4}</p>}
+    <p className="error">{attemptedSubmission && errors.setSupportUrl4 && errors.supportUrl4}</p>
     </fieldset>
     <hr></hr>
-    </section>
-    <button type="submit">{formType === "Update your Spot" ? formType : "Create Spot"}</button>
+    </section>}
+    <button className="spotFormSubmitButton" type="submit">{isEdit ? formType : "Create Spot"}</button>
+    </div>
   </form>
+  </div>
   );
 }
 

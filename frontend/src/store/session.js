@@ -18,10 +18,45 @@ and without logged-in user
 }
 */
 
+/* I'll leave the above, but this will really be the user
+ * entry point, and besides the "user" key for the current
+ * user, I will have user id keys and user data per user
+ * mainly to have owner info for spots, but will fill other
+ * stuff as gathered. So:
+ * userId: {user data} for each user encountered
+ * So other user data will exist in two possible states
+ *
+
+ * userId: { // obtained from singleSpot
+    id,
+    firstName,
+    lastName,
+  }
+ * userId: { // obtained from valid login
+    id,
+    email,
+    username,
+    firstName,
+    lastName,
+    createdAt,  /// TODO?
+    updatedAt   /// TODO?
+  }
+ *
+ */
+
 import { csrfFetch } from "./csrf";
+import { READ_SPOT } from "./spots";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
+const SET_SPOT_OWNER = "session/SET_SPOT_OWNER"
+
+export const setSpotOwner = (partialUser) => {
+  return {
+    type: SET_SPOT_OWNER,
+    payload: partialUser,
+  };
+};
 
 const setUser = (user) => {
   return {
@@ -85,14 +120,20 @@ export const thunkLogout = logout;
 const initialState = { user: null };
 
 const sessionReducer = (state = initialState, action) => {
-  let newState;
+  const newState = {...state};
   switch (action.type) {
     case SET_USER:
-      newState = {...state};
-      newState.user = action.payload;
+      const newUser = action.payload
+      newState.user = newUser;
+      if (!state[newUser.id]?.username) /* didn't have full user info */
+        newState[newUser.id] = newUser;
       return newState;
-    case REMOVE_USER:
-      newState = {...state};
+    case READ_SPOT:
+      const partialUser = action.payload.Owner;
+      if (state[partialUser.id]) return state; /* already have this */
+      newState[partialUser.id] = partialUser;
+      return newState;
+    case REMOVE_USER: /* don't remove key; names still used in spot details */
       newState.user = null;
       return newState;
     default:

@@ -1,24 +1,3 @@
-https://media.architecturaldigest.com/photos/64de4bcda5466fe1edbba6da/2:1/w_1280,c_limit/whale%20house.jpeg
-
-https://www.sunset.com/wp-content/uploads/minecraft-house-exterior-0423-1200x600.jpg
-
-https://www.vacationstravel.com/wp-content/uploads/2021/08/Untitled-design-26-1.jpg
-
-https://media.architecturaldigest.com/photos/5ce2fed704c41e723f9a8839/16:9/w_1600,c_limit/214%20Bubble%20Palace.jpg
-
-https://upload.wikimedia.org/wikipedia/en/thumb/9/9c/Spadena_Witch_House.jpg/375px-Spadena_Witch_House.jpg
-
-https://www.thespruce.com/thmb/n_wSbwtuxMC8iE0doiGsUVYgnhw=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/a-frame-houses-4772019-hero-7cacd243cfe74fb8b06f44760ea59f35.jpg
-
-https://tmhmedia.themodernhouse.com/uploads/DGLA9411_EsherHouse.jpg
-
-https://spechtarchitects.com/wp-content/uploads/2017/01/Zero_zH_hero_grass_web.jpg
-
-https://www.travelandleisure.com/thmb/aPoF8tuBTH6sMqvcwwGMqtcTNOw=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/green-o-treehouse-montana_HERO_TREEHOUSE0822-219f8b36f0dd4421993eed3e8de274dc.jpg
-
-https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg
-
-https://images.pexels.com/photos/2581922/pexels-photo-2581922.jpeg
 
 
 Thursday progress:
@@ -26,16 +5,30 @@ found placeholder site for URI
 use placeholder to at least preview image in for
 missing SpotImages (should be fixed in seeder data)
 fixed bug with showing db errors on login after
-changing to "pure" async / await.
+changing to solely async / await.
 Fixed bugs in multiple places having to do with bad
 initial approach to .then.catch (which I believe eventually
 is the better way to go, but not for this evaluation)
 Changed reducer methods to be more consistent with producing
 new refs
 Worked around bug in autologin for demo user
+Creation for Spot, cascaded to SpotImages
 
+FRIDAY
+Changed pictures to those hosted by Flickr for faster load
+In CreateSpot thunk, ensure that singleSpot version of id was
+retrieved to have Owner data, before sending Create to db. Actually,
+Update can only be done by owner, so current user has the info needed;
+but anyone can see details so we do need to start ensureing user data
+retrieved and store; will start using newer store outline for this.
+After create spot;now owner's name showing correctly
 
 ISSUES
+Error on update thunk: undefined, not spot data, passed into action creator wrong, hits in reducer
+login db errors under heading
+SpotForm needs to list urls vertically,
+  and ignore them for Update. ANd PUT
+  error messages in them correctly.
 back to some issue with creating a spot
 getting newly created spot id after create spot
   to correctly go to the spot details page
@@ -44,10 +37,19 @@ Spots for user should be listed in updateDate order
 (new added to beginning)
 Browser refresh doesn't update Manage Spots
 
+Subheading size too large
+Subheading weight too heavy
+Regular text too large
+Heading weight somewhat more
+Textarea needs to extend across
+L/R edges of most elements need to align
+Submit button needs to be centered and colored
+Remove DEFAULT button (LAST THING)
+Comma misplaced on Create Spot (city, state)
 Confirm spot image creation working NO
 Delete Spot does not cause update on ManageSpots previewImage
 Successful new Spot creation takes to SpotDetails
-Have reasonable image sizing (tiles should be 5 across, 4 high or 4x5)
+Have reasonable image sizing (tiles should be 3x6)
 Reviews add to SpotDetails
 Callout box add to SpotDetails
 StarRatings add to SpotDetails
@@ -75,7 +77,10 @@ On delete, review counts and averages need to be updated
 
 Understanding entire flow of error-handling and implementing correctly
 from front request with thunk to thunk fetch (I understand backend, and
-csrfFetch checking status code and throwing error when code >= 400)
+csrfFetch checking status code and throwing error when code >= 400) (decoration
+suggested removing the csrfFetch throw, just checking the error code, using
+async/await; changed login modal handling but need to do that for signup;
+long term do better with then.catch consistency)
 
 Better understanding of Promise .then.catch
 Knowing when things may be promises; and why some things that are
@@ -120,5 +125,3 @@ validate images
 query search to change what spots are listed
 
 Achieved:
-DeleteSpot correctly removes menu in all cases
-Interface correct for insertion of images with create spot (Postman good)
