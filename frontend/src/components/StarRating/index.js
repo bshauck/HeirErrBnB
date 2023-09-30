@@ -20,6 +20,8 @@ function StarRating({avgRating, numReviews}) {
             ? parsedValue1 : parsedValue2;
         return `${avg}${reviewString}`
     }
+/* <i class="fa-regular fa-star"></i>
+<i className="fa-solid fa-star"></i> */
 
     return  (
         <span className="starRatingSpan">
