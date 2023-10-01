@@ -1,12 +1,44 @@
 'use strict';
 const { Spot } = require('../models');
-const {seederSpotNames, seederUserIds, seederSpotIds } = require('../../utils/seeder');
+const {seederUserIds, seederSpotIds } = require('../../utils/seeder');
 
 const options = {};
 options.tableName = 'Spots';
 if (process.env.NODE_ENV === 'production')
   options.schema = process.env.SCHEMA;
 
+const seederSpotNames = [
+    'Cheap Denton House',
+    'Boulder Shack',
+    'Ski Out',
+    'Warmth in Winter',
+    'Summer Passion',
+    'Winter Paradise',
+    'A Steal at Any Price',
+    'Extravaganza',
+    'Humble Beginnings',
+    'Pride of the Center',
+    'Rampaging Fun',
+    'Serenity',
+    'Courage',
+    'Wisdom',
+    'Peace',
+    'Cheap Berlin House',
+    'Strange Lobster Shack',
+    'Ski Up, down and all around',
+    'Warmth in My Heart',
+    'Summer Fun For Everyone',
+    'Fall and Get Back Up Paradise',
+    'A Steal at Any Exuberance',
+    'Extravaganza and Lollapalooza',
+    'Humble Beginnings and Furtive Endings',
+    'Pride of the Center, Pack at the Back',
+    'Rampaging Fun in the Stolid Sun',
+    'Serenity is the Goal of Many',
+    'Courage can be Found Everywhere',
+    'Wisdom is Rarer than Most Think',
+    'Peace is Hard to Find'
+];
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (_queryInterface, _Sequelize) {
