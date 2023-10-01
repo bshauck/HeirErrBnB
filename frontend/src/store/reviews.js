@@ -1,6 +1,6 @@
 /* reviews slice of state
 {
-    review: {
+    spot: {
       [reviewId]: {
         reviewData,
         User: {
@@ -52,10 +52,10 @@ function readAllUserReviews(reviews) {
     }
 }
 
-function readReview(id) {
+function readReview(review) {
     return {
         type: READ_REVIEW,
-        payload: id
+        payload: review
     }
 }
 
@@ -98,7 +98,7 @@ export const thunkREADReview = id => async dispatch => {
     const response = await csrfFetch(`/api/reviews/${id}`);
     const data = await response.json();
     console.log("🚀 ~ file: reviews.js:100 ~ thunkREADReview ~ data:", data)
-    dispatch(readReview(id));
+    dispatch(readReview(data));
     return response;
 };
 
@@ -121,7 +121,7 @@ export const thunkCREATEReview = reviewArg => async dispatch => {
     }),
   });
   const data = await response.json();
-  dispatch(createReview(data.review));
+  dispatch(createReview(data));
   return response;
 };
 
@@ -134,15 +134,13 @@ export const thunkUPDATEReview = reviewObj => async dispatch => {
    }),
   });
   const data = await response.json();
-  dispatch(updateReview(data.review));
+  dispatch(updateReview(data));
   return response;
 };
 
 const initialState = {
-    allReviews: {},
-    optionalOrderedList: [],
-    singleReview: {},
-    userReviews: {}
+    spot: {},
+    user: {},
 };
 
 const reviewsReducer = (state = initialState, action) => {
@@ -152,31 +150,35 @@ const reviewsReducer = (state = initialState, action) => {
     case READ_REVIEWS: {
         const reviews = action.payload;
         const normalized = {};
-        reviews.forEach(s => normalized[s.id]=s)
+        reviews.forEach(r => normalized[r.id]=r)
         newState = {...state};
-        newState.allReviews = reviews;
+        newState.spot = reviews;
         return newState;
     }
     case READ_USER_REVIEWS: {
         const reviews = action.payload;
         const normalized = {};
-        reviews.forEach(s => normalized[s.id]=s)
+        reviews.forEach(r => normalized[r.id]=r)
         newState = {...state};
-        newState.userReviews = reviews;
+        newState.user = reviews;
         return newState;
     }
     case CREATE_REVIEW:
     case READ_REVIEW:
     case UPDATE_REVIEW:
+      const review = action.payload
+      const id = review.id;
       newState = {...state};
-      newState.singleReview = action.payload;
+      newState.spot = {...state.spot, [id]: review};
+      newState.user = {...state.user, [id]: review};
       return newState;
     case DELETE_REVIEW:
-      const newAllReviews = state.allReviews.filter(e => e.id !== action.payload);
       newState = {...state};
-      newState.allReviews = newAllReviews;
-      if (newState.singleReview?.id === action.payload) newState.singleReview = {};
-      return newState;
+      newState.spot = {...state.spot};
+      delete newState.spot[action.payload]
+      newState.user = {...state.user};
+      delete newState.user[action.payload];
+      return newState
     default:
       return state;
   }

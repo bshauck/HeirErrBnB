@@ -1,15 +1,17 @@
 // frontend/src/components/ManageSpots/index.js
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { thunkREADAllUserSpots } from '../../store/spots';
 import SpotTile from '../SpotTile';
-import { useEffect } from 'react';
 
 
 const ManageSpots = () => {
     const sessionUser = useSelector(state => state.session.user);
     const spots = useSelector(state => state.spots?.userSpots)
     const dispatch = useDispatch();
+    const history = useHistory();
 
     useEffect(() => {
         async function getUserSpots() {
@@ -25,13 +27,17 @@ const ManageSpots = () => {
         return null;
     }
 
+    function handleCreateClick() {
+        history.push("/spots/new")
+    }
 
     return (
         <div className="manageSpotsDiv">
-            {(!Object.keys(spots).length && <p>No spots! Boo hoo</p>) ||
+          {(!Object.keys(spots).length && <button type="button" className="createManageSpotButton" onClick={handleCreateClick}>Create a New Spot</button>) ||
             Object.values(spots).map(s => (
                 <SpotTile key={s.id} spot={s} isManaged={true} />
-            ))}
+            )
+            )}
         </div>
     );
 }

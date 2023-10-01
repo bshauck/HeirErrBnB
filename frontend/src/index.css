@@ -244,3 +244,23 @@ input,textarea {
 label {
     font-weight: bold;
 }
+
+.spotListDiv {
+    display: flex ;
+    flex-wrap: wrap ;
+}
+
+.tileDiv {
+    width: fit-content;
+}
+
+
+.cityStateDiv {
+    display: flex ;
+    justify-content: space-between ;
+}
+
+.spotLabel,.spotInput {
+    display: flex ;
+    flex-direction: column ;
+}

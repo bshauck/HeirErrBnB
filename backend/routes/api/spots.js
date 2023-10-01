@@ -128,6 +128,7 @@ router.route('/:spotId(\\d+)/reviews')
                 {model: ReviewImage , attributes: ['id','url']  },
             ],
             where: {spotId: req.params.spotId},
+            order: [["updatedAt", "DESC"]]
         });
         if (!reviews.length) {
             const spot = await Spot.findByPk(req.params.spotId);

@@ -68,7 +68,8 @@ router.get('/current', requireAuth, async (req, res) => {
             },
             {model: ReviewImage, attributes: ['id', 'url']}
         ],
-        where: {userId: req.user.id}
+        where: {userId: req.user.id},
+        order: [["updatedAt", "DESC"]]
     });
     Reviews = Reviews.map(e=>e.toJSON());
     Reviews.forEach(b=> { let value = b.Spot && b.Spot.SpotImages && b.Spot.SpotImages.length ? b.Spot.SpotImages[0].url : null; b.Spot.previewImage = value; delete b.Spot.SpotImages});

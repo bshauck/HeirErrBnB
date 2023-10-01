@@ -1,30 +1,31 @@
+import OpenModalButton from "../OpenModalButton";
 
 
-function ReviewTile() {
+function ReviewTile({ review, user }) {
 
+
+  function handleDeleteClick() {
+
+  }
+
+/* TODO format date*/
 return (
     <div className="reviewTileDiv">
-    <img className="reviewTileImg" alt="preview" src={review.previewImage} onClick={handleTileClick}>
-    {/* <img className="reviewTileImg" alt="preview" src="bar-image-unavailable.png" onClick={handleTileClick}> */}
-    </img>
-    <div className="tileLocationAndRatingDiv">
-        <span className="tileLocation">{`${review.city}, ${review.state}`}</span>
-        <StarRating avgRating={review.avgRating}/>
+
+    <div className="tileNameDateDiv">
+      <div className="tileFirstNameDiv">{review.User.firstName}</div>
+      <div className="tileMonthYearDiv">{review.updatedAt}</div>
     </div>
+    <div className="tileReviewTextDiv" >{review.review}</div>
     <div className="tilePriceDiv">${review.price}</div>
-    {isManaged &&
-    <div className="managedTileButtonDiv">
-        <button type="button" onClick={handleUpdateClick}>Update</button>
-        <OpenModalButton
-              buttonText="Delete"
-              onButtonClick={handleDeleteClick}
-              // onModalClose={??}
-              modalComponent={<reviewDeleteFormModal id={review.id}/>}
-              />
+    {review.userId === user.id && <OpenModalButton
+      buttonText="Delete"
+      onButtonClick={handleDeleteClick}
+      // onModalClose={??}
+      modalComponent={<reviewDeleteModal id={review.id}/>}
+    />}
     </div>
-    }
-    </div>
-  );
-}
+  )
+};
 
   export default ReviewTile ;

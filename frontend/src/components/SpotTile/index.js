@@ -1,7 +1,7 @@
 // frontend/src/components/SpotTile/index.js
 // import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import './SpotTile.css';
+
 import StarRating from '../StarRating';
 import OpenModalButton from '../OpenModalButton';
 import SpotDeleteFormModal from '../SpotDeleteFormModal';
