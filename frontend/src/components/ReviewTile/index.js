@@ -1,4 +1,5 @@
 import OpenModalButton from "../OpenModalButton";
+import ReviewDeleteFormModal from "../ReviewDeleteFormModal";
 
 
 function ReviewTile({ review, user }) {
@@ -8,11 +9,6 @@ function ReviewTile({ review, user }) {
 
   }
 
-/* TODO format date
-date.toLocaleDateString("en-US", {
-  month: "long",
-  year: "numeric"
-}); */
 
 return (
     <div className="reviewTileDiv">
@@ -29,7 +25,7 @@ return (
       buttonText="Delete"
       onButtonClick={handleDeleteClick}
       // onModalClose={??}
-      modalComponent={<reviewDeleteModal id={review.id}/>}
+      modalComponent={<ReviewDeleteFormModal id={review.id}/>}
     />}
     </div>
   )

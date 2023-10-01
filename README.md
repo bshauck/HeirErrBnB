@@ -1421,7 +1421,7 @@ Return spots filtered by query parameters.
   * URL: /api/spots
   * Query Parameters
     * page: integer, minimum: 1, maximum: 10, default: 1
-    * size: integer, minimum: 1, maximum: 20, default: 20
+    * size: integer, minimum: 1, maximum: 50, default: 50
     * minLat: decimal, optional
     * maxLat: decimal, optional
     * minLng: decimal, optional
