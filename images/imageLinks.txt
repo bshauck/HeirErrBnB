@@ -17,10 +17,14 @@ started changes to seeders based on getting more requirements method
   30 char in spot description
   preview always state
   some supporting images
-
+  all reviews have an image
+  every spot has 5-10 reviews by appropriate non-owners with
+     random text and rating
 
 
 ISSUES
+after click on spot details and using browser back button, that spot
+  no longer displays its preview image on landing page
 Error on update thunk: undefined, not spot data, passed into action creator wrong, hits in reducer
 login db errors under heading
 SpotForm needs to list urls vertically,

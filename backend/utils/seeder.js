@@ -17,42 +17,6 @@ const seederUserNames = [
     'miraborkowska'
 ];
 
-/* change seeder to find spots via usernames; get rid of
- * spots names as a way to find for undo */
-/* unique names find seeded spots */
-const seederSpotNames = [
-    'Cheap Denton House',
-    'Boulder Shack',
-    'Ski Out',
-    'Warmth in Winter',
-    'Summer Passion',
-    'Winter Paradise',
-    'A Steal at Any Price',
-    'Extravaganza',
-    'Humble Beginnings',
-    'Pride of the Center',
-    'Rampaging Fun',
-    'Serenity',
-    'Courage',
-    'Wisdom',
-    'Peace',
-    'Cheap Berlin House',
-    'Strange Lobster Shack',
-    'Ski Up, down and all around',
-    'Warmth in My Heart',
-    'Summer Fun For Everyone',
-    'Fall and Get Back Up Paradise',
-    'A Steal at Any Exuberance',
-    'Extravaganza and Lollapalooza',
-    'Humble Beginnings and Furtive Endings',
-    'Pride of the Center, Pack at the Back',
-    'Rampaging Fun in the Stolid Sun',
-    'Serenity is the Goal of Many',
-    'Courage can be Found Everywhere',
-    'Wisdom is Rarer than Most Think',
-    'Peace is Hard to Find'
-];
-
 const reviewText1 = [
   "Horrible decor and smell",
   "The fridge had a rancid smell",
@@ -95,7 +59,6 @@ const reviewText5 = [
 ];
 const reviewTextArrays = [reviewText1, reviewText2, reviewText3, reviewText4, reviewText5];
 
-
 /* return an array of 2 elements: a text description, and
  * a rating. (Rating may optionally be passed in to get
  * specific level of review text)
@@ -111,51 +74,47 @@ const seederUserIds = async () => {
     attributes: ['id'],
     where: {username: seederUserNames}
   });
-  return users.map(user => user.toJSON().id)
+  return users.map(user => user.id)
 }
 
 const seederSpotIds = async () => {
   let spots = await Spot.findAll({
     attributes: ['id'],
-    where: {name: seederSpotNames}
+    where: {ownerId: await seederUserIds()}
   });
-  return spots.map(e => e.toJSON().id);
+  return spots.map(spot => spot.id);
 }
 
 const seederSpotImageIds = async () => {
-  let spotIds = await seederSpotIds();
   let images = await SpotImage.findAll({
     attributes: ['id'],
-    where: {spotId: spotIds}
+    where: {spotId: await seederSpotIds()}
   });
-  return images.map(e => e.toJSON().id);
+  return images.map(image => image.id);
 }
 
 const seederReviewIds = async () => {
-  let userIds = await seederUserIds();
   let reviews = await Review.findAll({
     attributes: ['id'],
-    where: {userId: userIds}
+    where: {userId: await seederUserIds()}
   });
-  return reviews.map(review => review.toJSON().id)
+  return reviews.map(review => review.id)
 }
 
 const seederBookingIds = async () => {
-  let userIds = await seederUserIds();
   let bookings = await Booking.findAll({
     attributes: ['id'],
-    where: {userId: userIds}
+    where: {userId: await seederUserIds()}
   });
-  return bookings.map(booking => booking.toJSON().id)
+  return bookings.map(booking => booking.id)
 }
 
 const seederReviewImageIds = async () => {
-  let reviewIds = await seederReviewIds();
   let images = await ReviewImage.findAll({
     attributes: ['id'],
-    where: {reviewId: reviewIds}
+    where: {reviewId: await seederReviewIds()}
   });
-  return images.map(e => e.toJSON().id);
+  return images.map(image => image.id);
 }
 
 // Returns a random integer between min (inclusive) and
@@ -230,4 +189,4 @@ function getRandomInteriorImageUrl() {
       return urls;
   }
 
-module.exports = { getRandomInt, getRandomInteriorImageUrl, getReviewInfo, seederBookingIds, seederReviewIds, seederReviewImageIds, seederSpotIds, seederSpotImageIds, seederSpotNames, seederUserIds, seederUserNames, getFullImages }
+module.exports = { getRandomInt, getRandomInteriorImageUrl, getReviewInfo, seederBookingIds, seederReviewIds, seederReviewImageIds, seederSpotIds, seederSpotImageIds, seederUserIds, seederUserNames, getFullImages }
