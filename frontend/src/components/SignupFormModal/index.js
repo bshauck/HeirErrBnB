@@ -27,9 +27,12 @@ function SignupFormModal() {
           password,
         })
       )
-        .then(closeModal)
+        .then((res, rej) => {
+          if (res.ok) closeModal()
+          else throw res
+    }     )
         .catch(async (res) => {
-          const data = await res.json();
+          const data = res;
           if (data && data.errors) {
             setErrors(data.errors);
           }
@@ -51,7 +54,6 @@ function SignupFormModal() {
             value={email}
             autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
-            required
           />
         </label>
         {errors.email && <p>{errors.email}</p>}
@@ -62,7 +64,6 @@ function SignupFormModal() {
             value={username}
             autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
-            required
           />
         </label>
         {errors.username && <p>{errors.username}</p>}
@@ -73,7 +74,6 @@ function SignupFormModal() {
             value={firstName}
             autoComplete="given-name"
             onChange={(e) => setFirstName(e.target.value)}
-            required
           />
         </label>
         {errors.firstName && <p>{errors.firstName}</p>}
@@ -84,7 +84,6 @@ function SignupFormModal() {
             value={lastName}
             autoComplete="family-name"
             onChange={(e) => setLastName(e.target.value)}
-            required
           />
         </label>
         {errors.lastName && <p>{errors.lastName}</p>}
@@ -95,7 +94,6 @@ function SignupFormModal() {
             value={password}
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </label>
         {errors.password && <p>{errors.password}</p>}
@@ -106,13 +104,12 @@ function SignupFormModal() {
             value={confirmPassword}
             autoComplete="current-password"
             onChange={(e) => setConfirmPassword(e.target.value)}
-            required
           />
         </label>
         {errors.confirmPassword && (
           <p>{errors.confirmPassword}</p>
         )}
-        <button type="submit">Sign Up</button>
+        <button type="submit" disabled={!(email && username && firstName && lastName && password && confirmPassword && username.length >= 4 && password.length >= 6 && password.length === confirmPassword.length)} >Sign Up</button>
       </form>
     </>
   );

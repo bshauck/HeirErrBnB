@@ -33,7 +33,7 @@ if (!sessionUser) return null;
 console.log("🚀 ~ file: index.js:33 ~ SpotCreate ~ sessionUser:", sessionUser)
 
   return (
-    <SpotForm spot={null} formType="Create a new Spot" />
+    <SpotForm spot={null} formType="Create a New Spot" />
   );
 }
 

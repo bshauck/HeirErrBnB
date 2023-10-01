@@ -158,6 +158,12 @@ h2 { /* all from css guidelines AA open */
     font-size: 12px ;
     border: 1px solid black ;
     width: fit-content ;
+    /* following just for signup/login */
+    min-width: 80px;
+}
+
+.profile-dropdown > li,.littleProfileMenuItem {
+    text-align: center;
 }
 
 /* make some buttons look like text */

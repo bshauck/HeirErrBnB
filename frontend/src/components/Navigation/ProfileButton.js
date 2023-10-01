@@ -89,13 +89,13 @@ function ProfileButton({ user }) {
         ) : (
           <>
             <OpenModalMenuItem
-              className="profileMenuItem"
+              className="profileMenuItem littleProfileMenuItem"
               itemText="Sign Up"
               onItemClick={closeMenu}
               modalComponent={<SignupFormModal />}
             />
             <OpenModalMenuItem
-              className="profileMenuItem"
+              className="profileMenuItem littleProfileMenuItem"
               itemText="Log In"
               onItemClick={closeMenu}
               modalComponent={<LoginFormModal />}
