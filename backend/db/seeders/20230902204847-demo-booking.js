@@ -1,6 +1,6 @@
 'use strict';
-const { Booking, Spot, User, sequelize, Sequelize } = require('../models');
-const { getRandomInt, seederSpotIdAndOwners, seederUserIds } = require('../../utils/seeder');
+const { Spot, User, sequelize, Sequelize } = require('../models');
+const { getRandomInt, seederBookingIds, seederSpotIds, seederUserIds } = require('../../utils/seeder');
 const { addDays, dayDate, ymd } = require('../../utils/normalizeDate')
 const Op = Sequelize.Op;
 const options = {};
@@ -13,12 +13,14 @@ if (process.env.NODE_ENV === 'production') {
   `AND id NOT IN (SELECT "userId" FROM ${options.schema}."Bookings")`
 }
 
-
 module.exports = {
   async up (queryInterface, _Sequelize) {
     const userIds = await seederUserIds();
-    const spotIdAndOwners = await seederSpotIdAndOwners();
-    const spotIds = spotIdAndOwners.map(e=>e.id);
+    const spotIds = await seederSpotIds();
+
+    /* NOTE: wrong subquery; should only book spots
+     * not owned by user in question
+     */
     // BOOKING GENERATE
     // select random users with no bookings;
     // select unowned-by-user spots;
@@ -81,11 +83,9 @@ module.exports = {
   },
 
   async down (queryInterface, _Sequelize) {
-    const spotIdAndOwners = await seederSpotIdAndOwners();
-    const spotIds = spotIdAndOwners.map(e=>e.id);
     return await queryInterface.bulkDelete(
       options,
-      { spotId: spotIds },
+      { id: await seederBookingIds() },
       {});
   }
 };

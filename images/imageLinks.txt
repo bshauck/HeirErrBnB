@@ -12,6 +12,12 @@ retrieved and store; will start using newer store outline for this.
 After create spot; now owner's name showing correctly
 
 SATURDAY
+removed null bug introduced in Friday changes to session reducer
+started changes to seeders based on getting more requirements method
+  30 char in spot description
+  preview always state
+  some supporting images
+
 
 
 ISSUES
@@ -130,3 +136,4 @@ Update Spot has to do more work if
   out what are insertions, and what are updates
   into the SpotImages table.
 Dan says 100-1000 generated seeds
+Look up all unseed functions via known userSpots

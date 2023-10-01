@@ -1,6 +1,6 @@
 'use strict';
 const { Spot } = require('../models');
-const {seederSpotNames, seederUserIds } = require('../../utils/seeder');
+const {seederSpotNames, seederUserIds, seederSpotIds } = require('../../utils/seeder');
 
 const options = {};
 options.tableName = 'Spots';
@@ -385,7 +385,7 @@ module.exports = {
   async down (queryInterface, _Sequelize) {
     return queryInterface.bulkDelete(
       options,
-      { name: seederSpotNames },
+      { id: await seederSpotIds() },
       {});
   }
 };
