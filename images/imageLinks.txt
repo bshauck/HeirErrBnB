@@ -20,23 +20,36 @@ started changes to seeders based on getting more requirements method
   all reviews have an image
   every spot has 5-10 reviews by appropriate non-owners with
      random text and rating
+  update previewUrl in singleSpot in reducer (should change DB)
+  moved login db errors under heading
+  getting newly created spot id after create spot
+    to correctly go to the spot details page
+  fixed update bug
+  CreateSpot lists support images vertically
+  EditSpot ignores all images
+  SpotForm  ANd PUT
+    error messages in them correctly for create.
 
 
 ISSUES
-after click on spot details and using browser back button, that spot
-  no longer displays its preview image on landing page
-Error on update thunk: undefined, not spot data, passed into action creator wrong, hits in reducer
-login db errors under heading
-SpotForm needs to list urls vertically,
-  and ignore them for Update. ANd PUT
-  error messages in them correctly.
-back to some issue with creating a spot
-getting newly created spot id after create spot
-  to correctly go to the spot details page
-Update correctly for Delete Spot for user
-Spots for user should be listed in updateDate order
-(new added to beginning)
 Browser refresh doesn't update Manage Spots
+Reviews add to SpotDetails
+Callout box add to SpotDetails
+Adding Callout with price night, small review avg, Reserve button
+StarRatings add to SpotDetails' callout box
+CreateReview
+DeleteReview
+Review List of Review Tiles (in update order; new added to beginning)
+    Review Tile has
+    Star Rating string
+    Post Your Review optional button
+    If No Reviews, then optional Be the first to post a review! string
+    FirstName of reviewer
+    Optional Delete button (if your review)
+Post Your Review opens modal dialog for inputting Review
+Need open star icon for review rating with Paw Print functionality
+Delete button opens modal dialog for deleting Review
+On delete, review counts and averages need to be updated
 
 Subheading size too large
 Subheading weight too heavy
@@ -48,33 +61,13 @@ Submit button needs to be centered and colored
 Remove DEFAULT button (LAST THING)
 Comma misplaced on Create Spot (city, state)
 Confirm spot image creation working NO
-Delete Spot does not cause update on ManageSpots previewImage
-Successful new Spot creation takes to SpotDetails
 Have reasonable image sizing (tiles should be 3x6)
-Reviews add to SpotDetails
-Callout box add to SpotDetails
-StarRatings add to SpotDetails
-CreateReview
-DeleteReview
 CSS Delete Spot modal
 CSS not-logged-in menu
 CSS sign up dialog form
 
-
 Adding Fake descriptive text for host
-Adding Callout with price night, small review avg, Reserve button
 Adding divider on Spot details
-List of Review Tiles (in update order; new added to beginning)
-    Review Tile has
-    Star Rating string
-    Post Your Review optional button
-    If No Reviews, then optional Be the first to post a review! string
-    FirstName of reviewer
-    Optional Delete button (if your review)
-Post Your Review opens modal dialog for inputting Review
-Need open star icon for review rating with Paw Print functionality
-Delete button opens modal dialog for deleting Review
-On delete, review counts and averages need to be updated
 
 Understanding entire flow of error-handling and implementing correctly
 from front request with thunk to thunk fetch (I understand backend, and
@@ -93,8 +86,6 @@ header spacing: added bottom to allow ManageSpots to work: modal apparently
     NOT on top of other elements
 
 More:
-Create Review
-Delete Review
 
 FINALLY CSS
 Form placeholder text lighter
@@ -102,7 +93,6 @@ price "night", star rating "review" both darker
 
 
 
-image pics, server vs local copies, changing specified
 Making default to show no image present
 Generate large amount of data
 Have SpotForm show first 4 validation error messages to side of label
