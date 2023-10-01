@@ -240,7 +240,7 @@ export const thunkUPDATESpot = (spot /*, urls */) => async dispatch => {
   */
   console.log("🚀 ~ file: spots.js:210 ~ thunkUPDATESpot ~ spot:", spot)
   const data = await response.json();
-  dispatch(updateSpot(data.spot));
+  dispatch(updateSpot(data));
   return response;
 };
 
@@ -251,7 +251,7 @@ function copyNormWithout(oldNorm, key) {
    */
   if (!oldNorm || !oldNorm[key]) return oldNorm;
   const result = {};
-  oldNorm.forEach(k => {if (k !== key) result[k] = oldNorm[k]});
+  Object.keys(oldNorm).forEach(k => {if (k !== key) result[k] = oldNorm[k]});
   return result;
 }
 
@@ -285,15 +285,19 @@ const spotsReducer = (state = initialState, action) => {
       newState.allSpots = {...state.allSpots, [id]: spot};
       if (state.session?.user?.id === spot.ownerId)
         newState.userSpots = {...state.userSpots, [id]: spot};
+      if (state.singleSpot?.id === id)
+        newState.singleSpot = {...state.singleSpot, ...spot}
       return newState;
     }
     case READ_SPOT: {
-      const spot = action.payload
-      const id = spot.id;
+      const id = action.payload.id;
+      const previewImage = action.payload.SpotImages.find(e => e.preview).url;
+      const spot = {...action.payload, previewImage};
       newState = {...state};
-      newState.allSpots = {...state.allSpots, [id]: (newState.singleSpot = spot)};
+      newState.singleSpot = spot;
+      newState.allSpots = {...state.allSpots,  [id]: spot};
       if (state.session?.user?.id === spot.ownerId)
-        newState.userSpots = {...state.userSpots, [id]: spot};
+        newState.userSpots = {...state.userSpots,  [id]: spot};
       return newState;
     }
 

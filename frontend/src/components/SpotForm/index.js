@@ -63,7 +63,6 @@ function SpotForm ({spot, formType}) {
       if (supportUrl1 && !validImageUrl(supportUrl4)) validations.supportUrl4 = extensionError
       }
       setErrors(validations);
-      console.log("🚀 ~ file: index.js:61 ~ handleSubmit ~ validations:", validations)
       if (Object.keys(validations).length === 0) {
           const thunkFunc = isEdit ? thunkUPDATESpot : thunkCREATESpot;
           if (!isEdit) {
@@ -73,13 +72,10 @@ function SpotForm ({spot, formType}) {
           if (supportUrl3) urls.push(supportUrl3)
           if (supportUrl4) urls.push(supportUrl4)
           spot = await dispatch(thunkFunc(spot, {urls}))
-          } else spot = await dispatch(thunkFunc(spot))
+          } else await dispatch(thunkFunc(spot));
 
-
-          console.log("🚀 ~ file: index.js:72 ~ handleSubmit ~ spot:", spot)
           attemptedSubmission.current = false;
-          if (spot.id) history.push(`/spots/${spot.id}`);
-          else console.log("still haven't figured the right approach to getting the generated spot id from create spot back to the component")
+          history.push(`/spots/${spot.id}`);
         }
     };
 
@@ -210,17 +206,15 @@ function SpotForm ({spot, formType}) {
     <h2>Liven up your spot with photos</h2>
     <p>Submit a link to at least one photo to publish your spot.</p>
     <input type="text" value={previewUrl} autoComplete="photo" placeholder="Preview Image URL" onChange={e => setPreviewUrl(e.target.value)} />
-    <p className="error"> {attemptedSubmission && errors.previewUrl && errors.previewUrl}</p>
-    <fieldset disabled={previewUrl === ''}>
-    <input type="text" value={supportUrl1} onChange={e=>setSupportUrl1(e.target.value)} autoComplete="photo" placeholder="Image URL" />
-    <p className="error">{attemptedSubmission && errors.setSupportUrl1 && errors.supportUrl1}</p>
-    <input type="text" value={supportUrl2} onChange={e=>setSupportUrl2(e.target.value)} autoComplete="photo" placeholder="Image URL" />
-    <p className="error">{attemptedSubmission && errors.setSupportUrl2 && errors.supportUrl2}</p>
-    <input type="text" value={supportUrl3} onChange={e=>setSupportUrl3(e.target.value)} autoComplete="photo" placeholder="Image URL" />
-    <p className="error">{attemptedSubmission && errors.setSupportUrl3 && errors.supportUrl3}</p>
-    <input type="text" value={supportUrl4} onChange={e=>setSupportUrl4(e.target.value)} autoComplete="photo" placeholder="Image URL" />
-    <p className="error">{attemptedSubmission && errors.setSupportUrl4 && errors.supportUrl4}</p>
-    </fieldset>
+    <p> </p><p className="error">{attemptedSubmission && errors.previewUrl && errors.previewUrl}</p>
+    <input type="text" value={supportUrl1} onChange={e=>setSupportUrl1(e.target.value)} autoComplete="photo" placeholder="Image URL" disabled={previewUrl === ''} />
+    <p className="error">{attemptedSubmission && errors.supportUrl1 && errors.supportUrl1}</p>
+    <input type="text" value={supportUrl2} onChange={e=>setSupportUrl2(e.target.value)} autoComplete="photo" placeholder="Image URL" disabled={previewUrl === ''} />
+    <p className="error">{attemptedSubmission && errors.supportUrl2 && errors.supportUrl2}</p>
+    <input type="text" value={supportUrl3} onChange={e=>setSupportUrl3(e.target.value)} autoComplete="photo" placeholder="Image URL" disabled={previewUrl === ''} />
+    <p className="error">{attemptedSubmission && errors.supportUrl3 && errors.supportUrl3}</p>
+    <input type="text" value={supportUrl4} onChange={e=>setSupportUrl4(e.target.value)} autoComplete="photo" placeholder="Image URL" disabled={previewUrl === ''}/>
+    <p className="error">{attemptedSubmission && errors.supportUrl4 && errors.supportUrl4}</p>
     <hr></hr>
     </section>}
     <button className="spotFormSubmitButton" type="submit">{isEdit ? formType : "Create Spot"}</button>
