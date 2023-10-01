@@ -1,18 +1,6 @@
+Wireframe:
+https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-16/AirBnB+MVP+Wireframes.pdf
 
-
-Thursday progress:
-found placeholder site for URI
-use placeholder to at least preview image in for
-missing SpotImages (should be fixed in seeder data)
-fixed bug with showing db errors on login after
-changing to solely async / await.
-Fixed bugs in multiple places having to do with bad
-initial approach to .then.catch (which I believe eventually
-is the better way to go, but not for this evaluation)
-Changed reducer methods to be more consistent with producing
-new refs
-Worked around bug in autologin for demo user
-Creation for Spot, cascaded to SpotImages
 
 FRIDAY
 Changed pictures to those hosted by Flickr for faster load
@@ -21,7 +9,16 @@ retrieved to have Owner data, before sending Create to db. Actually,
 Update can only be done by owner, so current user has the info needed;
 but anyone can see details so we do need to start ensureing user data
 retrieved and store; will start using newer store outline for this.
-After create spot;now owner's name showing correctly
+After create spot; now owner's name showing correctly
+
+SATURDAY
+removed null bug introduced in Friday changes to session reducer
+started changes to seeders based on getting more requirements method
+  30 char in spot description
+  preview always state
+  some supporting images
+
+
 
 ISSUES
 Error on update thunk: undefined, not spot data, passed into action creator wrong, hits in reducer
@@ -125,3 +122,18 @@ validate images
 query search to change what spots are listed
 
 Achieved:
+
+
+Longterm:
+Have previewUrl stored in Spot
+Remove preview from Spot Images table
+SpotImages are only support images;
+Update Spot has to do more work if
+  updating existing images to different opens
+  the previewUrl just stored in Spot,
+  but the supporting ones being changed means
+  have to look at differences and figure
+  out what are insertions, and what are updates
+  into the SpotImages table.
+Dan says 100-1000 generated seeds
+Look up all unseed functions via known userSpots

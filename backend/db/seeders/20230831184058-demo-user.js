@@ -24,84 +24,84 @@ module.exports = {
         lastName: "Portin",
         email: "franco@user.io",
         username: seederUserNames[1],
-        hashedPassword: bcrypt.hashSync("francoportin")
+        hashedPassword: bcrypt.hashSync(seederUserNames[1])
       },
       {
         firstName: "Alec",
         lastName: "Keeler",
         email: "alec@user.io",
         username: seederUserNames[2],
-        hashedPassword: bcrypt.hashSync('aleckeeler')
+        hashedPassword: bcrypt.hashSync(seederUserNames[2])
       },
       {
         firstName: "Anthony",
         lastName: "Lovern",
         email: "anthony@user.io",
         username: seederUserNames[3],
-        hashedPassword: bcrypt.hashSync("anthonylovern")
+        hashedPassword: bcrypt.hashSync(seederUserNames[3])
       },
       {
         firstName: "Josh",
         lastName: "Goldberg",
         email: "josh@user.io",
         username: seederUserNames[4],
-        hashedPassword: bcrypt.hashSync("joshgoldberg")
+        hashedPassword: bcrypt.hashSync(seederUserNames[4])
       },
       {
         firstName: "Adam",
         lastName: "Tifrit",
         email: "adam@user.io",
         username: seederUserNames[5],
-        hashedPassword: bcrypt.hashSync('adamtifrit')
+        hashedPassword: bcrypt.hashSync(seederUserNames[5])
       },
       {
         firstName: "Elliot",
         lastName: "Starr",
         email: "elliot@user.io",
         username: seederUserNames[6],
-        hashedPassword: bcrypt.hashSync('elliotstarr')
+        hashedPassword: bcrypt.hashSync(seederUserNames[6])
       },
       {
         firstName: "Hayden",
         lastName: "Gogan",
         email: "hayden@user.io",
         username: seederUserNames[7],
-        hashedPassword: bcrypt.hashSync("haydengogan")
+        hashedPassword: bcrypt.hashSync(seederUserNames[7])
       },
       {
         firstName: "Jon",
         lastName: "Diez",
         email: "jon@user.io",
         username: seederUserNames[8],
-        hashedPassword: bcrypt.hashSync("jondiez")
+        hashedPassword: bcrypt.hashSync(seederUserNames[8])
       },
       {
         firstName: "Mason",
         lastName: "Austin",
         email: "mason@user.io",
         username: seederUserNames[9],
-        hashedPassword: bcrypt.hashSync("masonaustin")
+        hashedPassword: bcrypt.hashSync(seederUserNames[9])
       },
       {
         firstName: "Steve",
         lastName: "Nielson",
         email: "steve@user.io",
         username: seederUserNames[10],
-        hashedPassword: bcrypt.hashSync("stevenielson")
+        hashedPassword: bcrypt.hashSync(seederUserNames[10])
       },
       {
         firstName: "Lan",
         lastName: "Oribello",
         email: "lan@user.io",
         username: seederUserNames[11],
-        hashedPassword: bcrypt.hashSync("lanoribello")
+        hashedPassword: bcrypt.hashSync(seederUserNames[11])
       },
       {
         firstName: "Mira",
         lastName: "Borkowska",
         email: "mira@user.io",
         username: seederUserNames[12],
-        hashedPassword: bcrypt.hashSync("miraborkowska")
+        hashedPassword: bcrypt.hashSync(seederUserNames[12])
       }
     ], { validate: true });
   },
