@@ -37,14 +37,17 @@ Update and Delete show immediately on Manage Spots
 Put Create button on Manage Spots page with no Spots
 Browser refresh updates Manage Spots
 Review list add to SpotDetails
+DeleteReview
+Delete button opens modal dialog for deleting Review
 
 
 ISSUES
+Delete Review deletes but doesn't update
+On delete, review counts and averages need to be updated
 Callout box add to SpotDetails
 Adding Callout with price night, small review avg, Reserve button
 StarRatings add to SpotDetails' callout box
 CreateReview
-DeleteReview
 Review List of Review Tiles (in update order; new added to beginning)
     Review Tile has
     Star Rating string
@@ -54,8 +57,6 @@ Review List of Review Tiles (in update order; new added to beginning)
     Optional Delete button (if your review)
 Post Your Review opens modal dialog for inputting Review
 Need open star icon for review rating with Paw Print functionality
-Delete button opens modal dialog for deleting Review
-On delete, review counts and averages need to be updated
 
 Subheading size too large
 Subheading weight too heavy
@@ -132,3 +133,5 @@ Update Spot has to do more work if
   into the SpotImages table.
 Dan says 100-1000 generated seeds
 Look up all unseed functions via known userSpots
+Restore query size default to 20 (set to 50 for
+  dev atm)

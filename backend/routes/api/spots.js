@@ -233,14 +233,14 @@ router.route('')
         return val;
     };
     page = parseQueries(page, false, 1, 10);
-    size = parseQueries(size, true, 1, 20); // "optional" to set default later
+    size = parseQueries(size, true, 1, 50); // "optional" to set default later
     minLat = parseQueries(minLat);
     maxLat = parseQueries(maxLat);
     minLng = parseQueries(minLng);
     maxLng = parseQueries(maxLng);
     minPrice = parseQueries(minPrice, true, 0);
     maxPrice = parseQueries(maxPrice, true, 0);
-    if (size === undefined) size = 20;
+    if (size === undefined) size = 50;
     const options = {};
     options.where = {};
 
