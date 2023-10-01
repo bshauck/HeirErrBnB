@@ -1,17 +1,21 @@
-// frontend/src/components/SpotDeleteFormModal/index.js
+// frontend/src/components/ReviewFormModal/index.js
+// import { useState } from "react";
 import { useDispatch } from "react-redux";
-
-import { thunkDELETESpot } from "../../store/spots";
 import { useModal } from "../../context/Modal";
 
-function SpotDeleteFormModal({ id }) {
-  console.log("🚀 ~ file: index.js:10 ~ SpotDeleteFormModal ~ id:", id)
-  const dispatch = useDispatch();
-  const { closeModal } = useModal();
+import { thunkCREATEReview } from "../../store/reviews";
+
+function ReviewFormModal() {
+    const dispatch = useDispatch();
+    // const [review, setReview] = useState("");
+    // const [stars, setStars] = useState("");
+    // const [errors, setErrors] = useState({});
+    const { closeModal } = useModal();
+
 
   const spotYesDelete = async (e) => {
     e.preventDefault();
-    await dispatch(thunkDELETESpot(id))
+    await dispatch(thunkCREATEReview())
     closeModal();
   };
 
@@ -27,4 +31,4 @@ function SpotDeleteFormModal({ id }) {
   );
 }
 
-export default SpotDeleteFormModal;
+export default ReviewFormModal;

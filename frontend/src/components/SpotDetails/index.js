@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { thunkREADSpot } from "../../store/spots";
 import StarRating from "../StarRating";
 import { getFullImages } from "../../utils/imageUrl"
+// import SpotDetailReviewArea from "../SpotDetailReviewArea";
 
 function SpotDetails() {
     const { id } = useParams();
@@ -30,6 +31,11 @@ function SpotDetails() {
     console.log("🚀 ~ file: index.js:31 ~ SpotDetails ~ spot:", spot)
     console.log("🚀 ~ file: index.js:37 ~ SpotDetails ~ otherImages:", otherImages)
 
+    function handleReserveClick(){
+        alert("Feature Coming Soon...")
+    }
+    if (!spot) return null;
+
     return (
         <div className="spotDetailsDiv">
             <h1>{spot.name}</h1>
@@ -48,10 +54,12 @@ function SpotDetails() {
                 <p>Wonderful description of unbelievably glowing qualities of our beneficent host</p>
                 <div className="spotDetailsCalloutDiv">
                     <div className="spotDetailsPriceDiv">{`$ ${spot.price} night`}</div>
-                    <StarRating avgRating={spot.avgRating} numReviews={spot.numReviews} />
+                    <StarRating className="spotDetailsCalloutRating" avgRating={spot.avgRating} numReviews={spot.numReviews} />
+                    <button className="reserveButton" onClick={handleReserveClick}>Reserve</button>
                 </div>
+                <hr></hr>
             </section>
-
+            {/* <SpotDetailReviewArea /> */}
         </div>
         )
     };

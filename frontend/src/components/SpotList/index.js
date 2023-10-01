@@ -1,15 +1,11 @@
 // frontend/src/components/SpotList/index.js
-
 import { useDispatch, useSelector } from 'react-redux';
-import './SpotList.css';
 import { thunkREADAllSpots } from '../../store/spots';
 import SpotTile from '../SpotTile';
 
 function SpotList () {
-    const spots = useSelector(state => state.spots?.allSpots);
-    console.log("🚀 ~ file: index.js:11 ~ SpotList ~ spots:", spots)
+    const spots = useSelector(state => state.spots.allSpots);
     const dispatch = useDispatch();
-    console.log("🚀 ~ file: index.js:12 ~ SpotList ~ useDispatch:", useDispatch)
 
     if (!spots || !Object.keys(spots).length) {
         dispatch(thunkREADAllSpots())
