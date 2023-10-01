@@ -163,7 +163,7 @@ export const thunkDELETESpot = id => async dispatch => {
     });
     const data = await response.json();
     console.log("🚀 ~ file: spots.js:159 ~ thunkDELETESpot ~ data:", data)
-    dispatch(deleteSpot(data));
+    dispatch(deleteSpot(id));
     return response;
 };
 
@@ -244,16 +244,16 @@ export const thunkUPDATESpot = (spot /*, urls */) => async dispatch => {
   return response;
 };
 
-function copyNormWithout(oldNorm, key) {
+// function copyNormWithout(oldNorm, key) {
   /* if the state doesn't contain the item, then no change is needed;
    * otherwise, return a newObject that has everything but that
    * particular key
    */
-  if (!oldNorm || !oldNorm[key]) return oldNorm;
-  const result = {};
-  Object.keys(oldNorm).forEach(k => {if (k !== key) result[k] = oldNorm[k]});
-  return result;
-}
+  // if (!oldNorm || !oldNorm[key]) return oldNorm;
+  // const result = {};
+//   Object.keys(oldNorm).forEach(k => {if (k !== key) result[k] = oldNorm[k]});
+//   return result;
+// }
 
 const initialState = { /* for {} at state.spots */
     allSpots: {}, /* when filled, normalized by spotId: {spotData} */
@@ -303,8 +303,10 @@ const spotsReducer = (state = initialState, action) => {
 
     case DELETE_SPOT:
       newState = {...state};
-      newState.allSpots = copyNormWithout(state.allSpots, action.payload);
-      newState.userSpots = copyNormWithout(state.userSpots, action.payload);
+      newState.allSpots = {...state.allSpots};
+      delete newState.allSpots[action.payload]
+      newState.userSpots = {...state.userSpots};
+      delete newState.userSpots[action.payload];
       if (newState.singleSpot?.id === action.payload)
         newState.singleSpot = {};
       return newState;

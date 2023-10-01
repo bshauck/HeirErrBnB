@@ -30,6 +30,10 @@ started changes to seeders based on getting more requirements method
   SpotForm  ANd PUT
     error messages in them correctly for create.
 
+SUNDAY
+Update and Delete show immediately on Manage Spots
+Put Create button on Manage Spots page with no Spots
+
 
 ISSUES
 Browser refresh doesn't update Manage Spots
