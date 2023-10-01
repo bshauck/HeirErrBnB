@@ -80,9 +80,11 @@ function updateReview(review) {
     }
 }
 
-export const thunkREADAllReviews = () => async (dispatch) => {
-  const response = await csrfFetch("/api/reviews");
+export const thunkREADAllReviews = (id) => async (dispatch) => {
+  console.log("🚀 ~ file: reviews.js:84 ~ thunkREADAllReviews ~ id:", id)
+  const response = await csrfFetch(`/api/spots/${id}/reviews`);
   const data = await response.json();
+  console.log("🚀 ~ file: reviews.js:87 ~ thunkREADAllReviews ~ data:", data)
   dispatch(readAllReviews(data.Reviews));
   return response;
 };
@@ -103,6 +105,7 @@ export const thunkREADReview = id => async dispatch => {
 };
 
 export const thunkDELETEReview = id => async dispatch => {
+    console.log("🚀 ~ file: reviews.js:108 ~ thunkDELETEReview ~ id:", id)
     const response = await csrfFetch(`/api/reviews/${id}`, {
         method: 'DELETE',
     });
@@ -113,11 +116,15 @@ export const thunkDELETEReview = id => async dispatch => {
 };
 
 export const thunkCREATEReview = reviewArg => async dispatch => {
-  const { review } = reviewArg;
+  console.log("🚀 ~ file: reviews.js:118 ~ thunkCREATEReview ~ reviewArg:", reviewArg)
+  const { spotId, userId, review, stars } = reviewArg;
   const response = await csrfFetch("/api/reviews", {
     method: "POST",
-    body: JSON.stringify({ /* fill out */
+    body: JSON.stringify({
+      spotId,
+      userId,
       review,
+      stars
     }),
   });
   const data = await response.json();
@@ -126,11 +133,15 @@ export const thunkCREATEReview = reviewArg => async dispatch => {
 };
 
 export const thunkUPDATEReview = reviewObj => async dispatch => {
-  const { review } = reviewObj;
+  const { id, spotId, userId, review, stars } = reviewObj;
   const response = await csrfFetch(`/api/reviews/${review.id}`, {
     method: "PUT",
     body: JSON.stringify({ /* fill out */
+      id,
+      spotId,
+      userId,
       review,
+      stars
    }),
   });
   const data = await response.json();
@@ -167,6 +178,7 @@ const reviewsReducer = (state = initialState, action) => {
     case READ_REVIEW:
     case UPDATE_REVIEW:
       const review = action.payload
+      console.log("🚀 ~ file: reviews.js:179 ~ reviewsReducer ~ review:", review)
       const id = review.id;
       newState = {...state};
       newState.spot = {...state.spot, [id]: review};

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { thunkREADSpot } from "../../store/spots";
 import StarRating from "../StarRating";
 import { getFullImages } from "../../utils/imageUrl"
-// import SpotDetailReviewArea from "../SpotDetailReviewArea";
+import SpotDetailReviewArea from "../SpotDetailReviewArea";
 
 function SpotDetails() {
     const { id } = useParams();
@@ -59,7 +59,7 @@ function SpotDetails() {
                 </div>
                 <hr></hr>
             </section>
-            {/* <SpotDetailReviewArea /> */}
+            <SpotDetailReviewArea detailedSpot={spot} />
         </div>
         )
     };

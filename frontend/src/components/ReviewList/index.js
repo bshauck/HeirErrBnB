@@ -1,24 +1,30 @@
 // frontend/src/components/ReviewList/index.js
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { thunkREADAllReviews } from '../../store/reviews';
 import ReviewTile from '../ReviewTile';
 
-function ReviewList({ spotId }) {
+function ReviewList({ spot }) {
     const reviews = useSelector(state => state.reviews.spot);
     const user = useSelector(state => state.session.user);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (!reviews) dispatch(thunkREADAllReviews(spotId))
-    }, [spotId, reviews, dispatch])
+    if (!reviews) {
+      async function getTheDarnReviews() {
+        await dispatch(thunkREADAllReviews(spot.id))
+      }
+      getTheDarnReviews();
+      return null;
+    }
 
-    if (!user || !reviews || !reviews.length) return null;
+    if (!user) return null;
+    /* sort reviews by updatedAt date*/
+    let arr = Object.values(reviews);
+    arr.sort((a,b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
 
     return (
       <>
-      {reviews.map(review =>
+      {arr.map(review =>
         (
         <ReviewTile key={review.id} review={review} user={user} />
       ))}

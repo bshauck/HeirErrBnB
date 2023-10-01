@@ -1,50 +1,54 @@
 // frontend/src/components/SpotDefailReviewArea/index.js
 
 import { useDispatch, useSelector } from "react-redux"
-import { useEffect } from "react";
 
 import ReviewList from "../ReviewList"
 import { thunkREADAllReviews } from "../../store/reviews";
 import OpenModalButton from "../OpenModalButton";
-import ReviewFormModal from "../ReviewCreateModal";
+import ReviewFormModal from "../ReviewFormModal";
 import StarRating from "../StarRating";
+import { useEffect } from "react";
 
 
 /* check logged in user, and all reviews doesn't include his
 * and he isn't owner of the spot, then put a Post Your Review
 * button; so have to get reviewsBySpot
 */
-function SpotDetailReviewArea({ spot }) {
+function SpotDetailReviewArea({ detailedSpot }) {
     const user = useSelector(state => state.session.user);
-    const reviews = useSelector(state => state.reviews.spot)
+    const reviews = useSelector(state => state.reviews.spot);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(thunkREADAllReviews(detailedSpot.id));
+    }, [dispatch, detailedSpot.id])
 
     function handlePostClick() {
 
     }
 
-    // if (!spot) {
-        // await dispatch(thunkREADAllReviews(spot.id));
+    if (detailedSpot.numReviews && !Object.keys(reviews).length) {
+        async function readAllSpotReview(id = detailedSpot.id) {
+            await dispatch(thunkREADAllReviews(id));
+        };
+        readAllSpotReview(detailedSpot.id);
+        return null;
+    }
 
-        //     return null;
-        // }
-
-        useEffect(() => {
-            async function readAllSpotReview() {
-                await dispatch(thunkREADAllReviews(spot.id));
-            };
-            if (!reviews) readAllSpotReview();
-    }, [spot, spot.id, reviews, dispatch])
-
-    if (!user || !reviews) return null;
     const reviewArray = Object.values(reviews)
-    const hasReviewed = undefined !== reviewArray.find(r => r.userId === user.id);
-    const isPostable = user.id !== spot.ownerId && !hasReviewed;
+    console.log("🚀 ~ file: index.js:39 ~ SpotDetailReviewArea ~ reviewArray:", reviewArray)
+    const hasReviewed = reviewArray.find(r => r.userId === user?.id) || user === null;
+    console.log("🚀 ~ file: index.js:41 ~ SpotDetailReviewArea ~ hasReviewed:", hasReviewed)
+    const isPostable = user?.id !== detailedSpot.ownerId && !hasReviewed;
+    console.log("🚀 ~ file: index.js:43 ~ SpotDetailReviewArea ~ ownerId:", detailedSpot.ownerId)
+    console.log("🚀 ~ file: index.js:43 ~ SpotDetailReviewArea ~ userid:", user)
+    console.log("🚀 ~ file: index.js:43 ~ SpotDetailReviewArea ~ isPostable:", isPostable)
     const isPostableNoReviews = isPostable && !reviewArray.length;
+    console.log("🚀 ~ file: index.js:45 ~ SpotDetailReviewArea ~ isPostableNoReviews:", isPostableNoReviews)
 
-    return null && (
+    return (
       <div className="spotDetailReviewAreaDiv">
-        <div className="reviewListStarRatingHeaderDiv"><StarRating avgRating={spot.avgRating} numReviews={spot.numReviews} /></div>
+        <div className="reviewListStarRatingHeaderDiv"><StarRating avgRating={detailedSpot.avgRating} numReviews={detailedSpot.numReviews} /></div>
         {isPostable &&
           <OpenModalButton
             buttonText="Post Your Review"
@@ -52,8 +56,8 @@ function SpotDetailReviewArea({ spot }) {
             modalComponent={<ReviewFormModal />}
           />}
         {isPostableNoReviews &&
-            <p className="beTheFirstP">Be the first to post a review!</p>}
-        <ReviewList reviews={reviews} spot={spot} />
+            <div className="beTheFirstDiv">Be the first to post a review!</div>}
+        <ReviewList reviews={reviews} spot={detailedSpot} />
       </div>
     )
 }

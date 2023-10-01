@@ -35,11 +35,11 @@ started changes to seeders based on getting more requirements method
 SUNDAY
 Update and Delete show immediately on Manage Spots
 Put Create button on Manage Spots page with no Spots
+Browser refresh updates Manage Spots
+Review list add to SpotDetails
 
 
 ISSUES
-Browser refresh doesn't update Manage Spots
-Review list add to SpotDetails
 Callout box add to SpotDetails
 Adding Callout with price night, small review avg, Reserve button
 StarRatings add to SpotDetails' callout box
@@ -88,9 +88,6 @@ Knowing when things may be promises; and why some things that are
     e.g., response from fetch does not always understand .JSON
 
 
-header spacing: added bottom to allow ManageSpots to work: modal apparently
-    NOT on top of other elements
-
 More:
 
 FINALLY CSS
@@ -99,16 +96,14 @@ price "night", star rating "review" both darker
 
 
 
-Making default to show no image present
 Generate large amount of data
 Have SpotForm show first 4 validation error messages to side of label
 
 BUGS:
 Login on error (invalid password/credential) changes size,
 and a sliver of a modalDIv appears underneath main modal
-Should seed a SpotImage for preview for every seeded Spot
-(should do a lot for generated photo data, but have a
-placeholder URI now--see frontend utils)
+
+
 
 
 Bonus:

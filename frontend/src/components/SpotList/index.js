@@ -7,7 +7,7 @@ function SpotList () {
     const spots = useSelector(state => state.spots.allSpots);
     const dispatch = useDispatch();
 
-    if (!spots || !Object.keys(spots).length) {
+    if (!spots || Object.keys(spots).length < 2) {
         dispatch(thunkREADAllSpots())
         return null;
     }
