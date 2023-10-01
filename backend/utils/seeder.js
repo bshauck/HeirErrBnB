@@ -1,20 +1,22 @@
 const { Review, Spot, User } = require('../db/models');
 
+/* unique usernames find seeded users */
 const seederUserNames = [
     'Demo-lition',
-    'FrancoPortin',
-    'AlecKeeler',
-    'AnthonyLovern',
-    'JoshGoldberg',
-    'AdamTifrit',
-    'ElliotStarr',
-    'HaydenGogan',
-    'JonDiez',
-    'MasonAustin',
-    'SteveNielson',
-    'LanOribello',
-    'MiraBorkowska'
+    'francoportin',
+    'aleckeeler',
+    'anthonylovern',
+    'joshgoldberg',
+    'adamtifrit',
+    'elliotstarr',
+    'haydengogan',
+    'jondiez',
+    'masonaustin',
+    'stevenielson',
+    'lanoribello',
+    'miraborkowska'
 ];
+/* unique names find seeded spots */
 const seederSpotNames = [
     'Cheap Denton House',
     'Boulder Shack',
@@ -30,7 +32,22 @@ const seederSpotNames = [
     'Serenity',
     'Courage',
     'Wisdom',
-    'Peace'
+    'Peace',
+    'Cheap Berlin House',
+    'Strange Lobster Shack',
+    'Ski Up, down and all around',
+    'Warmth in My Heart',
+    'Summer Fun For Everyone',
+    'Fall and Get Back Up Paradise',
+    'A Steal at Any Exuberance',
+    'Extravaganza and Lollapalooza',
+    'Humble Beginnings and Furtive Endings',
+    'Pride of the Center, Pack at the Back',
+    'Rampaging Fun in the Stolid Sun',
+    'Serenity is the Goal of Many',
+    'Courage can be Found Everywhere',
+    'Wisdom is Rarer than Most Think',
+    'Peace is Hard to Find'
 ];
 
 const seederUserIds = async () => {

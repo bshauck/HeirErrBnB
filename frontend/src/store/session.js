@@ -125,7 +125,7 @@ const sessionReducer = (state = initialState, action) => {
     case SET_USER:
       const newUser = action.payload
       newState.user = newUser;
-      if (!state[newUser.id]?.username) /* didn't have full user info */
+      if (newUser && !state[newUser.id]?.username) /* didn't have full user info */
         newState[newUser.id] = newUser;
       return newState;
     case READ_SPOT:
