@@ -42,7 +42,7 @@ function SpotTile ({spot, isManaged}) {
         <span className="tileLocation">{`${spot.city}, ${spot.state}`}</span>
         <StarRating avgRating={spot.avgRating}/>
     </div>
-    <div className="tilePriceDiv">${spot.price}</div>
+    <div className="tilePriceDiv">${spot.price} night</div>
     {isManaged &&
     <div className="managedTileButtonDiv">
         <button type="button" onClick={handleUpdateClick}>Update</button>
