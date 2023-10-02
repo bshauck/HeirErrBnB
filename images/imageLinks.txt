@@ -61,6 +61,8 @@ Adding Callout with price night, small review avg, Reserve button
 StarRatings add to SpotDetails' callout box
 Ensure spot delete updates landing pages/manage spot pages
 Use placeholders when users have not contributed enough images
+Have SpotForm show first 4 validation error messages to side of label
+Comma misplaced on Create Spot (city, state)
 
 
 Subheading size too large
@@ -71,7 +73,6 @@ Textarea needs to extend across
 L/R edges of most elements need to align
 Submit button needs to be centered and colored
 Remove DEFAULT button (LAST THING)
-Comma misplaced on Create Spot (city, state)
 Confirm spot image creation working NO
 Have reasonable image sizing (tiles should be 3x6)
 CSS Delete Spot modal
@@ -103,13 +104,10 @@ price "night", star rating "review" both darker
 
 
 Generate large amount of data
-Have SpotForm show first 4 validation error messages to side of label
 
 BUGS:
 Login on error (invalid password/credential) changes size,
 and a sliver of a modalDIv appears underneath main modal
-
-
 
 
 Bonus:
@@ -140,3 +138,5 @@ Dan says 100-1000 generated seeds
 Look up all unseed functions via known userSpots
 Restore query size default to 20 (set to 50 for
   dev atm)
+I'm not passing certain db errors like signup
+uniqueness for email/username back up.

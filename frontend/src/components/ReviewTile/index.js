@@ -24,6 +24,7 @@ return (
     <div className="tileReviewTextDiv" >{review.review}</div>
     {user && review.userId === user.id && <OpenModalButton
       buttonText="Delete"
+      className="deleteReviewButton"
       onButtonClick={handleDeleteClick}
       // onModalClose={??}
       modalComponent={<ReviewDeleteFormModal id={review.id}/>}

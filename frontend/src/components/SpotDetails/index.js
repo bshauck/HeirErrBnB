@@ -37,10 +37,10 @@ function SpotDetails() {
             <h1>{spot.name}</h1>
             <div className="spotDetailsLocationDiv">{spot.city}, {spot.state}, {spot.country}</div>
             <div className="spotDetailsImagesDiv">
-                <div className="spotDetailsPreviewDiv"><img alt='preview' src={previewImage}></img></div>
+                <div className="spotDetailsPreviewDiv"><img className="spotDetailsPreviewImg" alt='preview' src={previewImage}></img></div>
                 <div className="spotDetailsImagesDiv">
                     {otherImages && otherImages.length && otherImages.map((url,i) => (
-                        <img key={i} alt='' src={url}></img>
+                        <img key={i} className="spotDetailsSmallImg" alt='' src={url}></img>
                     ))
                     }
                 </div>

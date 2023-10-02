@@ -288,3 +288,131 @@ label {
   .rating-input .empty {
     color: burlywood;
   }
+
+.signupForm {
+    min-width: 300px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+
+#modalContent {
+    background-color: transparent;
+}
+
+.confirmSpotDeleteModalDiv {
+    gap: 20px;
+    border: 4px black solid;
+    border-radius: 10px;
+    /* width: 85%; */
+ }
+.spotDeleteFormButtonDiv{ gap: 5px; }
+.confirmSpotDeleteModalDiv,.spotDeleteFormButtonDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.confirmSpotDeleteModalP,.spotNoDeleteButton,.spotDeleteButton {
+    width: 250px;
+
+}
+
+.spotDeleteButton {
+    background-color: var(--aaRed);
+    color: white;
+}
+
+.spotNoDeleteButton,
+.manageSpotUpdateButton
+{
+    background-color: var(--aaDarkGray);
+    color: white;
+}
+
+.signupSubmit
+.manageSpotDeleteButton
+{
+    background-color: var(--aaRed);
+    color: white;
+}
+
+.signupInput {
+    max-width: 85%;
+}
+
+i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
+    cursor: pointer;
+}
+
+.profile-dropdown > li {
+    cursor: default;
+}
+
+.manageSpotTilesDiv {
+    display: flex;
+
+}
+
+.spotlistDiv,.manageSpotsDiv {
+    display: flex;
+    flex-flow: row wrap ;
+    gap: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.spotTileImg {
+    height: 240px;
+    width: 240px;
+}
+
+.tileLocationAndRatingDiv {
+    display: flex;
+    justify-content: space-between;
+}
+
+.manageSpotsHeaderDiv {
+    display:flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    column-gap: 50px;
+}
+
+.createManageSpotButton {
+    width: 200px;
+
+}
+
+.managedTileButtonDiv {
+    display: flex;
+    justify-content: flex-start;
+    gap-row: 10px;
+}
+/*
+.spotDetailsPreviewImg {
+    height: 400px;
+    width: 200px
+}
+
+.spotDetailsImagesDiv {
+    display: flex;
+    height: 100px;
+    width: 200px;
+}
+
+.spotDetailsSmallImg {
+    height: 1000px;
+    width: 100px;
+} */
+
+.spotDetailsLocationDiv {
+    margin-bottom: 30px;
+}
+
+.spotDetailsReviewAreaDiv {
+    margin-top: 30px;
+}

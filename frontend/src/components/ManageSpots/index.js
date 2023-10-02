@@ -32,12 +32,20 @@ const ManageSpots = () => {
     }
 
     return (
+        <>
+        <div className="manageSpotsHeaderDiv">
+          <h1>Manage Spots</h1>
+          <button type="button"
+          className="createManageSpotButton" onClick={handleCreateClick}>Create a New Spot</button>
+          </div>
         <div className="manageSpotsDiv">
-          <button type="button" className="createManageSpotButton" onClick={handleCreateClick}>Create a New Spot</button>
+          <div className="manageSpotTilesDiv">
           {Object.values(spots).map(s => (
                 <SpotTile key={s.id} spot={s} isManaged={true} />
             ))}
+          </div>
         </div>
+        </>
     );
 }
 

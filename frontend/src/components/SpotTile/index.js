@@ -43,8 +43,9 @@ function SpotTile ({spot, isManaged}) {
     <div className="tilePriceDiv">${spot.price} night</div>
     {isManaged &&
     <div className="managedTileButtonDiv">
-        <button type="button" onClick={handleUpdateClick}>Update</button>
+        <button classname="manageSpotUpdateButton" type="button" onClick={handleUpdateClick}>Update</button>
         <OpenModalButton
+              className="manageSpotDeleteButton"
               buttonText="Delete"
               onButtonClick={handleDeleteClick}
               // onModalClose={??}
