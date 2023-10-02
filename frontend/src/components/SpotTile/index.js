@@ -14,8 +14,6 @@ function SpotTile ({spot, isManaged}) {
   const stateSpot = useSelector(state => state.spots.allSpots[spot.id])
   const history = useHistory();
   const dispatch = useDispatch();
-  console.log("🚀 ~ file: index.js:7 ~ SpotTile ~ isManaged:", isManaged)
-  console.log("🚀 ~ file: index.js:7 ~ SpotTile ~ spot:", spot)
   // const sessionUser = useSelector(state => state.session.user);
 
 

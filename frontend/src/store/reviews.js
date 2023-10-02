@@ -81,10 +81,8 @@ function updateReview(review) {
 }
 
 export const thunkREADAllReviews = (id) => async (dispatch) => {
-  console.log("🚀 ~ file: reviews.js:84 ~ thunkREADAllReviews ~ id:", id)
   const response = await csrfFetch(`/api/spots/${id}/reviews`);
   const data = await response.json();
-  console.log("🚀 ~ file: reviews.js:87 ~ thunkREADAllReviews ~ data:", data)
   dispatch(readAllReviews(data.Reviews));
   return response;
 };
@@ -99,26 +97,22 @@ export const thunkREADALLUserReviews = () => async (dispatch) => {
 export const thunkREADReview = id => async dispatch => {
     const response = await csrfFetch(`/api/reviews/${id}`);
     const data = await response.json();
-    console.log("🚀 ~ file: reviews.js:100 ~ thunkREADReview ~ data:", data)
     dispatch(readReview(data));
     return response;
 };
 
 export const thunkDELETEReview = id => async dispatch => {
-    console.log("🚀 ~ file: reviews.js:108 ~ thunkDELETEReview ~ id:", id)
     const response = await csrfFetch(`/api/reviews/${id}`, {
         method: 'DELETE',
     });
     const data = await response.json();
-    console.log("🚀 ~ file: reviews.js:110 ~ thunkDELETEReview ~ data:", data)
     dispatch(deleteReview(id));
     return response;
 };
 
-export const thunkCREATEReview = reviewArg => async dispatch => {
-  console.log("🚀 ~ file: reviews.js:118 ~ thunkCREATEReview ~ reviewArg:", reviewArg)
+export const thunkCREATEReview = (reviewArg,firstName) => async dispatch => {
   const { spotId, userId, review, stars } = reviewArg;
-  const response = await csrfFetch("/api/reviews", {
+  const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
     method: "POST",
     body: JSON.stringify({
       spotId,
@@ -128,13 +122,16 @@ export const thunkCREATEReview = reviewArg => async dispatch => {
     }),
   });
   const data = await response.json();
+  data.firstName=firstName;
+  console.log("🚀 ~ file: reviews.js:126 ~ thunkCREATEReview ~ data:", data)
+  console.log("🚀 ~ file: reviews.js:126 ~ thunkCREATEReview ~ firstName:", firstName)
   dispatch(createReview(data));
   return response;
 };
 
 export const thunkUPDATEReview = reviewObj => async dispatch => {
   const { id, spotId, userId, review, stars } = reviewObj;
-  const response = await csrfFetch(`/api/reviews/${review.id}`, {
+  const response = await csrfFetch(`/api/reviews/${id}`, {
     method: "PUT",
     body: JSON.stringify({ /* fill out */
       id,
@@ -155,7 +152,6 @@ const initialState = {
 };
 
 const reviewsReducer = (state = initialState, action) => {
-  console.log("🚀 ~ file: reviews.js:149 ~ reviewsReducer ~ action:", action)
   let newState;
   switch (action.type) {
     case READ_REVIEWS: {
@@ -163,7 +159,7 @@ const reviewsReducer = (state = initialState, action) => {
         const normalized = {};
         reviews.forEach(r => normalized[r.id]=r)
         newState = {...state};
-        newState.spot = reviews;
+        newState.spot = normalized;
         return newState;
     }
     case READ_USER_REVIEWS: {
@@ -171,15 +167,15 @@ const reviewsReducer = (state = initialState, action) => {
         const normalized = {};
         reviews.forEach(r => normalized[r.id]=r)
         newState = {...state};
-        newState.user = reviews;
+        newState.user = normalized;
         return newState;
     }
     case CREATE_REVIEW:
     case READ_REVIEW:
     case UPDATE_REVIEW:
       const review = action.payload
-      console.log("🚀 ~ file: reviews.js:179 ~ reviewsReducer ~ review:", review)
       const id = review.id;
+      console.log("🚀 ~ file: reviews.js:178 ~ reviewsReducer ~ review:", review)
       newState = {...state};
       newState.spot = {...state.spot, [id]: review};
       newState.user = {...state.user, [id]: review};

@@ -39,10 +39,10 @@ Browser refresh updates Manage Spots
 Review list add to SpotDetails
 DeleteReview
 Delete button opens modal dialog for deleting Review
+Delete Review deletes but doesn't update
 
 
 ISSUES
-Delete Review deletes but doesn't update
 On delete, review counts and averages need to be updated
 Callout box add to SpotDetails
 Adding Callout with price night, small review avg, Reserve button

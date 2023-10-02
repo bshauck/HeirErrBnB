@@ -151,7 +151,9 @@ router.route('/:spotId(\\d+)/reviews')
             review,
             stars
         });
-        return res.json(newReview);
+        let foo = newReview.toJSON();
+        foo.User = {id:req.user.id, firstName: req.user.firstName, lastName: req.user.lastName}
+        return res.json(foo);
     });
 
 

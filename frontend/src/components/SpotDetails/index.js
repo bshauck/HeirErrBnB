@@ -10,7 +10,6 @@ function SpotDetails() {
     const { id } = useParams();
     const spot = useSelector(state => state.spots.singleSpot)
     const keyedSpot = useSelector(state => state.spots[id])
-    console.log("🚀 ~ file: index.js:12 ~ SpotDetails ~ spot:", spot)
     const dispatch = useDispatch();
 
     if (!spot || !Object.keys(spot).length || Number(spot.id) !== Number(id)) {
@@ -28,9 +27,6 @@ function SpotDetails() {
     if (!otherImages) otherImages = [];
     while (otherImages.length < 4) otherImages.push(fills.pop());
     const owner = spot?.Owner;
-    console.log("🚀 ~ file: index.js:31 ~ SpotDetails ~ spot:", spot)
-    console.log("🚀 ~ file: index.js:37 ~ SpotDetails ~ otherImages:", otherImages)
-
     function handleReserveClick(){
         alert("Feature Coming Soon...")
     }

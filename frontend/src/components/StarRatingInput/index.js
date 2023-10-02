@@ -6,10 +6,11 @@ const StarRatingInput = ({ rating, disabled, onChange }) => {
   useEffect(() => {
     setStars(rating);
   }, [rating]);
-  // NOTE: This useEffect isn't necessary to have for this scenario, but if you
-  // have a scenario which requires this input to be re-rendered with an updated
-  // rating prop instead of unmounted and remounted with an updated rating, then
-  // this useEffect is necessary.
+  // NOTE: This useEffect isn't necessary to have for
+  // this scenario, but if you have a scenario which
+  // requires this input to be re-rendered with an updated
+  // rating prop instead of unmounted and remounted with
+  // an updated rating, then this useEffect is necessary.
 
   const starIcon = (number) => {
     const props = {};
@@ -19,9 +20,9 @@ const StarRatingInput = ({ rating, disabled, onChange }) => {
       props.onClick = () => onChange(number);
     }
     return (
-      <div key={number} className={stars >= number ? "filled" : "empty"} {...props}>
-        <i className="fa fa-star"></i>
-      </div>
+      <span key={number} className="starIconSpans" {...props}>
+        <i className={stars >= number ? "filled fas fa-star" : "empty fa fa-star"}></i>
+      </span>
     );
   };
 

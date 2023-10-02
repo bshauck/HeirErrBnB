@@ -9,6 +9,7 @@ function ReviewTile({ review, user }) {
 
   }
 
+  if (!review) return null;
 
 return (
     <div className="reviewTileDiv">
