@@ -17,7 +17,6 @@ function ReviewList({ spot }) {
       return null;
     }
 
-    if (!user) return null;
     /* sort reviews by updatedAt date*/
     let arr = Object.values(reviews);
     arr.sort((a,b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))

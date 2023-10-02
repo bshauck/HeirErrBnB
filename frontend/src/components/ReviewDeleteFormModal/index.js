@@ -7,7 +7,6 @@ import { useModal } from "../../context/Modal";
 import { thunkREADSpot } from "../../store/spots";
 
 function ReviewDeleteFormModal({ id }) {
-  console.log("🚀 ~ file: index.js:10 ~ ReviewDeleteFormModal ~ id:", id)
   const dispatch = useDispatch();
   const { closeModal } = useModal();
   const [errors, setErrors] = useState({});

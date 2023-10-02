@@ -105,7 +105,7 @@ export const thunkDELETEReview = id => async dispatch => {
     const response = await csrfFetch(`/api/reviews/${id}`, {
         method: 'DELETE',
     });
-    const data = await response.json();
+    await response.json();
     dispatch(deleteReview(id));
     return response;
 };
@@ -123,8 +123,6 @@ export const thunkCREATEReview = (reviewArg,firstName) => async dispatch => {
   });
   const data = await response.json();
   data.firstName=firstName;
-  console.log("🚀 ~ file: reviews.js:126 ~ thunkCREATEReview ~ data:", data)
-  console.log("🚀 ~ file: reviews.js:126 ~ thunkCREATEReview ~ firstName:", firstName)
   dispatch(createReview(data));
   return response;
 };
@@ -175,7 +173,6 @@ const reviewsReducer = (state = initialState, action) => {
     case UPDATE_REVIEW:
       const review = action.payload
       const id = review.id;
-      console.log("🚀 ~ file: reviews.js:178 ~ reviewsReducer ~ review:", review)
       newState = {...state};
       newState.spot = {...state.spot, [id]: review};
       newState.user = {...state.user, [id]: review};

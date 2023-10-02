@@ -40,13 +40,8 @@ Review list add to SpotDetails
 DeleteReview
 Delete button opens modal dialog for deleting Review
 Delete Review deletes but doesn't update
-
-
-ISSUES
 On delete, review counts and averages need to be updated
 Callout box add to SpotDetails
-Adding Callout with price night, small review avg, Reserve button
-StarRatings add to SpotDetails' callout box
 CreateReview
 Review List of Review Tiles (in update order; new added to beginning)
     Review Tile has
@@ -57,6 +52,16 @@ Review List of Review Tiles (in update order; new added to beginning)
     Optional Delete button (if your review)
 Post Your Review opens modal dialog for inputting Review
 Need open star icon for review rating with Paw Print functionality
+guest user not seeing reviews on detail spots
+
+
+ISSUES
+Figure out default image sizes and layout
+Adding Callout with price night, small review avg, Reserve button
+StarRatings add to SpotDetails' callout box
+Ensure spot delete updates landing pages/manage spot pages
+Use placeholders when users have not contributed enough images
+
 
 Subheading size too large
 Subheading weight too heavy

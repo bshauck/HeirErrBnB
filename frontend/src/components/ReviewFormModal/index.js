@@ -17,7 +17,6 @@ function ReviewFormModal({spot, userId}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("calling create review thunk; spotId, userId, review, stars", spotId, userId, review, stars)
     await dispatch(thunkCREATEReview({
       spotId,
       userId,
@@ -25,7 +24,6 @@ function ReviewFormModal({spot, userId}) {
       stars,
     }, user.firstName))
     dispatch(thunkREADSpot(spotId))
-    console.log("🚀 ~ file: index.js:26 ~ handleSubmit ~ user:", user)
     closeModal();
   };
 

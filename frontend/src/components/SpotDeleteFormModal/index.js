@@ -5,7 +5,6 @@ import { thunkDELETESpot } from "../../store/spots";
 import { useModal } from "../../context/Modal";
 
 function SpotDeleteFormModal({ id }) {
-  console.log("🚀 ~ file: index.js:10 ~ SpotDeleteFormModal ~ id:", id)
   const dispatch = useDispatch();
   const { closeModal } = useModal();
 
