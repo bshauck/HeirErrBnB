@@ -1,18 +1,22 @@
 // frontend/src/components/ReviewDeleteFormModal/index.js
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
 import { thunkDELETEReview } from "../../store/reviews";
 import { useModal } from "../../context/Modal";
+import { thunkREADSpot } from "../../store/spots";
 
 function ReviewDeleteFormModal({ id }) {
   console.log("🚀 ~ file: index.js:10 ~ ReviewDeleteFormModal ~ id:", id)
   const dispatch = useDispatch();
   const { closeModal } = useModal();
   const [errors, setErrors] = useState({});
+  const revs = useSelector(state => state.reviews.spot)
+
 
   const reviewYesDelete = async (e) => {
     const response = await dispatch(thunkDELETEReview(id))
+    dispatch(thunkREADSpot(revs[id].spotId))
     if (response.errors) setErrors(response)
     else closeModal();
   };

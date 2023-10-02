@@ -1,26 +1,31 @@
 // frontend/src/components/ReviewFormModal/index.js
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
 import { useModal } from "../../context/Modal";
 import { thunkCREATEReview } from "../../store/reviews";
 import StarRatingInput from "../StarRatingInput";
+import { thunkREADSpot } from "../../store/spots";
 
-function ReviewFormModal({spotId, userId}) {
+function ReviewFormModal({spot, userId}) {
     const dispatch = useDispatch();
     const [review, setReview] = useState("");
     const [stars, setStars] = useState("");
     const { closeModal } = useModal();
+    const spotId = spot.id;
+    const user=useSelector(state => state.session.user)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("calling create review thunk, spotI, userId, review, stars", spotId, userId, review, stars)
+    console.log("calling create review thunk; spotId, userId, review, stars", spotId, userId, review, stars)
     await dispatch(thunkCREATEReview({
       spotId,
       userId,
       review,
       stars,
-    }))
+    }, user.firstName))
+    dispatch(thunkREADSpot(spotId))
+    console.log("🚀 ~ file: index.js:26 ~ handleSubmit ~ user:", user)
     closeModal();
   };
 
@@ -30,7 +35,7 @@ function ReviewFormModal({spotId, userId}) {
       <form className="createReviewForm" onSubmit={handleSubmit}>
         <h1>How was your stay?</h1>
         <textarea className="createReviewTextarea"
-        value={review} onChange={e=>setReview(e.target.value)} placeholder="Leave your review here..." />
+        value={review} onChange={e => setReview(e.target.value)} placeholder="Leave your review here..." />
         <StarRatingInput
           disabled={false}
           onChange={handleChange}

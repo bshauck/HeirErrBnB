@@ -64,8 +64,7 @@ router.get('/current', requireAuth, async (req, res) => {
             {model: Spot,
             attributes: {exclude: ['description', 'createdAt', 'updatedAt']},
             include: {model: SpotImage,
-                        where: {preview: true}}
-/home/shauck/aa-projects/project/HeirErrBnb/backend/db/seeders            },
+                        where: {preview: true}}},
             {model: ReviewImage, attributes: ['id', 'url']}
         ],
         where: {userId: req.user.id},

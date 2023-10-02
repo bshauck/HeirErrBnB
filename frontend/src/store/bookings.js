@@ -90,8 +90,6 @@ export const thunkREADALLUserBookings = () => async (dispatch) => {
 export const thunkREADBooking = id => async dispatch => {
     const response = await csrfFetch(`/api/bookings/${id}`);
     const data = await response.json();
-    console.log("🚀 ~ file: bookings.js:93 ~ thunkREADBooking ~ data:", data)
-
     dispatch(readBooking(id));
     return response;
 };
@@ -101,7 +99,6 @@ export const thunkDELETEBooking = id => async dispatch => {
         method: 'DELETE',
     });
     const data = await response.json();
-    console.log("🚀 ~ file: bookings.js:104 ~ thunkDELETEBooking ~ data:", data)
     dispatch(deleteBooking(id));
     return response;
 };
@@ -140,7 +137,6 @@ const initialState = {
 };
 
 const bookingsReducer = (state = initialState, action) => {
-  console.log("🚀 ~ file: bookings.js:143 ~ bookingsReducer ~ action:", action)
   let newState;
   switch (action.type) {
     case READ_BOOKINGS: {

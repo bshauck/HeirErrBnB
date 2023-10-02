@@ -1,14 +1,12 @@
 // frontend/src/components/SpotDefailReviewArea/index.js
-
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"
 
-import ReviewList from "../ReviewList"
 import { thunkREADAllReviews } from "../../store/reviews";
+import ReviewList from "../ReviewList"
 import OpenModalButton from "../OpenModalButton";
 import ReviewFormModal from "../ReviewFormModal";
 import StarRating from "../StarRating";
-import { useEffect } from "react";
-
 
 /* check logged in user, and all reviews doesn't include his
 * and he isn't owner of the spot, then put a Post Your Review
@@ -28,7 +26,7 @@ function SpotDetailReviewArea({ detailedSpot }) {
     }
 
     if (detailedSpot.numReviews && !Object.keys(reviews).length) {
-        async function readAllSpotReview(id = detailedSpot.id) {
+        async function readAllSpotReview(id) {
             await dispatch(thunkREADAllReviews(id));
         };
         readAllSpotReview(detailedSpot.id);
@@ -36,16 +34,9 @@ function SpotDetailReviewArea({ detailedSpot }) {
     }
 
     const reviewArray = Object.values(reviews)
-    console.log("🚀 ~ file: index.js:39 ~ SpotDetailReviewArea ~ reviewArray:", reviewArray)
     const hasReviewed = reviewArray.find(r => r.userId === user?.id) || user === null;
-    console.log("🚀 ~ file: index.js:41 ~ SpotDetailReviewArea ~ hasReviewed:", hasReviewed)
     const isPostable = user?.id !== detailedSpot.ownerId && !hasReviewed;
-    console.log("🚀 ~ file: index.js:43 ~ SpotDetailReviewArea ~ ownerId:", detailedSpot.ownerId)
-    console.log("🚀 ~ file: index.js:43 ~ SpotDetailReviewArea ~ userid:", user)
-    console.log("🚀 ~ file: index.js:43 ~ SpotDetailReviewArea ~ isPostable:", isPostable)
     const isPostableNoReviews = isPostable && !reviewArray.length;
-    console.log("🚀 ~ file: index.js:45 ~ SpotDetailReviewArea ~ isPostableNoReviews:", isPostableNoReviews)
-
     return (
       <div className="spotDetailReviewAreaDiv">
         <div className="reviewListStarRatingHeaderDiv"><StarRating avgRating={detailedSpot.avgRating} numReviews={detailedSpot.numReviews} /></div>
@@ -53,11 +44,11 @@ function SpotDetailReviewArea({ detailedSpot }) {
           <OpenModalButton
             buttonText="Post Your Review"
             onButtonClick={handlePostClick}
-            modalComponent={<ReviewFormModal />}
+            modalComponent={<ReviewFormModal spot={detailedSpot} userId={user.id} />}
           />}
         {isPostableNoReviews &&
             <div className="beTheFirstDiv">Be the first to post a review!</div>}
-        <ReviewList reviews={reviews} spot={detailedSpot} />
+        <ReviewList reviews={reviews} spot={detailedSpot}  />
       </div>
     )
 }

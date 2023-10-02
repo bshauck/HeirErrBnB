@@ -270,3 +270,21 @@ label {
     display: flex ;
     flex-direction: column ;
 }
+
+/* .rating for stars */
+.rating-input {
+    display: flex;
+    margin-right: 4px;
+  }
+
+  .review-item {
+    display: flex;
+  }
+
+  .rating-input .filled {
+    color: saddlebrown;
+  }
+
+  .rating-input .empty {
+    color: burlywood;
+  }

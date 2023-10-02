@@ -38,7 +38,7 @@ const routes = require('./routes');
 app.use(routes); // Connect all the routes
 
 // catch unimplemented API attempts
-app.use((_req, _res, next) => {
+app.use((req, _res, next) => {
     const err = new Error("The requested resource couldn't be found.");
     err.title = "Resource Not Found";
     err.errors = { message: "The requested resource couldn't be found." };
