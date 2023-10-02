@@ -12,7 +12,6 @@ eventually set lat lng via GoogleMaps api
 
 function SpotForm ({spot, formType}) {
     const sessionUser = useSelector(state => state.session.user);
-    console.log("🚀 ~ file: index.js:14 ~ SpotForm ~ sessionUser:", sessionUser)
     const dispatch = useDispatch();
     const history = useHistory();
     const attemptedSubmission = useRef(false);

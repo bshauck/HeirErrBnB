@@ -89,7 +89,7 @@ export const thunkREADALLUserBookings = () => async (dispatch) => {
 
 export const thunkREADBooking = id => async dispatch => {
     const response = await csrfFetch(`/api/bookings/${id}`);
-    const data = await response.json();
+    await response.json();
     dispatch(readBooking(id));
     return response;
 };
@@ -98,7 +98,7 @@ export const thunkDELETEBooking = id => async dispatch => {
     const response = await csrfFetch(`/api/bookings/${id}`, {
         method: 'DELETE',
     });
-    const data = await response.json();
+    await response.json();
     dispatch(deleteBooking(id));
     return response;
 };

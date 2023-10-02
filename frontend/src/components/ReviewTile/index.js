@@ -22,7 +22,7 @@ return (
 })}</div>
     </div>
     <div className="tileReviewTextDiv" >{review.review}</div>
-    {review.userId === user.id && <OpenModalButton
+    {user && review.userId === user.id && <OpenModalButton
       buttonText="Delete"
       onButtonClick={handleDeleteClick}
       // onModalClose={??}

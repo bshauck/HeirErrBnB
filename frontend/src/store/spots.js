@@ -88,7 +88,6 @@ const CREATE_SPOT = "spots/CREATE_SPOT";
 const UPDATE_SPOT = "spots/UPDATE_SPOT";
 
 function readAllSpots(spots) {
-    console.log("🚀 ~ file: spots.js:91 ~ readAllSpots ~ spots:", spots)
     return {
         type: READ_SPOTS,
         payload: spots
@@ -96,7 +95,6 @@ function readAllSpots(spots) {
 }
 
 export function readAllUserSpots(spots) {
-    console.log("🚀 ~ file: spots.js:99 ~ readAllUserSpots ~ spots:", spots)
     return {
         type: READ_USER_SPOTS,
         payload: spots
@@ -104,7 +102,6 @@ export function readAllUserSpots(spots) {
 }
 
 function readSpot(spot) {
-    console.log("🚀 ~ file: spots.js:107 ~ readSpot ~ spot:", spot)
     return {
         type: READ_SPOT,
         payload: spot
@@ -135,7 +132,6 @@ function updateSpot(spot) {
 export const thunkREADAllSpots = () => async (dispatch) => {
   const response = await csrfFetch("/api/spots");
   const data = await response.json();
-  console.log("🚀 ~ file: spots.js:135 ~ thunkREADAllSpots ~ data:", data)
   dispatch(readAllSpots(data.Spots));
   return response;
 };
@@ -148,21 +144,17 @@ export const thunkREADAllUserSpots = () => async (dispatch) => {
 };
 
 export const thunkREADSpot = id => async dispatch => {
-    console.log("🚀 ~ file: spots.js:150 ~ thunkREADSpot ~ id:", id)
     const response = await csrfFetch(`/api/spots/${id}`);
     const data = await response.json();
-    console.log("🚀 ~ file: spots.js:149 ~ thunkREADSpot ~ data:", data)
     dispatch(readSpot(data));
     return response;
 };
 
 export const thunkDELETESpot = id => async dispatch => {
-    console.log("🚀 ~ file: spots.js:159 ~ thunkDELETESpot ~ id:", id)
     const response = await csrfFetch(`/api/spots/${id}`, {
         method: 'DELETE',
     });
-    const data = await response.json();
-    console.log("🚀 ~ file: spots.js:159 ~ thunkDELETESpot ~ data:", data)
+    await response.json();
     dispatch(deleteSpot(id));
     return response;
 };
@@ -190,8 +182,6 @@ export const thunkDELETESpot = id => async dispatch => {
 */
 
 export const thunkCREATESpot = (spot, urls) => async dispatch => {
-  console.log("🚀 ~ file: spots.js:194 ~ thunkCREATESpot ~ urls:", urls)
-  console.log("🚀 ~ file: spots.js:194 ~ thunkCREATESpot ~ spot:", spot)
   let data;
   const { ownerId, address, city, state, country, lat, lng, name, description, price } = spot;
   const response = await csrfFetch("/api/spots", {
@@ -203,11 +193,6 @@ export const thunkCREATESpot = (spot, urls) => async dispatch => {
 
   if (response.status < 400) {
     data = await response.json();
-    console.log("🚀 ~ file: spots.js:204 ~ thunkCREATESpot ~ data:", data)
-    console.log("🚀 ~ file: spots.js:206 ~ thunkCREATESpot ~ urls:", urls)
-    for (const u of urls.urls)
-      console.log("🚀 ~ file: spots.js:208 ~ thunkCREATESpot ~ u:", u)
-
     const response2 = await csrfFetch(`/api/spots/${data.id}/images`, {
       method: "POST",
       body: JSON.stringify(urls)});
@@ -224,7 +209,6 @@ export const thunkCREATESpot = (spot, urls) => async dispatch => {
 };
 
 export const thunkUPDATESpot = (spot /*, urls */) => async dispatch => {
-  console.log("🚀 ~ file: spots.js:224 ~ thunkUPDATESpot ~ spot:", spot)
   /* TODO when images added in change */
   const { address, city, state, country, lat, lng, name, description, price } = spot;
   const response = await csrfFetch(`/api/spots/${spot.id}`, {
@@ -238,7 +222,6 @@ export const thunkUPDATESpot = (spot /*, urls */) => async dispatch => {
   /* TODO haven't come up with a good approach for URL updating yet
   * it could be a mixture of updates and creation
   */
-  console.log("🚀 ~ file: spots.js:210 ~ thunkUPDATESpot ~ spot:", spot)
   const data = await response.json();
   dispatch(updateSpot(data));
   return response;
@@ -262,7 +245,6 @@ const initialState = { /* for {} at state.spots */
 };
 
 const spotsReducer = (state = initialState, action) => {
-  console.log("🚀 ~ file: spots.js:223 ~ spotsReducer ~ action:", action)
   let newState;
   switch (action.type) {
     case READ_SPOTS: {
