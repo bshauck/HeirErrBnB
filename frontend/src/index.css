@@ -288,3 +288,67 @@ label {
   .rating-input .empty {
     color: burlywood;
   }
+
+.signupForm {
+    min-width: 300px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+
+#modalContent {
+    background-color: transparent;
+}
+
+.confirmSpotDeleteModalDiv {
+    gap: 20px;
+    border: 4px black solid;
+    border-radius: 10px;
+    /* width: 85%; */
+ }
+.spotDeleteFormButtonDiv{ gap: 5px; }
+.confirmSpotDeleteModalDiv,.spotDeleteFormButtonDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.confirmSpotDeleteModalP,.spotNoDeleteButton,.spotDeleteButton {
+    width: 250px;
+
+}
+
+.spotDeleteButton {
+    background-color: var(--aaRed);
+    color: white;
+}
+
+.spotNoDeleteButton{
+    background-color: var(--aaDarkGray);
+    color: white;
+}
+
+.signupSubmit {
+    background-color: var(--aaRed);
+    color: white;
+}
+
+.signupInput {
+    max-width: 85%;
+}
+
+i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
+    cursor: pointer;
+}
+
+.profile-dropdown > li {
+    cursor: default;
+}
+
+.manageSpotTilesDiv {
+    display: flex;
+
+}

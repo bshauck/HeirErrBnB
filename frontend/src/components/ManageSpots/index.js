@@ -33,10 +33,13 @@ const ManageSpots = () => {
 
     return (
         <div className="manageSpotsDiv">
+          <h1>Manage Spots</h1>
           <button type="button" className="createManageSpotButton" onClick={handleCreateClick}>Create a New Spot</button>
+          <div className="manageSpotTilesDiv">
           {Object.values(spots).map(s => (
                 <SpotTile key={s.id} spot={s} isManaged={true} />
             ))}
+          </div>
         </div>
     );
 }

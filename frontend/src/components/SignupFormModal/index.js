@@ -29,87 +29,74 @@ function SignupFormModal() {
       )
         .then((res, rej) => {
           if (res.ok) closeModal()
-          else throw res
+          else {console.log(res.errors)
+            throw res
+          }
     }     )
         .catch(async (res) => {
           const data = res;
           if (data && data.errors) {
             setErrors(data.errors);
           }
-        });
-    }
-    return setErrors({
-      confirmPassword: "Confirm Password field must be the same as the Password field"
-    });
-  };
+        })
+        .finally(() => {
+          setTimeout(closeModal,500)
+        })
+      }
+      return setErrors({
+        confirmPassword: "Confirm Password field must be the same as the Password field"
+      });
+    };
 
-  return (
-    <>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="text"
-            value={email}
-            autoComplete="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
-        <label>
-          Username
-          <input
-            type="text"
-            value={username}
-            autoComplete="username"
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-        {errors.username && <p>{errors.username}</p>}
-        <label>
-          First Name
-          <input
-            type="text"
-            value={firstName}
-            autoComplete="given-name"
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-        </label>
-        {errors.firstName && <p>{errors.firstName}</p>}
-        <label>
-          Last Name
-          <input
-            type="text"
-            value={lastName}
-            autoComplete="family-name"
-            onChange={(e) => setLastName(e.target.value)}
-          />
-        </label>
-        {errors.lastName && <p>{errors.lastName}</p>}
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            autoComplete="current-password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
-        <label>
-          Confirm Password
-          <input
-            type="password"
-            value={confirmPassword}
-            autoComplete="current-password"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </label>
-        {errors.confirmPassword && (
-          <p>{errors.confirmPassword}</p>
-        )}
-        <button type="submit" disabled={!(email && username && firstName && lastName && password && confirmPassword && username.length >= 4 && password.length >= 6 && password.length === confirmPassword.length)} >Sign Up</button>
+    return (
+      <>
+      <form className="signupForm" onSubmit={handleSubmit}>
+        <h2>Sign Up</h2>
+        {errors && Object.values(errors).map((e,i) => (
+        <p className="error" key={i}>{e}</p>))}
+        <input className="signupInput"
+          type="text"
+          value={firstName}
+          autoComplete="given-name"
+          placeholder="First Name"
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+        <input className="signupInput"
+          type="text"
+          value={lastName}
+          autoComplete="family-name"
+          placeholder="Last Name"
+          onChange={(e) => setLastName(e.target.value)}
+        />
+        <input className="signupInput"
+          type="text"
+          value={email}
+          autoComplete="email"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input className="signupInput"
+          type="text"
+          value={username}
+          autoComplete="username"
+          placeholder="Username"
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input className="signupInput"
+          type="password"
+          value={password}
+          autoComplete="current-password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input className="signupInput"
+          type="password"
+          value={confirmPassword}
+          autoComplete="current-password"
+          placeholder="Confirm Password"
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button className="signupSubmit" type="submit" disabled={!(email && username && firstName && lastName && password && confirmPassword && username.length >= 4 && password.length >= 6 /* && password.length === confirmPassword.length*/)} >Sign Up</button>
       </form>
     </>
   );

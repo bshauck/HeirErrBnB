@@ -101,7 +101,7 @@ const validateSignup = [
   check('password')
     .trim()
     .exists({ checkFalsy: true })
-    .withMessage("Username is required")
+    .withMessage("Password is required")
     .bail()
     .isLength({ min: 6 })
     .withMessage('Password must be 6 characters or more.'),
