@@ -1,7 +1,7 @@
 Wireframe:
 https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-16/AirBnB+MVP+Wireframes.pdf
 
-SUNDAY
+SUNDAY1
 added ErrorBoundary wrapper on top
 LoginFormModal tweaks
 Spot fill-ins for testing create more random
@@ -11,6 +11,9 @@ Renewed actionList
 Added all grading feedback to actionList
 Documented new store layout in actionList
 
+SUNDAY2
+Renaming for consistent thunkiness
+Converted Spots store functions to new approach
 
 
 MVP BUGS
@@ -37,11 +40,11 @@ NOT UP TO Wireframe
   Manage Spots --Css does not fully match the wireframes.
   Delete a Review --Css does not match the wireframes.
 The callout information box on the right of the spot's detail page should state the price for the spot followed by the label "night", and have a "Reserve" button.
-  Callout box is not located on the right side https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_callout_box_on_the_left.png
+  Callout box is not located on the right side
 If no reviews have been posted yet and the current user is logged-in and is NOT the owner of the spot, replace the reviews list with the text "Be the first to post a review!"
-  https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_not_be_the_first_to_post_a_review_text.png
+  _not_be_the_first_to_post_a_review_text.png
 If the current user is logged-in and they are viewing a spot's detail page for a spot that they HAVE NOT posted a review yet, a "Post Your Review" button shows between the rating/reviews heading and the list of reviews.
-  In new spots this button does not show. https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_unable_to_post_review_on_new_spot.mov
+  In new spots this button does not show.
 The spot management page should contain a spot tile list similar to the one in the landing page (thumbnail image, location, rating, price).
   Rating on the manage page does not match what is actually on the db.
 When the update form submission is successful, the user is navigated to the updated spot's details page.
@@ -253,3 +256,174 @@ new STORE layout
       url
     }
 }
+
+
+
+
+
+
+Ensure app runs in dev mode. Then try the following.
+
+See if this article allows for configureStore change (v18)
+  https://stackoverflow.com/questions/72479800/createstore-is-deprecated-so-im-trying-to-replace-with-configurationstore
+
+Revisit backend; ensure all error code consistent
+  API returns documented valid result or
+  error object shape.
+
+Ensure all db error responses for Auth Me are
+  returned
+
+Decide on Redux shape to best support application
+  (probably everything flattened)
+
+Decide on backend to best support Redux shape
+  (leave original API other than error code mess,
+  add new API for better support)
+
+Implement changes (additions) to backend for
+  better Redux support
+
+Dry backend (have a booking function duplicated)
+
+
+
+
+
+
+Consistent error handling:
+
+/* change fetch code back to throwing errors perhaps */
+csrfFetch(‘https://example.com/data’)
+
+fetch(url)
+.then(response => response.ok ? response.json() : Promise.reject(response))
+.then(json => doStuff(json)) //all good
+.catch(response => handleError(response)) //handle error
+
+I think with this last one we either do a dispatch(actionCreatorMethod(json/data)) in the 2nd .then,
+or we ensure the right error format in the .catch and just do a return of that error; then
+the app can look at the return and see if it has .errors and if so display them or ignore them as
+appropriate. (and put the throw of an error back in the csrfFetch; which, if invoked, goes to the .catch).
+
+const res = await fetch(url, opts).then(r => r.clone().json().catch(() => r.text()));
+The above uses clone to do both a .json and a .text on the response body
+
+Still a bit unsure about handling errors when the body wasn't packed with json, or
+when the system error(s) hit. Probably need to look at headers for content-type, or
+do the .clone and wrap a try in a catch that redoes with res.text() or some such.
+
+
+Still need to do more testing for Network errors, but the following seems pretty good:
+This assumes that error responses will either have a top-level "errors" key, or a
+top-level "message" key. (If normal responses can have these, then special checking
+will have to happen.) I'm not 100% sure I need the useless .then on !response.ok.
+
+/* put this in thunk file, or separate and import if multi-thunk files */
+/* silly ()s necessary in .catch avoiding parser confusion */
+export function fetchData(url, options) {
+  /* Returns Promise which resolves to either data or errors */
+  return fetch(url, options)
+    .then(response => response.ok
+        ? response.json()
+        : response.json().then(err => err)) /* get detailed error info  */
+    .catch(systemicError => ({"errors": {"system": systemicError.message}}))
+}
+export const jsonHeaderContent = {"Content-Type":"application/json"}
+
+/* copy this boilerplate for each thunkFunc */
+export const thunkFunc = (args) => async dispatch => {
+    /* adjust url and option args as needed; skip options on GET */
+    const url = `/api/resources`
+    const options = {
+      method: "POST",
+      headers: jsonHeaderContent,
+      body: JSON.stringify(/*args-ish*/)
+    }
+    const answer = await fetchData(url, options)
+    /* if normal response can have errors or message keys, adjust check */
+    /* change name of the actionCreator function to invoke, and possibly args */
+    if (!answer.errors && !answer.message) dispatch(appropriateActionCreator(answer))
+    /* else console.error(answer.errors || answer.message) */
+    return answer /* short-circuits store and allows app code to directly get errors */
+}  /* for display; so probably "wrong" in the sense of one-way Redux flow */
+
+In application code, when you don't care about a return value (e.g., something
+you need to use hasn't been loaded into the store yet), you can just do
+dispatch(thunkFunc(anyArgs));
+So in application code, do const result = await dispatch(thunkFunc(anyArgs));
+Then error check if needed to display errors. (Possibly handle all in .then()
+rather than await: e.g. .then(answer => answer.errors
+? setValidations(answer.errors) : setReport(answer)))
+
+
+
+===================
+In a component that needs details that will be fetched
+only for this component, a way to avoid additional
+fetch requests is to know a previous request has been
+made by keeping track of it.
+  const ref = useRef([]);
+  const refSpliceIndex = ref.current.indexOf(thing.id);
+  if (thing.id) { // have top level, check for inner need
+    if (!thing.inner) { // missing inner details
+      if (refSpliceIndex === -1) { // first request
+        ref.current.push(thing.id);
+        dispatch(thunkGetThingDetails(thing.id))
+      }
+      return null; // no details yet; but need them
+    } else if (refSpliceIndex !== -1) // fulfilled; remove
+      ref.current.splice(refSpliceIndex, 1);
+  }
+
+
+
+
+  // 11 lines avoiding 2nd reqs can be narrowed to 9 if dispatch(thunk)
+  // return value
+  const ref = useRef([]);
+  if (thing.id) { // have top level, check for inner need
+    if (!thing.inner) { // missing inner details
+      if (!ref.current[thing.id]) { // first request
+        ref.current[thing.id] = true;
+        dispatch(thunkGetThingDetails(thing.id))
+      }
+      return null; // no details yet; but need them
+    } else if (ref.current[thing.id]) // fulfilled; remove
+      delete ref.current[thing.id]
+  }
+
+
+
+Add ErrorBoundaries around components to limit error impact
+
+import React from "react";
+
+class ErrorBoundary extends React.Component {
+  state = { hasError: false, error: null, info: null}
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, info) {
+    this.setState({this.hasError, error, info})
+    console.error(error, info);
+  }
+
+  render() {
+    return this.state.hasError ? (
+      <div><h1>Something went wrong.</h1>
+        {process.env.NODE_ENV !== 'production' && (
+          <details style={{ whiteSpace: 'pre-wrap' }}>
+            <summary>Click for error details</summary>
+            {this.state.error && this.state.error.toString()}
+            <br />
+            {this.state.info && this.state.info.componentStack}
+          </details>
+        )}
+      </div>
+    ) : this.props.children
+}
+
+export default ErrorBoundary

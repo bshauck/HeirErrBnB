@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { thunkREADAllUserSpots } from '../../store/spots';
+import { thunkReadAllUserSpots } from '../../store/spots';
 import SpotTile from '../SpotTile';
 
 
@@ -15,7 +15,7 @@ const ManageSpots = () => {
 
     useEffect(() => {
         async function getUserSpots() {
-            await dispatch(thunkREADAllUserSpots());
+            await dispatch(thunkReadAllUserSpots());
         }
         if (!sessionUser) return null;
         if (!spots) getUserSpots();
@@ -23,7 +23,7 @@ const ManageSpots = () => {
 
     if (!sessionUser) return null;
     if (!spots) {
-        (async() => await dispatch(thunkREADAllUserSpots()))();
+        (async() => await dispatch(thunkReadAllUserSpots()))();
         return null;
     }
 

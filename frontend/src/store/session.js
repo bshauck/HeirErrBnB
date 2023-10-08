@@ -51,6 +51,9 @@ const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
 const SET_SPOT_OWNER = "session/SET_SPOT_OWNER"
 
+console.log("made it to beginning of store.session.js")
+
+
 export const setSpotOwner = (partialUser) => {
   return {
     type: SET_SPOT_OWNER,

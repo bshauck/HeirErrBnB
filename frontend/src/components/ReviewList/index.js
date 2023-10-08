@@ -1,7 +1,7 @@
 // frontend/src/components/ReviewList/index.js
 import { useDispatch, useSelector } from 'react-redux';
 
-import { thunkREADAllReviews } from '../../store/reviews';
+import { thunkReadAllReviews } from '../../store/reviews';
 import ReviewTile from '../ReviewTile';
 
 function ReviewList({ spot }) {
@@ -11,7 +11,7 @@ function ReviewList({ spot }) {
 
     if (!reviews) {
       async function getTheDarnReviews() {
-        await dispatch(thunkREADAllReviews(spot.id))
+        await dispatch(thunkReadAllReviews(spot.id))
       }
       getTheDarnReviews();
       return null;

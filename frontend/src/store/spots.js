@@ -77,8 +77,7 @@
     }
 }
 */
-
-import { csrfFetch } from "./csrf";
+import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
 const READ_USER_SPOTS = "spots/READ_USER_SPOTS";
@@ -129,35 +128,36 @@ function updateSpot(spot) {
     }
 }
 
-export const thunkREADAllSpots = () => async (dispatch) => {
-  const response = await csrfFetch("/api/spots");
-  const data = await response.json();
-  dispatch(readAllSpots(data.Spots));
-  return response;
+export const thunkReadAllSpots = () => async dispatch => {
+  const url = `/api/spots`
+  const answer = await fetchData(url)
+  if (!answer.errors) dispatch(readAllSpots(answer.Spots))
+  return answer
+}
+
+export const thunkReadAllUserSpots = () => async (dispatch) => {
+  const url = '/api/spots/current'
+  const answer = await fetchData(url)
+  if (!answer.errors) dispatch(readAllUserSpots(answer.Spots));
+  return answer;
 };
 
-export const thunkREADAllUserSpots = () => async (dispatch) => {
-  const response = await csrfFetch("/api/spots/current");
-  const data = await response.json();
-  dispatch(readAllUserSpots(data.Spots));
-  return response;
-};
+export const thunkReadSpot = id => async dispatch => {
+  const url = `/api/spots/${id}`
+  const answer = await fetchData(url)
+  if (!answer.errors) dispatch(readSpot(answer))
+  return answer
+}
 
-export const thunkREADSpot = id => async dispatch => {
-    const response = await csrfFetch(`/api/spots/${id}`);
-    const data = await response.json();
-    dispatch(readSpot(data));
-    return response;
-};
-
-export const thunkDELETESpot = id => async dispatch => {
-    const response = await csrfFetch(`/api/spots/${id}`, {
-        method: 'DELETE',
-    });
-    await response.json();
-    dispatch(deleteSpot(id));
-    return response;
-};
+export const thunkDeleteSpot = id => async dispatch => {
+  const url = `/api/spots/${id}`
+  const options = {
+    method: "DELETE",
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) dispatch(deleteSpot(id))
+  return answer
+}
 
 /*
      "id": 1,
@@ -181,62 +181,50 @@ export const thunkDELETESpot = id => async dispatch => {
         },
 */
 
-export const thunkCREATESpot = (spot, urls) => async dispatch => {
-  let data;
+/* TODO eventually it should be wrapped in a transaction and
+rolled back if errors in either spot or image creations */
+export const thunkCreateSpot = (spot, urls) => async dispatch => {
   const { ownerId, address, city, state, country, lat, lng, name, description, price } = spot;
-  const response = await csrfFetch("/api/spots", {
+  const url = `/api/spots`
+  const options = {
     method: "POST",
+    headers: jsonHeaderContent,
     body: JSON.stringify({
       ownerId, address, city, state, country, lat, lng,
       name, description, price
-  })});
+  })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) {
+    options.body = JSON.stringify(urls)
+    const answer2 = await csrfFetch(`/api/spots/${answer.id}/images`, options)
+    if (!answer2.errors) {
+      dispatch(createSpot(answer))
+      /* TODO dispatch(createdImages()) */
+    }
+  }
+  return answer
+}
 
-  if (response.status < 400) {
-    data = await response.json();
-    const response2 = await csrfFetch(`/api/spots/${data.id}/images`, {
-      method: "POST",
-      body: JSON.stringify(urls)});
-    if (response2.status < 400)
-      await response2.json();
-  } else return response;
-
-  /* don't need to return this data, just pass any error
-    * officially it all should be in a trnasaction and rolled
-    * back, sigh
-    */
-  dispatch(createSpot(data));
-  return data;
-};
-
-export const thunkUPDATESpot = (spot /*, urls */) => async dispatch => {
-  /* TODO when images added in change */
-  const { address, city, state, country, lat, lng, name, description, price } = spot;
-  const response = await csrfFetch(`/api/spots/${spot.id}`, {
+/* TODO when images added in change */
+export const thunkUpdateSpot = (spot /*, urls */) => async dispatch => {
+  const { id, ownerId, address, city, state, country, lat, lng, name, description, price } = spot;
+  const url = `/api/spots/${spot.id}`
+  const options = {
     method: "PUT",
+    headers: jsonHeaderContent,
     body: JSON.stringify({
-      address, city, state, country, lat, lng,
+      id, ownerId, address, city, state, country, lat, lng,
       name, description, price
-    }),
-  });
-
+    })
+  }
   /* TODO haven't come up with a good approach for URL updating yet
   * it could be a mixture of updates and creation
   */
-  const data = await response.json();
-  dispatch(updateSpot(data));
-  return response;
-};
-
-// function copyNormWithout(oldNorm, key) {
-  /* if the state doesn't contain the item, then no change is needed;
-   * otherwise, return a newObject that has everything but that
-   * particular key
-   */
-  // if (!oldNorm || !oldNorm[key]) return oldNorm;
-  // const result = {};
-//   Object.keys(oldNorm).forEach(k => {if (k !== key) result[k] = oldNorm[k]});
-//   return result;
-// }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) dispatch(updateSpot(answer))
+  return answer
+}
 
 const initialState = { /* for {} at state.spots */
     allSpots: {}, /* when filled, normalized by spotId: {spotData} */

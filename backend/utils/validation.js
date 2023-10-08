@@ -77,6 +77,8 @@ const validateSignup = [
   check('email')
     .trim()
     .exists({ checkFalsy: true })
+    .withMessage("Email is required")
+    .bail()
     .isEmail()
     .withMessage('Please provide a valid email.'),
   check('firstName')

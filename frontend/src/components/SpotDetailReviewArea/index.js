@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"
 
-import { thunkREADAllReviews } from "../../store/reviews";
+import { thunkReadAllReviews } from "../../store/reviews";
 import ReviewList from "../ReviewList"
 import OpenModalButton from "../OpenModalButton";
 import ReviewFormModal from "../ReviewFormModal";
@@ -18,7 +18,7 @@ function SpotDetailReviewArea({ detailedSpot }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(thunkREADAllReviews(detailedSpot.id));
+        dispatch(thunkReadAllReviews(detailedSpot.id));
     }, [dispatch, detailedSpot.id])
 
     function handlePostClick() {
@@ -27,7 +27,7 @@ function SpotDetailReviewArea({ detailedSpot }) {
 
     if (detailedSpot.numReviews && !Object.keys(reviews).length) {
         async function readAllSpotReview(id) {
-            await dispatch(thunkREADAllReviews(id));
+            await dispatch(thunkReadAllReviews(id));
         };
         readAllSpotReview(detailedSpot.id);
         return null;

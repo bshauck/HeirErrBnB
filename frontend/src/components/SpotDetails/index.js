@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
-import { thunkREADSpot } from "../../store/spots";
+import { thunkReadSpot } from "../../store/spots";
 import StarRating from "../StarRating";
 import { getFullImages } from "../../utils/imageUrl"
 import SpotDetailReviewArea from "../SpotDetailReviewArea";
@@ -14,7 +14,7 @@ function SpotDetails() {
 
     if (!spot || !Object.keys(spot).length || Number(spot.id) !== Number(id)) {
         if (keyedSpot !== null)
-        (async()=>await dispatch(thunkREADSpot(id)))();
+        (async()=>await dispatch(thunkReadSpot(id)))();
         return null;
     }
 

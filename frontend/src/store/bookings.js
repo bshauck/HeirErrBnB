@@ -73,28 +73,28 @@ function updateBooking(booking) {
     }
 }
 
-export const thunkREADAllBookings = () => async (dispatch) => {
+export const thunkReadAllBookings = () => async (dispatch) => {
   const response = await csrfFetch("/api/bookings");
   const data = await response.json();
   dispatch(readAllBookings(data.Bookings));
   return response;
 };
 
-export const thunkREADALLUserBookings = () => async (dispatch) => {
+export const thunkReadAllUserBookings = () => async (dispatch) => {
   const response = await csrfFetch("/api/bookings/current");
   const data = await response.json();
   dispatch(readAllUserBookings(data.Bookings));
   return response;
 };
 
-export const thunkREADBooking = id => async dispatch => {
+export const thunkReadBooking = id => async dispatch => {
     const response = await csrfFetch(`/api/bookings/${id}`);
     await response.json();
     dispatch(readBooking(id));
     return response;
 };
 
-export const thunkDELETEBooking = id => async dispatch => {
+export const thunkDeleteBooking = id => async dispatch => {
     const response = await csrfFetch(`/api/bookings/${id}`, {
         method: 'DELETE',
     });
@@ -103,7 +103,7 @@ export const thunkDELETEBooking = id => async dispatch => {
     return response;
 };
 
-export const thunkCREATEBooking = booking => async dispatch => {
+export const thunkCreateBooking = booking => async dispatch => {
   const { startDate, endDate } = booking;
   const response = await csrfFetch("/api/bookings", {
     method: "POST",
@@ -117,7 +117,7 @@ export const thunkCREATEBooking = booking => async dispatch => {
   return response;
 };
 
-export const thunkUPDATEBooking = booking => async dispatch => {
+export const thunkUpdateBooking = booking => async dispatch => {
   const { startDate, endDate } = booking;
   const response = await csrfFetch(`/api/bookings/${booking.id}`, {
     method: "PUT",

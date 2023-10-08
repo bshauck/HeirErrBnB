@@ -31,7 +31,7 @@ if (process.env.NODE_ENV !== "production") {
 // top of all the other HTML elements:
 function Root() {
   return (
-    <ErrorBoundary fallback="Error...">
+    <ErrorBoundary fallback={<div>Error...</div>}>
       <ModalProvider>
         <Provider store={store}>
           <BrowserRouter>

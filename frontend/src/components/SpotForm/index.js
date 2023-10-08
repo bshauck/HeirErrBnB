@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { thunkCREATESpot, thunkUPDATESpot } from "../../store/spots"
+import { thunkCreateSpot, thunkUpdateSpot } from "../../store/spots"
 import { getFullImages, getRandomInt } from '../../utils/imageUrl';
 
 /* TODO
@@ -64,7 +64,7 @@ function SpotForm ({spot, formType}) {
       }
       setErrors(validations);
       if (Object.keys(validations).length === 0) {
-          const thunkFunc = isEdit ? thunkUPDATESpot : thunkCREATESpot;
+          const thunkFunc = isEdit ? thunkUpdateSpot : thunkCreateSpot;
           if (!isEdit) {
           const urls = [previewUrl];
           if (supportUrl1) urls.push(supportUrl1)
