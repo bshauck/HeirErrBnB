@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import SpotForm from '../SpotForm';
 
 /*
-
       "Spots": [
         {
           "id": 1,

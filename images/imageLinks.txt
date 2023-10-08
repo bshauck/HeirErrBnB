@@ -1,61 +1,60 @@
 Wireframe:
 https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-16/AirBnB+MVP+Wireframes.pdf
 
-
-FRIDAY
-Changed pictures to those hosted by Flickr for faster load
-In CreateSpot thunk, ensure that singleSpot version of id was
-retrieved to have Owner data, before sending Create to db. Actually,
-Update can only be done by owner, so current user has the info needed;
-but anyone can see details so we do need to start ensureing user data
-retrieved and store; will start using newer store outline for this.
-After create spot; now owner's name showing correctly
-
-SATURDAY
-removed null bug introduced in Friday changes to session reducer
-started changes to seeders based on getting more requirements method
-  30 char in spot description
-  preview always state
-  some supporting images
-  all reviews have an image
-  every spot has 5-10 reviews by appropriate non-owners with
-     random text and rating
-  update previewUrl in singleSpot in reducer (should change DB)
-  moved login db errors under heading
-  getting newly created spot id after create spot
-    to correctly go to the spot details page
-  fixed update bug
-  CreateSpot lists support images vertically
-  EditSpot ignores all images
-  SpotForm  ANd PUT
-    error messages in them correctly for create.
-  Changed db API for reviews both by spotId and for user
-    to be ordered by updatedAt DESC so most recent first
-
 SUNDAY
-Update and Delete show immediately on Manage Spots
-Put Create button on Manage Spots page with no Spots
-Browser refresh updates Manage Spots
-Review list add to SpotDetails
-DeleteReview
-Delete button opens modal dialog for deleting Review
-Delete Review deletes but doesn't update
-On delete, review counts and averages need to be updated
-Callout box add to SpotDetails
-CreateReview
-Review List of Review Tiles (in update order; new added to beginning)
-    Review Tile has
-    Star Rating string
-    Post Your Review optional button
-    If No Reviews, then optional Be the first to post a review! string
-    FirstName of reviewer
-    Optional Delete button (if your review)
-Post Your Review opens modal dialog for inputting Review
-Need open star icon for review rating with Paw Print functionality
-guest user not seeing reviews on detail spots
+added ErrorBoundary wrapper on top
+LoginFormModal tweaks
+Spot fill-ins for testing create more random
+More error checking for SpotForm
+Add progress cursor for all db access
+Renewed actionList
+Added all grading feedback to actionList
+Documented new store layout in actionList
+
+
+
+MVP BUGS
+CRITICAL
+1. Unable to create a review on a new spot.
+2. Unable to update a spot
+MEDIUM
+1. Sign up button doesn't handle valid email validation ..._sign_up_button_closes_and_no_validation_shown
+2. The single spot page seems to break when a sign up is not successful single_spot_breaks_when_signup_is_not_successful
+3. Average star rating on the home/spot details page does not match the one on the manage spots page. All of them seem to be new
+4.When looking at a site with no reviews, the number of requests seems to go up with no stop _no_reviews_result_on_an_infinite_amount_of_requests
+LOW
+1. Sometimes going from the manage spots page to the home page results in a bug going_from_the_manage_spots_to_the_home_page_sometimes_results_in_a_bug
+
+SPECS NOT passing
+AUTHME
+When clicking "Sign up" button on the new user account form with errors in the form, it must show all error messages returned from the backend (similar to the following): "The provided email is invalid" or "Username must be unique".
+APPLICATION
+NOT UP TO Wireframe
+  Landing page --The css does not fully match what's expected from the wireframes. An example is the gap between each spot.
+  Spot Details --Css does not match the wireframes https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_callout_box_on_the_left.png
+  View Rating and Reviews --1 reviews is shown https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_reviews_is_shown_instead_of_review.png
+  Post Review --Css does not match the wireframes.
+  Manage Spots --Css does not fully match the wireframes.
+  Delete a Review --Css does not match the wireframes.
+The callout information box on the right of the spot's detail page should state the price for the spot followed by the label "night", and have a "Reserve" button.
+  Callout box is not located on the right side https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_callout_box_on_the_left.png
+If no reviews have been posted yet and the current user is logged-in and is NOT the owner of the spot, replace the reviews list with the text "Be the first to post a review!"
+  https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_not_be_the_first_to_post_a_review_text.png
+If the current user is logged-in and they are viewing a spot's detail page for a spot that they HAVE NOT posted a review yet, a "Post Your Review" button shows between the rating/reviews heading and the list of reviews.
+  In new spots this button does not show. https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_unable_to_post_review_on_new_spot.mov
+The spot management page should contain a spot tile list similar to the one in the landing page (thumbnail image, location, rating, price).
+  Rating on the manage page does not match what is actually on the db.
+When the update form submission is successful, the user is navigated to the updated spot's details page.
+  Update does not seem to work.
+The updated spot's detail page should display the updated information. No refresh should be necessary.
+  Update does not seem to work.
+
+
+
 
 
 ISSUES
+Passing certain db errors like signup uniqueness for email/username back up.
 Figure out default image sizes and layout
 Adding Callout with price night, small review avg, Reserve button
 StarRatings add to SpotDetails' callout box
@@ -63,6 +62,11 @@ Ensure spot delete updates landing pages/manage spot pages
 Use placeholders when users have not contributed enough images
 Have SpotForm show first 4 validation error messages to side of label
 Comma misplaced on Create Spot (city, state)
+Star icons have pointer cursor; should be default
+Add buttons to page through more spots than default page size
+Change default page size back to 20 (from 50), and track how you do
+  listing of landing spots, and maintain that, and know page being
+  displayed through renders
 
 
 Subheading size too large
@@ -88,6 +92,8 @@ csrfFetch checking status code and throwing error when code >= 400) (decoration
 suggested removing the csrfFetch throw, just checking the error code, using
 async/await; changed login modal handling but need to do that for signup;
 long term do better with then.catch consistency)
+If we do throws from thunk then all app code has to have catch and handle throws;
+instead we do returns from thunk and only check for thing.errors.
 
 Better understanding of Promise .then.catch
 Knowing when things may be promises; and why some things that are
@@ -95,19 +101,14 @@ Knowing when things may be promises; and why some things that are
     e.g., response from fetch does not always understand .JSON
 
 
-More:
-
 FINALLY CSS
 Form placeholder text lighter
 price "night", star rating "review" both darker
-
-
-
-Generate large amount of data
+Generate better, larger amount of data
 
 BUGS:
 Login on error (invalid password/credential) changes size,
-and a sliver of a modalDIv appears underneath main modal
+and a sliver of a modalDiv appears underneath main modal
 
 
 Bonus:
@@ -125,7 +126,7 @@ Achieved:
 
 Longterm:
 Have previewUrl stored in Spot
-Remove preview from Spot Images table
+Remove preview column from Spot Images table
 SpotImages are only support images;
 Update Spot has to do more work if
   updating existing images to different opens
@@ -138,5 +139,117 @@ Dan says 100-1000 generated seeds
 Look up all unseed functions via known userSpots
 Restore query size default to 20 (set to 50 for
   dev atm)
-I'm not passing certain db errors like signup
-uniqueness for email/username back up.
+
+
+
+
+
+new STORE layout
+{
+  session:
+  users:
+  spots:
+  reviews:
+  bookings:
+  spotImages:
+  reviewImages:
+},
+
+{ /* session */
+  currentUser: user || null
+}
+
+{ /* users */
+  [userId]:
+    {
+      id,
+      firstName,
+      lastName,
+
+      /* additional detail on login */
+      email,
+      username,
+      createdAt,  /// TODO?
+      updatedAt   /// TODO?
+
+      /* additional detail if asked for current spots/review/bookings */
+      "spots": [spotIdArray],
+      "reviews": [reviewIdArray],
+      "bookings": [bookingIdArray]
+    }
+}
+
+{ /* spots */
+  [spotId]:
+    {
+      "id": 1,
+      "ownerId": 1,
+      "address": "123 Disney Lane",
+      "city": "San Francisco",
+      "state": "California",
+      "country": "United States",
+      "lat": 37.7645358,
+      "lng": -122.4730327,
+      "name": "App Academy",
+      "description": "Place where web developers are created",
+      "price": 123,
+      "createdAt": "2021-11-19 20:39:36",
+      "updatedAt": "2021-11-19 20:39:36",
+      "numReviews": 4,
+      "avgRating": 4.5,
+      "previewImage": "image url",
+
+      /* additional info; Details page gets images & reviews; reserve button gets bookings */
+      "images": [spotImageIdArray],
+      "reviews": [reviewIdArray],
+      "bookings": [bookingIdArray], /* perhaps only ids whose endDate is in the future */
+    }
+  "list": [orderedIdArrayBySomeInterestingCriteriaFromQuery]
+}
+
+{ /* reviews */
+  [reviewId]:
+    {
+      id,
+      userId,
+      spotId,
+      text, /* used to be called review */
+      stars, /* 1-5 */
+
+      /* additional details */
+      images: [reviewImageIdArray]
+    },
+  "list": [idsOrderedByDescUpdatedDate]
+}
+
+{ /* bookings */
+  [bookingId]:
+    {
+      id,
+      userId,
+      spotId,
+      startDate,
+      endDate,
+      createdAt,
+      updatedAt
+    },
+  "list": [idsOrderedByEndDatePerhaps]
+}
+
+{ /* spotImages */ /* once previewUrl in spot, no need to have preview column */
+  [imageId]:
+    {
+      id,
+      spotId,
+      url
+    }
+}
+
+{ /* reviewImages */
+  [imageId]:
+    {
+      id,
+      reviewId,
+      url
+    }
+}

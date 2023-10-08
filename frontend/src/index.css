@@ -69,6 +69,12 @@ img {
     max-width: 200px;
 }
 
+/* add progress cursor during db access */
+body.waiting * {
+    cursor: progress !important;
+}
+
+
 header { /* all from css guidelines AA open */
     display: inline-flex ;
     justify-content: space-between ;

@@ -13,6 +13,7 @@ import "./index.css";
 import configureStore from "./store";
 import { restoreCSRF, csrfFetch } from "./store/csrf";
 import * as sessionActions from "./store/session";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const store = configureStore();
 
@@ -30,14 +31,16 @@ if (process.env.NODE_ENV !== "production") {
 // top of all the other HTML elements:
 function Root() {
   return (
-    <ModalProvider>
-      <Provider store={store}>
-        <BrowserRouter>
-          <App />
-          <Modal />
-        </BrowserRouter>
-      </Provider>
-    </ModalProvider>
+    <ErrorBoundary fallback="Error...">
+      <ModalProvider>
+        <Provider store={store}>
+          <BrowserRouter>
+            <App />
+            <Modal />
+          </BrowserRouter>
+        </Provider>
+      </ModalProvider>
+    </ErrorBoundary>
   );
 }
 
