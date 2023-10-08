@@ -26,10 +26,9 @@
 
 }
 */
-
-/* TODO: copy in state above, and update all api urls, etc */
-
 import { csrfFetch } from "./csrf";
+
+console.log("made it to beginning of store.reviews.js")
 
 const READ_REVIEWS = "reviews/READ_REVIEWS";
 const READ_USER_REVIEWS = "reviews/READ_USER_REVIEWS";
@@ -37,6 +36,9 @@ const READ_REVIEW = "reviews/READ_REVIEW";
 const DELETE_REVIEW = "reviews/DELETE_REVIEW";
 const CREATE_REVIEW = "reviews/CREATE_REVIEW";
 const UPDATE_REVIEW = "reviews/UPDATE_REVIEW";
+
+console.log("made it to beginning of store.reviews.js")
+
 
 function readAllReviews(reviews) {
     return {
@@ -65,6 +67,7 @@ function deleteReview(id) {
         payload: id
     };
 };
+console.log("made it to beginning of store.reviews.js")
 
 function createReview(review) {
     return {
@@ -80,28 +83,28 @@ function updateReview(review) {
     }
 }
 
-export const thunkREADAllReviews = (id) => async (dispatch) => {
+export const thunkReadAllReviews = id => async dispatch => {
   const response = await csrfFetch(`/api/spots/${id}/reviews`);
   const data = await response.json();
   dispatch(readAllReviews(data.Reviews));
   return response;
 };
 
-export const thunkREADALLUserReviews = () => async (dispatch) => {
+export const thunkReadAllUserReviews = () => async dispatch => {
   const response = await csrfFetch("/api/reviews/current");
   const data = await response.json();
   dispatch(readAllUserReviews(data.Reviews));
   return response;
 };
 
-export const thunkREADReview = id => async dispatch => {
+export const thunkReadReview = id => async dispatch => {
     const response = await csrfFetch(`/api/reviews/${id}`);
     const data = await response.json();
     dispatch(readReview(data));
     return response;
 };
 
-export const thunkDELETEReview = id => async dispatch => {
+export const thunkDeleteReview = id => async dispatch => {
     const response = await csrfFetch(`/api/reviews/${id}`, {
         method: 'DELETE',
     });
@@ -110,7 +113,7 @@ export const thunkDELETEReview = id => async dispatch => {
     return response;
 };
 
-export const thunkCREATEReview = (reviewArg,firstName) => async dispatch => {
+export const thunkCreateReview = (reviewArg,firstName) => async dispatch => {
   const { spotId, userId, review, stars } = reviewArg;
   const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
     method: "POST",
@@ -127,7 +130,7 @@ export const thunkCREATEReview = (reviewArg,firstName) => async dispatch => {
   return response;
 };
 
-export const thunkUPDATEReview = reviewObj => async dispatch => {
+export const thunkUpdateReview = reviewObj => async dispatch => {
   const { id, spotId, userId, review, stars } = reviewObj;
   const response = await csrfFetch(`/api/reviews/${id}`, {
     method: "PUT",

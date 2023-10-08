@@ -5,7 +5,7 @@ import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { thunkREADAllUserSpots } from "../../store/spots";
+import { thunkReadAllUserSpots } from "../../store/spots";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ function ProfileButton({ user }) {
 
   const manageSpots = (e) => {
     e.preventDefault();
-    dispatch(thunkREADAllUserSpots());
+    dispatch(thunkReadAllUserSpots());
     closeMenu();
     history.push("/spots/current");
   };

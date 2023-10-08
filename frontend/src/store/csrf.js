@@ -20,7 +20,16 @@ export async function csrfFetch(url, options = {}) {
     options.headers['XSRF-Token'] = Cookies.get('XSRF-TOKEN');
   }
   // call the default window's fetch with the url and the options passed in
-  const res = await window.fetch(url, options);
+  let res;
+    try {
+      res = await window.fetch(url, options);
+    } catch (error) {
+      error.status = error.status || 500;
+      if (error.errors) error.errors.fetch = "Failed to Fetch"
+      else error.errors = {"fetch": "Failed to Fetch"}
+      res = error;
+    }
+
   // if the response status code is 400 or above, then throw an error with the
     // error being the response
 
@@ -36,3 +45,14 @@ export async function csrfFetch(url, options = {}) {
 export function restoreCSRF() {
     return csrfFetch('/api/csrf/restore');
 }
+
+
+export const fetchData = (url, options) => {
+  /* Returns Promise which resolves to either data or errors */
+  return csrfFetch(url, options)
+    .then(response => response.ok
+        ? response.json()
+        : response.json().then(err => err)) /* get detailed error info  */
+    .catch(systemicError => ({"errors": {"system": systemicError.message}}))
+}
+export const jsonHeaderContent = {"Content-Type":"application/json"}

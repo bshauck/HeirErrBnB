@@ -2,9 +2,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
-import { thunkDELETEReview } from "../../store/reviews";
+import { thunkDeleteReview } from "../../store/reviews";
 import { useModal } from "../../context/Modal";
-import { thunkREADSpot } from "../../store/spots";
+import { thunkReadSpot } from "../../store/spots";
 
 function ReviewDeleteFormModal({ id }) {
   const dispatch = useDispatch();
@@ -14,8 +14,8 @@ function ReviewDeleteFormModal({ id }) {
 
 
   const reviewYesDelete = async (e) => {
-    const response = await dispatch(thunkDELETEReview(id))
-    dispatch(thunkREADSpot(revs[id].spotId))
+    const response = await dispatch(thunkDeleteReview(id))
+    dispatch(thunkReadSpot(revs[id].spotId))
     if (response.errors) setErrors(response)
     else closeModal();
   };

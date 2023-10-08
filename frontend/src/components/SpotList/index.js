@@ -1,6 +1,6 @@
 // frontend/src/components/SpotList/index.js
 import { useDispatch, useSelector } from 'react-redux';
-import { thunkREADAllSpots } from '../../store/spots';
+import { thunkReadAllSpots } from '../../store/spots';
 import SpotTile from '../SpotTile';
 
 function SpotList () {
@@ -8,7 +8,7 @@ function SpotList () {
     const dispatch = useDispatch();
 
     if (!spots || Object.keys(spots).length < 2) {
-        dispatch(thunkREADAllSpots())
+        dispatch(thunkReadAllSpots())
         return null;
     }
 

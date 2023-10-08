@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
 import { useModal } from "../../context/Modal";
-import { thunkCREATEReview } from "../../store/reviews";
+import { thunkCreateReview } from "../../store/reviews";
 import StarRatingInput from "../StarRatingInput";
-import { thunkREADSpot } from "../../store/spots";
+import { thunkReadSpot } from "../../store/spots";
 
 function ReviewFormModal({spot, userId}) {
     const dispatch = useDispatch();
@@ -17,13 +17,13 @@ function ReviewFormModal({spot, userId}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await dispatch(thunkCREATEReview({
+    await dispatch(thunkCreateReview({
       spotId,
       userId,
       review,
       stars,
     }, user.firstName))
-    dispatch(thunkREADSpot(spotId))
+    dispatch(thunkReadSpot(spotId))
     closeModal();
   };
 

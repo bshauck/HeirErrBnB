@@ -1,7 +1,7 @@
 // frontend/src/components/SpotDeleteFormModal/index.js
 import { useDispatch } from "react-redux";
 
-import { thunkDELETESpot } from "../../store/spots";
+import { thunkDeleteSpot } from "../../store/spots";
 import { useModal } from "../../context/Modal";
 
 function SpotDeleteFormModal({ id }) {
@@ -10,7 +10,7 @@ function SpotDeleteFormModal({ id }) {
 
   const spotYesDelete = async (e) => {
     e.preventDefault();
-    await dispatch(thunkDELETESpot(id))
+    await dispatch(thunkDeleteSpot(id))
     closeModal();
   };
 

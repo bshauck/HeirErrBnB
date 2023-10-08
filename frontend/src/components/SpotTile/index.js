@@ -6,7 +6,7 @@ import StarRating from '../StarRating';
 import OpenModalButton from '../OpenModalButton';
 import SpotDeleteFormModal from '../SpotDeleteFormModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { thunkREADSpot } from '../../store/spots';
+import { thunkReadSpot } from '../../store/spots';
 
 const placeholderSrc = "https://placehold.co/100?text=Photo+needed&font=montserrat"
 
@@ -29,7 +29,7 @@ function SpotTile ({spot, isManaged}) {
   }
 
   if (!stateSpot) {
-    (async()=>await(dispatch(thunkREADSpot(spot.id))))()
+    (async()=>await(dispatch(thunkReadSpot(spot.id))))()
     return null;
   }
   return (
@@ -43,7 +43,7 @@ function SpotTile ({spot, isManaged}) {
     <div className="tilePriceDiv">${spot.price} night</div>
     {isManaged &&
     <div className="managedTileButtonDiv">
-        <button classname="manageSpotUpdateButton" type="button" onClick={handleUpdateClick}>Update</button>
+        <button className="manageSpotUpdateButton" type="button" onClick={handleUpdateClick}>Update</button>
         <OpenModalButton
               className="manageSpotDeleteButton"
               buttonText="Delete"
