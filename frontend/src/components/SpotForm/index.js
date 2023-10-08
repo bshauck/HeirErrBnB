@@ -4,10 +4,11 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { thunkCREATESpot, thunkUPDATESpot } from "../../store/spots"
-import { getFullImages } from '../../utils/imageUrl';
+import { getFullImages, getRandomInt } from '../../utils/imageUrl';
 
 /* TODO
 eventually set lat lng via GoogleMaps api
+readonly display fields
 */
 
 function SpotForm ({spot, formType}) {
@@ -72,9 +73,17 @@ function SpotForm ({spot, formType}) {
           if (supportUrl4) urls.push(supportUrl4)
           spot = await dispatch(thunkFunc(spot, {urls}))
           } else await dispatch(thunkFunc(spot));
+          if (spot.errors) {
+            setErrors({errors: spot.errors})
+          } else if (spot.id) {
+            /*success case*/
+            attemptedSubmission.current = false;
+            history.push(`/spots/${spot.id}`);
+          } else {
+            /* error in handling; throw to notice */
+            throw new Error (`bug in ${isEdit?"edit":"create"} Spot`)
+          }
 
-          attemptedSubmission.current = false;
-          history.push(`/spots/${spot.id}`);
         }
     };
 
@@ -92,14 +101,14 @@ function SpotForm ({spot, formType}) {
       /* takes too long to fill out a form each time so in dev have a button */
       const urls = getFullImages();
       setPreviewUrl(urls[0]);
-      setAddress('432 Main St');
+      setAddress(`${getRandomInt(1,15000)} Main St`);
       setCity('Denver');
       setState('Colorado');
       setCountry('United States');
       setName(title.current);
       title.current=title.current+"a"
       setDescription('This is exactly 30 characters.');
-      setPrice('543');
+      setPrice(getRandomInt(50,1000).toString());
       setSupportUrl1(urls[1])
       setSupportUrl2(urls[2])
       setSupportUrl3(urls[3])
@@ -111,6 +120,7 @@ function SpotForm ({spot, formType}) {
   <form className="spotForm" onSubmit={handleSubmit} >
     <div className="innerSpotFormDiv">
     <h1>{formType}</h1> <button type="button" onClick={defaultFillSpot}>DEFAULT</button>
+    <p className="error">{errors.errors?`Errors: ${errors.errors}`:""}</p>
     <section className="createSpotSection1">
     <h2>Where's your place located?</h2>
     <p>Guests will only get your exact location once they book a reservation.</p>

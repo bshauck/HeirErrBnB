@@ -1,5 +1,5 @@
 // frontend/src/components/LoginFormModal/index.js
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
@@ -26,7 +26,7 @@ function LoginFormModal() {
     setErrors({});
     return dispatch(sessionActions.login({ credential, password }))
       .then(closeModal)
-      .catch(async (res) => {
+      .catch(async res => {
         const data = await res.json();
         if (data && data.errors) {
           setErrors(data.errors);
@@ -46,7 +46,7 @@ function LoginFormModal() {
             value={credential}
             placeholder="Username or Email"
             autoComplete="username"
-            onChange={(e) => setCredential(e.target.value)}
+            onChange={e => setCredential(e.target.value)}
             required
           />
           <input
@@ -55,7 +55,7 @@ function LoginFormModal() {
             value={password}
             placeholder="Password"
             autoComplete="current-password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             required
           />
         <button disabled={credential.length < 4 || password.length < 6} className="loginButton" type="submit">Log In</button>
