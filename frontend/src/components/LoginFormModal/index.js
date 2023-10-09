@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-import * as sessionActions from "../../store/session";
+import { thunkLogin } from "../../store/session";
 import { useModal } from "../../context/Modal";
 
 function LoginFormModal() {
@@ -17,14 +17,14 @@ function LoginFormModal() {
   function demoUserActivated(e) {
     setCredential("demo@user.io");
     setPassword("password");
-    dispatch(sessionActions.login({ "credential": "demo@user.io", "password": "password" }));
+    dispatch(thunkLogin({ "credential": "demo@user.io", "password": "password" }));
     setTimeout(closeModal,500)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});
-    return dispatch(sessionActions.login({ credential, password }))
+    return dispatch(thunkLogin({ credential, password }))
       .then(response => {
         if (response.ok) return closeModal()
         else throw response

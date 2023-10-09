@@ -21,7 +21,7 @@
       }
     optionalOrderedList: [],
     }
-  singleSpot: {
+  singleSpot: { // spot details
       "id": 1,
       "ownerId": 1,
       "address": "123 Disney Lane",
@@ -77,6 +77,40 @@
     }
 }
 */
+
+/* New store shape for spots
+{
+  [spotId]:
+    {
+      "id": 1,
+      "ownerId": 1,
+      "address": "123 Disney Lane",
+      "city": "San Francisco",
+      "state": "California",
+      "country": "United States",
+      "lat": 37.7645358,
+      "lng": -122.4730327,
+      "name": "App Academy",
+      "description": "Place where web developers are created",
+      "price": 123,
+      "createdAt": "2021-11-19 20:39:36",
+      "updatedAt": "2021-11-19 20:39:36",
+      "numReviews": 4,
+      "avgRating": 4.5,
+      "previewImage": "image url",
+
+      // additional info; Details page gets images & reviews
+      // reserve button gets bookings
+      "images": [spotImageIdArray],
+      "reviews": [reviewIdArray],
+      "bookings": [bookingIdArray], // perhaps only ids whose endDate is in the future
+    }
+  "list": [orderedIdArrayBySomeInterestingCriteriaFromQuery]
+}
+*/
+
+
+
 import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
@@ -132,15 +166,16 @@ export const thunkReadAllSpots = () => async dispatch => {
   const url = `/api/spots`
   const answer = await fetchData(url)
   if (!answer.errors) dispatch(readAllSpots(answer.Spots))
-  return answer
+  return answer.Spots
 }
 
-export const thunkReadAllUserSpots = () => async (dispatch) => {
+
+export const thunkReadAllUserSpots = (args) => async dispatch => {
   const url = '/api/spots/current'
   const answer = await fetchData(url)
-  if (!answer.errors) dispatch(readAllUserSpots(answer.Spots));
-  return answer;
-};
+  if (!answer.errors) dispatch(readAllUserSpots(answer.Spots))
+  return answer
+}
 
 export const thunkReadSpot = id => async dispatch => {
   const url = `/api/spots/${id}`
@@ -196,6 +231,8 @@ export const thunkCreateSpot = (spot, urls) => async dispatch => {
   }
   const answer = await fetchData(url, options)
   if (!answer.errors) {
+    answer.numReviews = 0; /* ponder in db */
+    answer.avgRating = null; /* ponder in db */
     options.body = JSON.stringify(urls)
     const answer2 = await csrfFetch(`/api/spots/${answer.id}/images`, options)
     if (!answer2.errors) {
@@ -206,7 +243,6 @@ export const thunkCreateSpot = (spot, urls) => async dispatch => {
   return answer
 }
 
-/* TODO when images added in change */
 export const thunkUpdateSpot = (spot /*, urls */) => async dispatch => {
   const { id, ownerId, address, city, state, country, lat, lng, name, description, price } = spot;
   const url = `/api/spots/${spot.id}`
@@ -222,7 +258,9 @@ export const thunkUpdateSpot = (spot /*, urls */) => async dispatch => {
   * it could be a mixture of updates and creation
   */
   const answer = await fetchData(url, options)
-  if (!answer.errors) dispatch(updateSpot(answer))
+  if (!answer.errors) {
+    dispatch(updateSpot(answer))
+  }
   return answer
 }
 

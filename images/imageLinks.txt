@@ -15,6 +15,21 @@ SUNDAY2
 Renaming for consistent thunkiness
 Converted Spots store functions to new approach
 
+SUNDAY3
+(convert rest of thunks)
+put in app avoid multiple review reads
+moved booking out until time to add it
+made preview images more uniform starting size
+Star icons now have default cursor
+add reviews to spot state shape
+set numReviews to 0 and avgRating to null
+  and reviews to [] for new Spots
+Add comments in all store files for
+  transition to new store shape
+
+
+SUNDAY4
+
 
 MVP BUGS
 CRITICAL
@@ -65,7 +80,6 @@ Ensure spot delete updates landing pages/manage spot pages
 Use placeholders when users have not contributed enough images
 Have SpotForm show first 4 validation error messages to side of label
 Comma misplaced on Create Spot (city, state)
-Star icons have pointer cursor; should be default
 Add buttons to page through more spots than default page size
 Change default page size back to 20 (from 50), and track how you do
   listing of landing spots, and maintain that, and know page being
@@ -162,27 +176,29 @@ new STORE layout
   currentUser: user || null
 }
 
-{ /* users */
+/* users */
+{
   [userId]:
     {
       id,
       firstName,
       lastName,
 
-      /* additional detail on login */
+      // additional detail on login
       email,
       username,
       createdAt,  /// TODO?
       updatedAt   /// TODO?
 
-      /* additional detail if asked for current spots/review/bookings */
+      // additional detail if asked for current spots/review/bookings
       "spots": [spotIdArray],
       "reviews": [reviewIdArray],
       "bookings": [bookingIdArray]
     }
 }
 
-{ /* spots */
+/* spots */
+{
   [spotId]:
     {
       "id": 1,
@@ -200,32 +216,35 @@ new STORE layout
       "updatedAt": "2021-11-19 20:39:36",
       "numReviews": 4,
       "avgRating": 4.5,
-      "previewImage": "image url",
+      "previewUrl": "image url",
 
-      /* additional info; Details page gets images & reviews; reserve button gets bookings */
+      // additional info; Details page gets images & reviews
+      // reserve button gets bookings
       "images": [spotImageIdArray],
       "reviews": [reviewIdArray],
-      "bookings": [bookingIdArray], /* perhaps only ids whose endDate is in the future */
+      "bookings": [bookingIdArray], // perhaps only ids whose endDate is in the future
     }
   "list": [orderedIdArrayBySomeInterestingCriteriaFromQuery]
 }
 
-{ /* reviews */
+/* reviews */
+{
   [reviewId]:
     {
       id,
       userId,
       spotId,
-      text, /* used to be called review */
-      stars, /* 1-5 */
+      commentary, // renamed review column
+      stars, // 1-5
 
-      /* additional details */
+      // additional details
       images: [reviewImageIdArray]
     },
   "list": [idsOrderedByDescUpdatedDate]
 }
 
-{ /* bookings */
+/* bookings */
+{
   [bookingId]:
     {
       id,
@@ -236,10 +255,11 @@ new STORE layout
       createdAt,
       updatedAt
     },
-  "list": [idsOrderedByEndDatePerhaps]
+  "list": [idsOrderedByAscFutureEndDatePerhaps]
 }
 
-{ /* spotImages */ /* once previewUrl in spot, no need to have preview column */
+/* spotImages */ /* once previewUrl in spot, no need to have preview column */
+{
   [imageId]:
     {
       id,
@@ -248,7 +268,8 @@ new STORE layout
     }
 }
 
-{ /* reviewImages */
+/* reviewImages */
+{
   [imageId]:
     {
       id,
@@ -256,10 +277,6 @@ new STORE layout
       url
     }
 }
-
-
-
-
 
 
 Ensure app runs in dev mode. Then try the following.
@@ -274,20 +291,11 @@ Revisit backend; ensure all error code consistent
 Ensure all db error responses for Auth Me are
   returned
 
-Decide on Redux shape to best support application
-  (probably everything flattened)
-
 Decide on backend to best support Redux shape
   (leave original API other than error code mess,
-  add new API for better support)
-
-Implement changes (additions) to backend for
-  better Redux support
+  add new API for better support if needed)
 
 Dry backend (have a booking function duplicated)
-
-
-
 
 
 
@@ -319,11 +327,11 @@ This assumes that error responses will either have a top-level "errors" key, or 
 top-level "message" key. (If normal responses can have these, then special checking
 will have to happen.) I'm not 100% sure I need the useless .then on !response.ok.
 
-/* put this in thunk file, or separate and import if multi-thunk files */
+/* put this in csrf file, or separate and import if multi-thunk files */
 /* silly ()s necessary in .catch avoiding parser confusion */
 export function fetchData(url, options) {
   /* Returns Promise which resolves to either data or errors */
-  return fetch(url, options)
+  return csrfFetch(url, options)
     .then(response => response.ok
         ? response.json()
         : response.json().then(err => err)) /* get detailed error info  */
@@ -343,7 +351,7 @@ export const thunkFunc = (args) => async dispatch => {
     const answer = await fetchData(url, options)
     /* if normal response can have errors or message keys, adjust check */
     /* change name of the actionCreator function to invoke, and possibly args */
-    if (!answer.errors && !answer.message) dispatch(appropriateActionCreator(answer))
+    if (!answer.errors) dispatch(appropriateActionCreator(answer))
     /* else console.error(answer.errors || answer.message) */
     return answer /* short-circuits store and allows app code to directly get errors */
 }  /* for display; so probably "wrong" in the sense of one-way Redux flow */
@@ -363,21 +371,6 @@ In a component that needs details that will be fetched
 only for this component, a way to avoid additional
 fetch requests is to know a previous request has been
 made by keeping track of it.
-  const ref = useRef([]);
-  const refSpliceIndex = ref.current.indexOf(thing.id);
-  if (thing.id) { // have top level, check for inner need
-    if (!thing.inner) { // missing inner details
-      if (refSpliceIndex === -1) { // first request
-        ref.current.push(thing.id);
-        dispatch(thunkGetThingDetails(thing.id))
-      }
-      return null; // no details yet; but need them
-    } else if (refSpliceIndex !== -1) // fulfilled; remove
-      ref.current.splice(refSpliceIndex, 1);
-  }
-
-
-
 
   // 11 lines avoiding 2nd reqs can be narrowed to 9 if dispatch(thunk)
   // return value

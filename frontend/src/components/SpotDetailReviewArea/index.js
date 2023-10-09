@@ -1,5 +1,5 @@
-// frontend/src/components/SpotDefailReviewArea/index.js
-import { useEffect } from "react";
+// frontend/src/components/SpotDetailReviewArea/index.js
+import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux"
 
 import { thunkReadAllReviews } from "../../store/reviews";
@@ -17,20 +17,19 @@ function SpotDetailReviewArea({ detailedSpot }) {
     const reviews = useSelector(state => state.reviews.spot);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(thunkReadAllReviews(detailedSpot.id));
-    }, [dispatch, detailedSpot.id])
 
     function handlePostClick() {
 
     }
 
+    const ref = useRef([]); /* ensure only one outstanding request */
     if (detailedSpot.numReviews && !Object.keys(reviews).length) {
-        async function readAllSpotReview(id) {
-            await dispatch(thunkReadAllReviews(id));
-        };
-        readAllSpotReview(detailedSpot.id);
-        return null;
+      if (!detailedSpot.reviews) { // missing inner details
+        if (!ref.current[detailedSpot.id])  // first request
+          ref.current[detailedSpot.id] = dispatch(thunkReadAllReviews(detailedSpot))
+        return null; // no details yet; but need them
+      } else if (ref.current[detailedSpot.id]) // fulfilled; remove
+        delete ref.current[detailedSpot.id]
     }
 
     const reviewArray = Object.values(reviews)

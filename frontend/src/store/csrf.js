@@ -46,7 +46,6 @@ export function restoreCSRF() {
     return csrfFetch('/api/csrf/restore');
 }
 
-
 export const fetchData = (url, options) => {
   /* Returns Promise which resolves to either data or errors */
   return csrfFetch(url, options)

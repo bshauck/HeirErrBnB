@@ -1,4 +1,4 @@
-/* reviews slice of state
+/* reviews OLD slice of state
 {
     spot: {
       [reviewId]: {
@@ -26,11 +26,31 @@
 
 }
 */
-import { csrfFetch } from "./csrf";
+
+
+/* NEW review state shape
+{
+[reviewId]:
+  {
+    id,
+    userId,
+    spotId,
+    commentary,
+    stars,
+
+    // additional detail
+    firstName, // from user via userId
+    images: [reviewImageIdArray]
+  },
+  "list": [idsOrderedByDescUpdatedDate]
+}
+*/
+
+import { READ_SPOT_REVIEWS, readAllSpotReviews } from "./commonActionCreators";
+import { fetchData } from "./csrf";
 
 console.log("made it to beginning of store.reviews.js")
 
-const READ_REVIEWS = "reviews/READ_REVIEWS";
 const READ_USER_REVIEWS = "reviews/READ_USER_REVIEWS";
 const READ_REVIEW = "reviews/READ_REVIEW";
 const DELETE_REVIEW = "reviews/DELETE_REVIEW";
@@ -38,14 +58,6 @@ const CREATE_REVIEW = "reviews/CREATE_REVIEW";
 const UPDATE_REVIEW = "reviews/UPDATE_REVIEW";
 
 console.log("made it to beginning of store.reviews.js")
-
-
-function readAllReviews(reviews) {
-    return {
-        type: READ_REVIEWS,
-        payload: reviews
-    }
-}
 
 function readAllUserReviews(reviews) {
     return {
@@ -83,69 +95,73 @@ function updateReview(review) {
     }
 }
 
-export const thunkReadAllReviews = id => async dispatch => {
-  const response = await csrfFetch(`/api/spots/${id}/reviews`);
-  const data = await response.json();
-  dispatch(readAllReviews(data.Reviews));
-  return response;
-};
+
+export const thunkReadAllReviews = spot => async dispatch => {
+  const url = `/api/spots/${spot.id}/reviews`
+  const answer = await fetchData(url)
+  if (!answer.errors) {
+    spot.reviews = answer.Reviews
+    dispatch(readAllSpotReviews(answer.Reviews, spot.id))
+  }
+  return answer
+}
 
 export const thunkReadAllUserReviews = () => async dispatch => {
-  const response = await csrfFetch("/api/reviews/current");
-  const data = await response.json();
-  dispatch(readAllUserReviews(data.Reviews));
-  return response;
-};
+  const url = `/api/reviews/current`
+  const answer = await fetchData(url)
+  if (!answer.errors) dispatch(readAllUserReviews(answer.Reviews))
+  return answer
+}
 
 export const thunkReadReview = id => async dispatch => {
-    const response = await csrfFetch(`/api/reviews/${id}`);
-    const data = await response.json();
-    dispatch(readReview(data));
-    return response;
-};
+  const url = `/api/reviews/${id}`
+  const answer = await fetchData(url)
+  if (!answer.errors) dispatch(readReview(answer))
+  return answer
+}
 
 export const thunkDeleteReview = id => async dispatch => {
-    const response = await csrfFetch(`/api/reviews/${id}`, {
-        method: 'DELETE',
-    });
-    await response.json();
-    dispatch(deleteReview(id));
-    return response;
-};
+  const answer = await fetchData(`/api/reviews/${id}`, {method: 'DELETE'})
+  if (!answer.errors) dispatch(deleteReview(id))
+  return answer
+}
 
-export const thunkCreateReview = (reviewArg,firstName) => async dispatch => {
+export const thunkCreateReview = (reviewArg, firstName) => async dispatch => {
   const { spotId, userId, review, stars } = reviewArg;
-  const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
+  const url = `/api/spots/${spotId}/reviews`
+  const options = {
     method: "POST",
     body: JSON.stringify({
       spotId,
       userId,
       review,
       stars
-    }),
-  });
-  const data = await response.json();
-  data.firstName=firstName;
-  dispatch(createReview(data));
-  return response;
-};
+    })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) {
+    answer.firstName = firstName
+  } dispatch(createReview(answer))
+  return answer
+}
 
 export const thunkUpdateReview = reviewObj => async dispatch => {
   const { id, spotId, userId, review, stars } = reviewObj;
-  const response = await csrfFetch(`/api/reviews/${id}`, {
+  const url = `/api/reviews/${id}`
+  const options = {
     method: "PUT",
-    body: JSON.stringify({ /* fill out */
+    body: JSON.stringify({
       id,
       spotId,
       userId,
       review,
       stars
-   }),
-  });
-  const data = await response.json();
-  dispatch(updateReview(data));
-  return response;
-};
+    })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) dispatch(updateReview(answer))
+  return answer
+}
 
 const initialState = {
     spot: {},
@@ -155,8 +171,8 @@ const initialState = {
 const reviewsReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
-    case READ_REVIEWS: {
-        const reviews = action.payload;
+    case READ_SPOT_REVIEWS: {
+        const reviews = action.payload.reviews;
         const normalized = {};
         reviews.forEach(r => normalized[r.id]=r)
         newState = {...state};

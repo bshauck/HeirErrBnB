@@ -354,7 +354,7 @@ i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
     cursor: pointer;
 }
 
-.profile-dropdown > li {
+.fa-star,.profile-dropdown > li {
     cursor: default;
 }
 

@@ -44,7 +44,7 @@ and without logged-in user
  *
  */
 
-import { csrfFetch } from "./csrf";
+import { csrfFetch, fetchData } from "./csrf";
 import { READ_SPOT } from "./spots";
 
 const SET_USER = "session/setUser";
@@ -74,28 +74,27 @@ const removeUser = () => {
   };
 };
 
-export const login = (user) => async (dispatch) => {
+
+export const thunkLogin = user => async dispatch => {
   const { credential, password } = user;
-  const response = await csrfFetch("/api/session", {
+  const url = `/api/resources`
+  const options = {
     method: "POST",
     body: JSON.stringify({
       credential,
       password,
-    }),
-  });
-  if (response.status >= 400)
-    throw response;
-  const data = await response.json();
-  // if (data && data?.errors)
-  //   throw data;
-  dispatch(setUser(data.user));
-  return response;
-};
-export const thunkLogin=login;
+    })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) dispatch(setUser(answer.user))
+  else throw answer;
+  return answer.user
+}
 
-export const signup = (user) => async (dispatch) => {
+export const thunkSignup = user => async dispatch => {
   const { username, firstName, lastName, email, password } = user;
-  const response = await csrfFetch("/api/users", {
+  const url = `/api/users`
+  const options = {
     method: "POST",
     body: JSON.stringify({
       username,
@@ -103,22 +102,18 @@ export const signup = (user) => async (dispatch) => {
       lastName,
       email,
       password,
-    }),
-  });
-  const data = await response.json();
-  dispatch(setUser(data.user));
-  return response;
-};
-export const thunkSignup = signup;
+    })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) dispatch(setUser(answer.user))
+  return answer
+}
 
-export const logout = () => async (dispatch) => {
-  const response = await csrfFetch('/api/session', {
-    method: 'DELETE',
-  });
-  dispatch(removeUser());
-  return response;
-};
-export const thunkLogout = logout;
+export const thunkLogout = () => async dispatch => {
+  const answer = await fetchData(`/api/session`, { method: 'DELETE' })
+  if (!answer.errors) dispatch(removeUser())
+  return answer
+}
 
 const initialState = { user: null };
 

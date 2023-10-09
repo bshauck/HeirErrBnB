@@ -1,21 +1,13 @@
 // frontend/src/components/ReviewList/index.js
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { thunkReadAllReviews } from '../../store/reviews';
 import ReviewTile from '../ReviewTile';
 
 function ReviewList({ spot }) {
     const reviews = useSelector(state => state.reviews.spot);
     const user = useSelector(state => state.session.user);
-    const dispatch = useDispatch();
 
-    if (!reviews) {
-      async function getTheDarnReviews() {
-        await dispatch(thunkReadAllReviews(spot.id))
-      }
-      getTheDarnReviews();
-      return null;
-    }
+    // ok to have 0 reviews; may be new, etc.
 
     /* sort reviews by updatedAt date*/
     let arr = Object.values(reviews);
