@@ -4,4 +4,4 @@ Most actionCreators will be found in the store .js file containing the reducer f
 
 export const READ_SPOT_REVIEWS = "reviews/READ_SPOT_REVIEWS"; /* spot */
 export const READ_USER_REVIEWS = "reviews/READ_USER_REVIEWS"; /* session */
-export const READ_SPOT = "spots/READ_SPOT"; /* session */
+export const READ_SPOT = "spots/READ_SPOT"; /* session, spotImage */

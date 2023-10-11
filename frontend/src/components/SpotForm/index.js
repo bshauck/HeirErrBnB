@@ -31,7 +31,7 @@ function SpotForm ({spot, formType}) {
     const [errors, setErrors] = useState({});
     const isEdit = formType === "Update your Spot";
     let ownerId;
-    let title = useRef('abc')
+    let title = useRef('AAA')
 
     if (!sessionUser) return null
     else ownerId = sessionUser.id;
@@ -71,8 +71,12 @@ function SpotForm ({spot, formType}) {
           if (supportUrl2) urls.push(supportUrl2)
           if (supportUrl3) urls.push(supportUrl3)
           if (supportUrl4) urls.push(supportUrl4)
+          spot.numReviews = 0; spot.avgRating = null; spot.reviews=[];
           spot = await dispatch(thunkFunc(spot, {urls}))
-          } else await dispatch(thunkFunc(spot));
+          } else {
+            if (!spot.avgRating) {spot.numReviews=0; spot.avgRating=null; spot.reviews=[];};
+            await dispatch(thunkFunc(spot));
+          }
           if (spot.errors) {
             setErrors({errors: spot.errors})
           } else if (spot.id) {

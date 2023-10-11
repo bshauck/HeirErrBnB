@@ -25,3 +25,15 @@ changed Review columns/model instVar from "review" to "commentary"
 changed seeders to support commentary
 changed backend validation to support commentary
 changed frontend to handle commentary
+added spot numReviews=0/avgRating=null to frontend    creation store values, and to edit if avgRating undefined
+Fixed landing page "loses" previewUrl display; but refresh brings it back
+Adding new review does for existing spots correctly update review count and average
+Updating Spot works correctly for existing Spot
+
+
+NOt displaying additional images on spot details
+Post your review button incorrectly stays up after posting
+
+
+
+Extra reading of DB

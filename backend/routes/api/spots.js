@@ -189,14 +189,14 @@ router.route('/:spotId(\\d+)')
         });
         reviewInfo = reviewInfo[0].toJSON();
         spot = spot.toJSON(); spot.numReviews = reviewInfo.numReviews; spot.avgRating = reviewInfo.avgRating;
-        spot = adjustPojo(spot, ['id', 'ownerId', 'address', 'city','state', 'country', 'lat', 'lng', 'name', 'description', 'price', 'createdAt', 'updatedAt', 'numReviews', 'avgRating', 'SpotImages', 'Owner']);
+        spot = adjustPojo(spot, ['id', 'ownerId', 'address', 'city','state', 'country', 'lat', 'lng', 'name', 'description', 'price', 'previewUrl', 'createdAt', 'updatedAt', 'numReviews', 'avgRating', 'SpotImages', 'Owner']);
         return res.json(spot);
     })
     .put(requireAuth, validateEditSpot, async (req, res, next) => {
         let spot = await Spot.findByPk(req.params.spotId);
         if (spot) {
             if (fitsAuthor(req, next, spot.ownerId)) {
-            const {address, city, state, country, lat, lng, name, description, price} = req.body;
+            const {address, city, state, country, lat, lng, name, description, price, previewUrl} = req.body;
             if (address) spot.address = address;
             if (city) spot.city = city;
             if (state) spot.state = state;
@@ -206,6 +206,7 @@ router.route('/:spotId(\\d+)')
             if (name) spot.name = name;
             if (description) spot.description = description;
             if (price) spot.price = price;
+            if (previewUrl) spot.previewUrl = previewUrl;
             await spot.save();
             spot = spot.toJSON();
             return res.json(spot)

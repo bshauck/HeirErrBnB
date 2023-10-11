@@ -179,21 +179,29 @@ const reviewsReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
     case READ_SPOT_REVIEWS: { /* reviews, spotId */
-        const reviews = action.payload.reviews;
+        let {reviews,spotId} = action.payload
         if (!reviews.length) return state; /* nothing to update */
         const normalized = {};
         reviews.forEach(r => normalized[r.id]=r)
         newState = {...state};
         newState.id = {...state.id, ...normalized};
-        newState.spotLatest = {...state.spotLatest, }
+        reviews = reviews.map(r => r.id)
+        newState.spotLatest = {...state.spotLatest, [spotId]: reviews}
         return newState;
     }
-    case READ_USER_REVIEWS: {
-        const reviews = action.payload;
+    case READ_USER_REVIEWS: { /* reviews */
+        const reviews = [...action.payload];
         const normalized = {};
-        reviews.forEach(r => normalized[r.id]=r)
+        reviews.forEach(r => {
+          r.firstName = r.User.firstName
+          delete r.User
+          r.images=r.ReviewImages.map(i=>i.id)
+          delete r.ReviewImages
+          normalized[r.id]=r
+        })
+        /* should have deepCompare here */
         newState = {...state};
-        newState.user = normalized;
+        newState.id = {...state.id, ...normalized};
         return newState;
     }
     case CREATE_REVIEW:

@@ -112,7 +112,7 @@ in state.spots.id
 }
 */
 
-import { READ_SPOT } from "./commonActionCreators";
+import { READ_SPOT, READ_SPOT_REVIEWS } from "./commonActionCreators";
 
 import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
 
@@ -277,7 +277,8 @@ const spotsReducer = (state = initialState, action) => {
     case READ_SPOTS: {
         const normalized = {};
         action.payload.forEach(s => normalized[s.id]=s)
-        newState = {...state, ...normalized};
+        newState = {...state}
+        newState.id = {...state.id, ...normalized};
         return newState;
     }
     case READ_USER_SPOTS: {
@@ -297,11 +298,13 @@ const spotsReducer = (state = initialState, action) => {
       return newState;
     }
     case READ_SPOT: { /* old singleSpot */
-      const id = action.payload.id;
-      const spot = action.payload;
-      newState = {...state};
-      newState.id = {...state.id,  [id]: spot};
-      return newState;
+      const id = action.payload.id
+      const spot = action.payload
+      const images = action.payload.SpotImages.map(s=>s.id)
+      spot.images = images
+      newState = {...state}
+      newState.id = {...state.id,  [id]: spot}
+      return newState
     }
 
     case DELETE_SPOT: /* payload is spotId */
@@ -311,6 +314,14 @@ const spotsReducer = (state = initialState, action) => {
       newState.userQuery = {...state.userQuery};
       delete newState.userSpots[action.payload];
       return newState;
+    case READ_SPOT_REVIEWS: {
+      let {reviews,spotId} = action.payload
+      reviews = reviews.map(r => r.id)
+      newState = {...state}
+      newState.id = {...state.id}
+      newState.id[spotId] = {...state.id[spotId], reviews }
+      return newState
+    }
     default:
       return state;
   }

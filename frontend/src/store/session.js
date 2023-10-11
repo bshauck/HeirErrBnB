@@ -124,13 +124,13 @@ const sessionReducer = (state = initialState, action) => {
     case SET_USER:
       const newUser = action.payload
       newState.user = newUser;
-      if (newUser && !state[newUser.id]?.username) /* didn't have full user info */
-        newState[newUser.id] = newUser;
+      if (newUser && !state.id[newUser.id]?.username) /* didn't have full user info */
+        newState.id[newUser.id] = newUser;
       return newState;
     case READ_SPOT:
       const partialUser = action.payload.Owner;
-      if (state[partialUser.id]) return state; /* already have this */
-      newState[partialUser.id] = partialUser;
+      if (state.id[partialUser.id]) return state; /* already have this */
+      newState.id[partialUser.id] = partialUser;
       return newState;
     case REMOVE_USER: /* don't remove key; names still used in spot details */
       newState.user = null;

@@ -14,7 +14,7 @@ import StarRating from "../StarRating";
 */
 function SpotDetailReviewArea({ detailedSpot }) {
     const user = useSelector(state => state.session.user);
-    const reviews = useSelector(state => state.reviews[detailedSpot.id]);
+    const reviews = useSelector(state => state.spots.id[detailedSpot.id]?.reviews);
     const dispatch = useDispatch();
 
 
@@ -27,34 +27,36 @@ function SpotDetailReviewArea({ detailedSpot }) {
     in so you can determine (1) if ANY reviews exist for
     the spot, and (2) if so, does the user have one */
 
-    const spotRef = useRef([]); /* avoid resubmitting request */
-    const userRef = useRef([]);
-    const num = detailedSpot.numReviews;
+    const spotRef = useRef({});
+    const userRef = useRef({});
+    const sReviews = detailedSpot.reviews;
     console.log("🚀 ~ SpotDetailReviewArea ~ detailedSpot:", detailedSpot)
-    if (!num && num !== 0) { /* need to read spot reviews */
+    if (!sReviews) { /* need to read spot reviews */
         if (!spotRef.current[detailedSpot.id])  // first request
           spotRef.current[detailedSpot.id] = dispatch(thunkReadAllReviews(detailedSpot))
         return null; // no details yet; but need them
     } else if (spotRef.current[detailedSpot.id]) // fulfilled; remove
         delete spotRef.current[detailedSpot.id]
-    if (num !== 0 && !Array.isArray(user.reviews)) { /* need user reviews */
+
+console.log("🚀 ~ SpotDetailReviewArea ~ sReviews:", sReviews)
+    if (sReviews.length && !Array.isArray(user?.reviews)) { /* need user reviews */
       if (!userRef.current[user.id]) // first request
         userRef.current[user.id] = dispatch(thunkReadAllUserReviews())
-        return null;
-      }
+      return null;
+    } else if (Array.isArray(user.reviews))
+      if (userRef.current[user.id]) delete userRef.current[user.id]
 
       console.log("🚀 ~ file: index.js:43 ~ SpotDetailReviewArea ~ user:", user)
 
 
     let isPostable = user?.id !== detailedSpot.ownerId
     let isPostableNoReviews = false;
-    if (!reviews || !reviews.length || !Object.values(reviews).length) {
+    if (!reviews || !reviews.length) {
       const reviewArray = Object.values(reviews)
       const hasReviewed = reviewArray.find(r => r.userId === user?.id) || user === null;
       isPostable = isPostable && !hasReviewed;
       isPostableNoReviews = isPostable && !reviewArray.length;
     }
-
 
     return (
       <div className="spotDetailReviewAreaDiv">
@@ -71,6 +73,5 @@ function SpotDetailReviewArea({ detailedSpot }) {
       </div>
     )
 }
-
 
 export default SpotDetailReviewArea ;

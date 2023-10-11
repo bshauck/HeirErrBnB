@@ -2,15 +2,18 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { thunkReadAllSpots } from '../../store/spots';
 import SpotTile from '../SpotTile';
+import { useRef } from 'react';
 
 function SpotList () {
-    const spots = useSelector(state => state.spots.id);
-    const dispatch = useDispatch();
+    const spots = useSelector(state => state.spots.id)
+    const dispatch = useDispatch()
+    const ref = useRef({});
+    const refKey = "firstSpotRead"
 
-    if (!spots || Object.keys(spots).length < 2) {
-        dispatch(thunkReadAllSpots())
+    if (!spots || Object.values(spots).length < 2) {
+        if (!ref.current[refKey]) ref.current[refKey] = dispatch(thunkReadAllSpots())
         return null;
-    }
+    } else if (ref.current[refKey]) delete ref.current[refKey]
 
     return (
         <div className="spotListDiv">

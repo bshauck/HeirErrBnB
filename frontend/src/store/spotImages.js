@@ -12,6 +12,7 @@
 
 
 import { fetchData } from "./csrf";
+import { READ_SPOT } from "./commonActionCreators";
 
 const READ_SPOT_IMAGES = "spotImages/READ_SPOT_IMAGES";
 const READ_SPOT_IMAGE = "spotImages/READ_SPOT_IMAGE";
@@ -114,17 +115,19 @@ const initialState = {
 
 const spotImagesReducer = (state = initialState, action) => {
   let newState;
+  let spotImages = action.payload
   switch (action.type) {
-    case READ_SPOT_SPOT_IMAGES: {
-        const spotImages = action.payload;
-        const normalized = {}
-        spotImages.forEach(r => normalized[r.id]=r)
-        newState = {...state}
-        newState.user = normalized
-        return newState
+    case READ_SPOT:
+      spotImages = spotImages.SpotImages // eslint-disable-next-line
+    case READ_SPOT_IMAGES: {
+      const normalized = {}
+      spotImages.forEach(r => normalized[r.id]=r)
+      newState = {...state, ...normalized}
+      return newState
     }
     case UPDATED_SPOT_IMAGE:
       action.payload = {...state[action.payload.id], ...action.payload}
+      // eslint-disable-next-line
     case CREATED_SPOT_IMAGE:
     case READ_SPOT_IMAGE:
       newState = {...state, [action.payload.id]: action.payload};

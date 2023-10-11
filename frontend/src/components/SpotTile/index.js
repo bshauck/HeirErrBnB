@@ -30,6 +30,10 @@ function SpotTile ({spot, isManaged}) {
     (async()=>await(dispatch(thunkReadSpot(spot.id))))()
     return null;
   }
+
+  if (!spot.previewUrl && stateSpot.previewUrl)
+    spot = stateSpot;
+
   return (
     <div className="tileDiv">
     <img className="spotTileImg" alt="preview" title={spot.name} src={spot.previewUrl || placeholderSrc} onClick={handleTileClick}>
