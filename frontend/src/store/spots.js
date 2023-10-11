@@ -17,7 +17,7 @@
         "createdAt": "2021-11-19 20:39:36",
         "updatedAt": "2021-11-19 20:39:36",
         "avgRating": 4.5,
-        "previewImage": "image url"
+        "previewUrl": "image url"
       }
     optionalOrderedList: [],
     }
@@ -41,12 +41,10 @@
         {
           "id": 1,
           "url": "image url",
-          "preview": true
         },
         {
           "id": 2,
           "url": "image url",
-          "preview": false
         }
       ],
       "Owner": { // put into session as partialUser
@@ -79,43 +77,47 @@
 */
 
 /* New store shape for spots
+old userSpots now are keys in state.users.spots, and the spot info is
+in state.spots.id
 {
-  [spotId]:
+  id:
     {
-      "id": 1,
-      "ownerId": 1,
-      "address": "123 Disney Lane",
-      "city": "San Francisco",
-      "state": "California",
-      "country": "United States",
-      "lat": 37.7645358,
-      "lng": -122.4730327,
-      "name": "App Academy",
-      "description": "Place where web developers are created",
-      "price": 123,
-      "createdAt": "2021-11-19 20:39:36",
-      "updatedAt": "2021-11-19 20:39:36",
-      "numReviews": 4,
-      "avgRating": 4.5,
-      "previewImage": "image url",
+      [spotId]:
+        {
+          id: 1,
+          ownerId: 1,
+          address: "123 Disney Lane",
+          city: "San Francisco",
+          state: "California",
+          country: "United States",
+          lat: 37.7645358,
+          lng: -122.4730327,
+          name: "App Academy",
+          description: "Place where web developers are created",
+          price: 123,
+          createdAt: "2021-11-19 20:39:36",
+          updatedAt: "2021-11-19 20:39:36",
+          numReviews: 4,
+          avgRating: 4.5,
+          previewUrl: "image url",
 
-      // additional info; Details page gets images & reviews
-      // reserve button gets bookings
-      "images": [spotImageIdArray],
-      "reviews": [reviewIdArray],
-      "bookings": [bookingIdArray], // perhaps only ids whose endDate is in the future
+          // additional info; Details page gets images & reviews
+          // reserve button gets bookings
+          images: [spotImageIds,],
+          reviews: [reviewIds,],
+          // bookings: [bookingIds,], // perhaps only ids with future endDates
+        },
     }
-  "list": [orderedIdArrayBySomeInterestingCriteriaFromQuery]
+  userQuery: { [userId]: [orderedSpotIdsBySomeInterestingCriteriaFromQuery], }
 }
 */
 
-
+import { READ_SPOT } from "./commonActionCreators";
 
 import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
 const READ_USER_SPOTS = "spots/READ_USER_SPOTS";
-export const READ_SPOT = "spots/READ_SPOT";
 const DELETE_SPOT = "spots/DELETE_SPOT";
 const CREATE_SPOT = "spots/CREATE_SPOT";
 const UPDATE_SPOT = "spots/UPDATE_SPOT";
@@ -208,25 +210,25 @@ export const thunkDeleteSpot = id => async dispatch => {
       "price": 123,
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-19 20:39:36" ,
+      "previewUrl": "image url",
       "SpotImages": [
         {
           "id": 1,
           "url": "image url",
-          "preview": true
         },
 */
 
 /* TODO eventually it should be wrapped in a transaction and
 rolled back if errors in either spot or image creations */
 export const thunkCreateSpot = (spot, urls) => async dispatch => {
-  const { ownerId, address, city, state, country, lat, lng, name, description, price } = spot;
+  const { ownerId, address, city, state, country, lat, lng, name, description, price, previewUrl } = spot;
   const url = `/api/spots`
   const options = {
     method: "POST",
     headers: jsonHeaderContent,
     body: JSON.stringify({
       ownerId, address, city, state, country, lat, lng,
-      name, description, price
+      name, description, price, previewUrl
   })
   }
   const answer = await fetchData(url, options)
@@ -265,9 +267,8 @@ export const thunkUpdateSpot = (spot /*, urls */) => async dispatch => {
 }
 
 const initialState = { /* for {} at state.spots */
-    allSpots: {}, /* when filled, normalized by spotId: {spotData} */
-    singleSpot: {}, /* when filled, {spotData} */
-    userSpots: {} /* when filled, normalized by spotId: {spotData} */
+    id: {}, /* when filled, normalized by spotId: {spotData} */
+    userQuery: {}, /* when filled, {[userId}: [spotIdsLandingOrderdBySomeUserQuery]} */
 };
 
 const spotsReducer = (state = initialState, action) => {
@@ -276,7 +277,7 @@ const spotsReducer = (state = initialState, action) => {
     case READ_SPOTS: {
         const normalized = {};
         action.payload.forEach(s => normalized[s.id]=s)
-        newState = {...state, allSpots: normalized};
+        newState = {...state, ...normalized};
         return newState;
     }
     case READ_USER_SPOTS: {
@@ -290,33 +291,25 @@ const spotsReducer = (state = initialState, action) => {
       const spot = action.payload
       const id = spot.id;
       newState = {...state};
-      newState.allSpots = {...state.allSpots, [id]: spot};
+      newState.id = {...state.id, [id]: spot};
       if (state.session?.user?.id === spot.ownerId)
         newState.userSpots = {...state.userSpots, [id]: spot};
-      if (state.singleSpot?.id === id)
-        newState.singleSpot = {...state.singleSpot, ...spot}
       return newState;
     }
-    case READ_SPOT: {
+    case READ_SPOT: { /* old singleSpot */
       const id = action.payload.id;
-      const previewImage = action.payload.SpotImages.find(e => e.preview).url;
-      const spot = {...action.payload, previewImage};
+      const spot = action.payload;
       newState = {...state};
-      newState.singleSpot = spot;
-      newState.allSpots = {...state.allSpots,  [id]: spot};
-      if (state.session?.user?.id === spot.ownerId)
-        newState.userSpots = {...state.userSpots,  [id]: spot};
+      newState.id = {...state.id,  [id]: spot};
       return newState;
     }
 
-    case DELETE_SPOT:
+    case DELETE_SPOT: /* payload is spotId */
       newState = {...state};
-      newState.allSpots = {...state.allSpots};
-      delete newState.allSpots[action.payload]
-      newState.userSpots = {...state.userSpots};
+      newState.id = {...state.id};
+      delete newState.id[action.payload]
+      newState.userQuery = {...state.userQuery};
       delete newState.userSpots[action.payload];
-      if (newState.singleSpot?.id === action.payload)
-        newState.singleSpot = {};
       return newState;
     default:
       return state;

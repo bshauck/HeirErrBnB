@@ -1,0 +1,165 @@
+
+
+Bonus:
+review update
+Bookings
+map API
+after map API add read-only lat/long to SpotForm
+caching
+validate images
+query search to change what spots are listed
+trim development stacks printed so that stuff before cwd isn't shown:
+   iterate through stack and change output to (require('path)).relative('', stackItem)
+
+
+Longterm:
+SpotImages are only support images;
+Update Spot has to do more work if
+  but the supporting ones being changed means
+  have to look at differences and figure
+  out what are insertions, and what are updates
+  into the SpotImages table.
+Dan says 100-1000 generated seeds
+Look up all unseed functions via known userSpots
+Restore query size default to 20 (set to 50 for
+  dev atm)
+
+
+Ensure app runs in dev mode. Then try the following.
+
+See if this article allows for configureStore change (v18)
+  https://stackoverflow.com/questions/72479800/createstore-is-deprecated-so-im-trying-to-replace-with-configurationstore
+
+Revisit backend; ensure all error code consistent
+  API returns documented valid result or
+  error object shape.
+
+Decide on backend to best support Redux shape
+  (leave original API other than error code mess,
+  add new API for better support if needed)
+
+Dry backend (have a booking function duplicated)
+
+
+
+Consistent error handling:
+
+/* change fetch code back to throwing errors perhaps */
+csrfFetch(‘https://example.com/data’)
+
+fetch(url)
+.then(response => response.ok ? response.json() : Promise.reject(response))
+.then(json => doStuff(json)) //all good
+.catch(response => handleError(response)) //handle error
+
+I think with this last one we either do a dispatch(actionCreatorMethod(json/data)) in the 2nd .then,
+or we ensure the right error format in the .catch and just do a return of that error; then
+the app can look at the return and see if it has .errors and if so display them or ignore them as
+appropriate. (and put the throw of an error back in the csrfFetch; which, if invoked, goes to the .catch).
+
+const res = await fetch(url, opts).then(r => r.clone().json().catch(() => r.text()));
+The above uses clone to do both a .json and a .text on the response body
+
+Still a bit unsure about handling errors when the body wasn't packed with json, or
+when the system error(s) hit. Probably need to look at headers for content-type, or
+do the .clone and wrap a try in a catch that redoes with res.text() or some such.
+
+
+Still need to do more testing for Network errors, but the following seems pretty good:
+This assumes that error responses will either have a top-level "errors" key, or a
+top-level "message" key. (If normal responses can have these, then special checking
+will have to happen.) I'm not 100% sure I need the useless .then on !response.ok.
+
+/* put this in csrf file, or separate and import if multi-thunk files */
+/* silly ()s necessary in .catch avoiding parser confusion */
+export function fetchData(url, options) {
+  /* Returns Promise which resolves to either data or errors */
+  return csrfFetch(url, options)
+    .then(response => response.ok
+        ? response.json()
+        : response.json().then(err => err)) /* get detailed error info  */
+    .catch(systemicError => ({"errors": {"system": systemicError.message}}))
+}
+export const jsonHeaderContent = {"Content-Type":"application/json"}
+
+/* copy this boilerplate for each thunkFunc */
+export const thunkFunc = (args) => async dispatch => {
+    /* adjust url and option args as needed; skip options on GET */
+    const url = `/api/resources`
+    const options = {
+      method: "POST",
+      headers: jsonHeaderContent,
+      body: JSON.stringify(/*args-ish*/)
+    }
+    const answer = await fetchData(url, options)
+    /* if normal response can have errors or message keys, adjust check */
+    /* change name of the actionCreator function to invoke, and possibly args */
+    if (!answer.errors) dispatch(appropriateActionCreator(answer))
+    /* else console.error(answer.errors || answer.message) */
+    return answer /* short-circuits store and allows app code to directly get errors */
+}  /* for display; so probably "wrong" in the sense of one-way Redux flow */
+
+In application code, when you don't care about a return value (e.g., something
+you need to use hasn't been loaded into the store yet), you can just do
+dispatch(thunkFunc(anyArgs));
+So in application code, do const result = await dispatch(thunkFunc(anyArgs));
+Then error check if needed to display errors. (Possibly handle all in .then()
+rather than await: e.g. .then(answer => answer.errors
+? setValidations(answer.errors) : setReport(answer)))
+
+
+
+===================
+In a component that needs details that will be fetched
+only for this component, a way to avoid additional
+fetch requests is to know a previous request has been
+made by keeping track of it.
+
+  // 11 lines avoiding 2nd reqs can be narrowed to 9 if dispatch(thunk)
+  // return value
+  const ref = useRef([]);
+  if (thing.id) { // have top level, check for inner need
+    if (!thing.inner) { // missing inner details
+      if (!ref.current[thing.id]) { // first request
+        ref.current[thing.id] = true;
+        dispatch(thunkGetThingDetails(thing.id))
+      }
+      return null; // no details yet; but need them
+    } else if (ref.current[thing.id]) // fulfilled; remove
+      delete ref.current[thing.id]
+  }
+
+
+
+Add ErrorBoundaries around components to limit error impact
+
+import React from "react";
+
+class ErrorBoundary extends React.Component {
+  state = { hasError: false, error: null, info: null}
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, info) {
+    this.setState({this.hasError, error, info})
+    console.error(error, info);
+  }
+
+  render() {
+    return this.state.hasError ? (
+      <div><h1>Something went wrong.</h1>
+        {process.env.NODE_ENV !== 'production' && (
+          <details style={{ whiteSpace: 'pre-wrap' }}>
+            <summary>Click for error details</summary>
+            {this.state.error && this.state.error.toString()}
+            <br />
+            {this.state.info && this.state.info.componentStack}
+          </details>
+        )}
+      </div>
+    ) : this.props.children
+}
+
+export default ErrorBoundary

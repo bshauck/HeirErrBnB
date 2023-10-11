@@ -45,13 +45,11 @@ and without logged-in user
  */
 
 import { csrfFetch, fetchData } from "./csrf";
-import { READ_SPOT } from "./spots";
+import { READ_SPOT, READ_USER_REVIEWS } from "./commonActionCreators";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
 const SET_SPOT_OWNER = "session/SET_SPOT_OWNER"
-
-console.log("made it to beginning of store.session.js")
 
 
 export const setSpotOwner = (partialUser) => {
@@ -77,7 +75,7 @@ const removeUser = () => {
 
 export const thunkLogin = user => async dispatch => {
   const { credential, password } = user;
-  const url = `/api/resources`
+  const url = `/api/session`
   const options = {
     method: "POST",
     body: JSON.stringify({
@@ -115,7 +113,10 @@ export const thunkLogout = () => async dispatch => {
   return answer
 }
 
-const initialState = { user: null };
+const initialState = {
+  user: null,
+  id: {}
+ };
 
 const sessionReducer = (state = initialState, action) => {
   const newState = {...state};
@@ -134,6 +135,15 @@ const sessionReducer = (state = initialState, action) => {
     case REMOVE_USER: /* don't remove key; names still used in spot details */
       newState.user = null;
       return newState;
+    case READ_USER_REVIEWS:
+      const reviews = action.payload.map(r => r.id)
+      console.log("🚀 ~ file: session.js:137 ~ sessionReducer ~ reviews:", reviews)
+      console.log("🚀 ~ file: session.js:137 ~ sessionReducer ~ action.payload:", action.payload)
+      const updatedUser = {...state.user, reviews}
+      console.log("🚀 ~ file: session.js:140 ~ sessionReducer ~ updatedUser:", updatedUser)
+      newState.user = updatedUser
+      newState.id[updatedUser.id] = updatedUser
+      return newState
     default:
       return state;
   }

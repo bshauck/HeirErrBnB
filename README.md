@@ -303,7 +303,7 @@ Returns all the spots.
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36",
           "avgRating": 4.5,
-          "previewImage": "image url"
+          "previewUrl": "image url"
         }
       ]
     }
@@ -343,7 +343,7 @@ Returns all the spots owned (created) by the current user.
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36",
           "avgRating": 4.5,
-          "previewImage": "image url"
+          "previewUrl": "image url"
         }
       ]
     }
@@ -386,12 +386,10 @@ Returns the details of a spot specified by its id.
         {
           "id": 1,
           "url": "image url",
-          "preview": true
         },
         {
           "id": 2,
           "url": "image url",
-          "preview": false
         }
       ],
       "Owner": {
@@ -519,7 +517,6 @@ Create and return a new image for a spot specified by id.
       {
       "id": 1,
       "url": "image url",
-      "preview": true
      }
     ]
     ```
@@ -702,7 +699,7 @@ Returns all the reviews written by the current user.
             "lng": -122.4730327,
             "name": "App Academy",
             "price": 123,
-            "previewImage": "image url"
+            "previewUrl": "image url"
           },
           "ReviewImages": [
             {
@@ -1040,7 +1037,7 @@ Return all the bookings that the current user has made.
             "lng": -122.4730327,
             "name": "App Academy",
             "price": 123,
-            "previewImage": "image url"
+            "previewUrl": "image url"
           },
           "userId": 2,
           "startDate": "2021-11-19",
@@ -1454,7 +1451,7 @@ Return spots filtered by query parameters.
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36",
           "avgRating": 4.5,
-          "previewImage": "image url"
+          "previewUrl": "image url"
         }
       ],
       "page": 2,

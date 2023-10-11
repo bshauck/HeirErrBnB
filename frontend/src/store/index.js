@@ -5,11 +5,26 @@ import spotsReducer from "./spots";
 import reviewsReducer from "./reviews";
 // import bookingsReducer from "./bookings";
 
+/* New store shape (see each slice for details)
+{
+  session:
+  users:
+  spots:
+  reviews:
+//  bookings: // TODO
+  spotImages:
+  reviewImages:
+},
+*/
+
 const rootReducer = combineReducers({
   session: sessionReducer,
+  users: [],
   spots: spotsReducer,
   reviews: reviewsReducer,
   // bookings: bookingsReducer
+  spotImages: [],
+  reviewImages: []
 });
 
 let enhancer;

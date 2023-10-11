@@ -21,11 +21,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING
     },
-    preview: {
-        allowNull: false,
-        defaultValue: false,
-        type: DataTypes.BOOLEAN
-      },
 }, {
     sequelize,
     modelName: 'SpotImage',

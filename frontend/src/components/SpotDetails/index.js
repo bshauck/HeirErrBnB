@@ -3,41 +3,40 @@ import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 import { thunkReadSpot } from "../../store/spots";
 import StarRating from "../StarRating";
-import { getFullImages } from "../../utils/imageUrl"
 import SpotDetailReviewArea from "../SpotDetailReviewArea";
 
 function SpotDetails() {
     const { id } = useParams();
-    const spot = useSelector(state => state.spots.singleSpot)
-    const keyedSpot = useSelector(state => state.spots[id])
+    const spot = useSelector(state => state.spots.id[id])
+    const imageIds = useSelector(state => state.spots.id[id].images)
     const dispatch = useDispatch();
+    const otherImages = [];
+    const spotImages = useSelector(state => state.spotImages);
+    console.log("🚀 ~ file: index.js:15 ~ SpotDetails ~ spotImages:", spotImages)
+
+
+    for (const imageId in imageIds)
+        otherImages.push(spotImages[imageId])
 
     if (!spot || !Object.keys(spot).length || Number(spot.id) !== Number(id)) {
-        if (keyedSpot !== null)
         (async()=>await dispatch(thunkReadSpot(id)))();
         return null;
     }
 
-    let fills = getFullImages();
-    let previewImage = spot?.SpotImages?.find(i => i.preview === true);
-    previewImage = previewImage?.url;
-    if (!previewImage) previewImage = fills[0]
-    let otherImages = spot?.SpotImages?.filter(i => i.preview !== true);
-    otherImages = otherImages?.map(e => e?.url)
-    if (!otherImages) otherImages = [];
-    while (otherImages.length < 4) otherImages.push(fills.pop());
     const owner = spot?.Owner;
     function handleReserveClick(){
         alert("Feature Coming Soon...")
     }
     if (!spot) return null;
 
+
+
     return (
         <div className="spotDetailsDiv">
             <h1>{spot.name}</h1>
             <div className="spotDetailsLocationDiv">{spot.city}, {spot.state}, {spot.country}</div>
             <div className="spotDetailsImagesDiv">
-                <div className="spotDetailsPreviewDiv"><img className="spotDetailsPreviewImg" alt='preview' src={previewImage}></img></div>
+                <div className="spotDetailsPreviewDiv"><img className="spotDetailsPreviewImg" alt='preview' src={spot.previewUrl}></img></div>
                 <div className="spotDetailsImagesDiv">
                     {otherImages && otherImages.length && otherImages.map((url,i) => (
                         <img key={i} className="spotDetailsSmallImg" alt='' src={url}></img>

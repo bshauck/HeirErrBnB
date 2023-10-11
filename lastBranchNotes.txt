@@ -1,0 +1,27 @@
+
+Last branch notes
+
+MONDAY/TUESDAY
+converting to flattened normalized store
+Noted all the places for interdependency and ensure
+  reducers are all modified
+Changed return status code for create review
+changed all things that return Spot info to include previewUrl
+spot seeders add a previewUrl
+spot creation to insists on preview url set
+migration and model to set allowNull false for previewUrl
+changed Review table column/model instvar poorly name "review" to "commentary"
+Ensured all db errors for Auth Me are returned in response
+migrated ti change Spot to have nullish previewUrl
+ran Spot seeders that set previewUrl
+changed SpotImages seeders that no longer create previews
+migration that changed SpotImages to not have preview
+changed all backend code that touches preview or previewImage
+changed all frontend code that depends on preview or previewImage
+changed all frontend interfaces that create a preview image
+changed utils that pass a preview image along with support images
+changed migrations and models to not allow previewUrl null
+changed Review columns/model instVar from "review" to "commentary"
+changed seeders to support commentary
+changed backend validation to support commentary
+changed frontend to handle commentary

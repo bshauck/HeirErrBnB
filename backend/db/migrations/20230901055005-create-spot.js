@@ -56,6 +56,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DECIMAL(6,2)
       },
+      previewUrl: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),

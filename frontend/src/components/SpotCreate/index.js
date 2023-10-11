@@ -20,7 +20,7 @@ import SpotForm from '../SpotForm';
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36",
           "avgRating": 4.5,
-          "previewImage": "image url"
+          "previewUrl": "image url"
         }
       ]
 

@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.INTEGER,
     },
-    review: {
+    commentary: {
       allowNull: false,
       type: DataTypes.STRING
     },

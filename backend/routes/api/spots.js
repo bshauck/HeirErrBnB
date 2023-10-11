@@ -37,7 +37,7 @@ async function bookingOk(startDate, endDate, next, id) {
         if (conflict3) {errors.endDate = "End date conflicts with an existing booking"; err.message = specificErrText;}
     }
     if (conflict) {
-        err.title = "Bad request";
+        err.title = "Bad Request";
         err.errors = errors;
         return unauthor(next, err);
     }
@@ -90,29 +90,25 @@ router.route('/:spotId(\\d+)/bookings')
       return next(new Error('POST /spots/:id/bookinngs error'))
     });
 
-// now takes {urls: ["url1", "url2", ...]}; first is preview
+// now takes {urls: ["url1", "url2", ...]};
 router.post('/:spotId(\\d+)/images', requireAuth, async (req, res, next) => {
     const spot = await Spot.findByPk(req.params.spotId);
     if (!spot) return res.status(404).json({message: "Spot couldn't be found"});
     if (fitsAuthor(req, next, spot.ownerId)) {
-        const oldPreview = await SpotImage.findOne({
-            where: {spotId: spot.id,
-                    preview: true}});
-        let { urls } = req.body;
-        if (Array.isArray(urls)) values = urls.map((u,i) => {return {spotId: spot.id, url: u, preview: (!oldPreview && i===0)}})
-        // turn urls into {spotId: spot.id, url: "url", preview: boolean}
-        // only 1 preview allowed.
-        let images = await SpotImage.bulkCreate(values); // may need {returning:true} for PGSQL
+        let { url, urls } = req.body;
+        values = Array.isArray(urls)
+        ? urls.map(u => ({spotId: spot.id, url: u}))
+        : [{spotId: spot.id, url}]
+        let images = await SpotImage.bulkCreate(values);
 
         if (images) {
-            // if (process.env.NODE_ENV !== 'production') // Sqlite3 doesn't return ids on bulkCreate
-            //     images = await SpotImage.findAll({where: {url}})
             images = images.map(i=>i.toJSON());
             images.forEach(image => {
-                delete image.spotId;
                 delete image.createdAt;
                 delete image.updatedAt;
             });
+            if (images?.length === 1) images = images[0];
+            console.log(images)
             return res.status(201).json(images);
         }
     }
@@ -144,16 +140,16 @@ router.route('/:spotId(\\d+)/reviews')
                     spotId: spot.id}
         });
         if (old) return res.status(403).json({message: "User already has a review for this spot"});
-        const {review, stars} = req.body;
+        const {commentary, stars} = req.body;
         const newReview = await Review.create({
             userId: req.user.id,
             spotId: spot.id,
-            review,
+            commentary,
             stars
         });
         let foo = newReview.toJSON();
         foo.User = {id:req.user.id, firstName: req.user.firstName, lastName: req.user.lastName}
-        return res.json(foo);
+        return res.status(201).json(foo);
     });
 
 
@@ -272,10 +268,6 @@ router.route('')
             {   model: Review,
                 required: false,
                 attributes: ['stars']},
-            { model: SpotImage,
-                required: false,
-                attributes: ['url'],
-                where: {preview: true}},
         ],
         ...options,
         limit: size,
@@ -286,19 +278,15 @@ router.route('')
         s.Reviews && s.Reviews.length && (s.Reviews.reduce((acc, next)=> acc + next.stars, 0) / s.Reviews.length);
         if (!s.avgRating) s.avgRating = null;
         delete s.Reviews;
-        s.previewImage =
-        s.SpotImages && s.SpotImages.length && s.SpotImages[0] && s.SpotImages[0].url
-            ? s.SpotImages[0].url : null;
-        delete s.SpotImages
     });
     return res.json({Spots, page, size});
     })
     .post(requireAuth, validateSpot, async (req, res) => {
-        const {address, city, state, country, lat, lng, name, description, price} = req.body;
+        const {address, city, state, country, lat, lng, name, description, price, previewUrl} = req.body;
         let spot = await Spot.create({
             ownerId: req.user.id,
             address, city, state, country, lat, lng,
-            name, description, price});
+            name, description, price, previewUrl});
         if (spot) {
             return res.status(201).json(spot);
         }
@@ -309,28 +297,19 @@ router.route('')
 async function spotsWhere(req, res, where={}) {
     let Spots = await Spot.findAll({
         include: [
-            { model: SpotImage,
+            {   model: Review,
                 required: false,
-                attributes: ['url'],
-                where: {preview: true}},
-            // {   model: Review,
-            //     required: false,
-                // attributes: [[sequelize.fn('AVG', sequelize.col('stars')), 'avgRating']]
-            // }
+                attributes: [[sequelize.fn('AVG', sequelize.col('stars')), 'avgRating']]
+            }
         ],
         where: {...where},
-        // group: ['Reviews.spotId']
     });
-    /* any better approach than this fix up after? */
     Spots = Spots.map(e=>e.toJSON());
     Spots.forEach(s=>{s.avgRating =
         s.Reviews && s.Reviews.length && s.Reviews[0] && s.Reviews[0].avgRating
             ? s.Reviews[0].avgRating : null;
         delete s.Reviews;
-        s.previewImage =
-        s.SpotImages && s.SpotImages.length && s.SpotImages[0] && s.SpotImages[0].url
-            ? s.SpotImages[0].url : null;
-        delete s.SpotImages});
+    });
     return res.json({Spots});
 };
 

@@ -16,8 +16,7 @@ module.exports = {
       getFullImages().forEach((url, i) =>
         generatedImages.push({
           spotId,
-          url,
-          preview: i === 0
+          url
         })
       )
     }

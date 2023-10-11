@@ -1,0 +1,58 @@
+As you address things, update lastBranchNotes.text
+
+
+
+
+
+Current issue: display Spot detail.
+Reviews not set. Why?
+What sets reviews: only allreviews by spot/user. So for spot details, spot. But, also need them for user IF spot has more than 0, so can easily determine if a given spot has already had a review by this user. So, MAY need both run. How can we tell if we need it?
+    If state.spots[spot.id]?.numReviews undefined/null (0 ok) then haven't read spot reviews start that.
+    If state.session.user?.reviews is undefined then haven't looked for user reviews.
+
+
+Ensure app runs in dev mode with new store and Spot, Review and SpotImage changes with new migrations/seeds.
+
+Then focus on MVP issues.
+
+
+
+Wireframe:
+https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-16/AirBnB+MVP+Wireframes.pdf
+
+
+MVP BUGS
+CRITICAL
+1. Unable to create a review on a new spot.
+2. Unable to update a spot
+MEDIUM
+1. Sign up button doesn't handle valid email validation ..._sign_up_button_closes_and_no_validation_shown
+2. The single spot page seems to break when a sign up is not successful single_spot_breaks_when_signup_is_not_successful
+3. Average star rating on the home/spot details page does not match the one on the manage spots page. All of them seem to be new
+4.When looking at a site with no reviews, the number of requests seems to go up with no stop _no_reviews_result_on_an_infinite_amount_of_requests
+LOW
+1. Sometimes going from the manage spots page to the home page results in a bug going_from_the_manage_spots_to_the_home_page_sometimes_results_in_a_bug
+
+SPECS NOT passing
+AUTHME
+When clicking "Sign up" button on the new user account form with errors in the form, it must show all error messages returned from the backend (similar to the following): "The provided email is invalid" or "Username must be unique".
+APPLICATION
+NOT UP TO Wireframe
+  Landing page --The css does not fully match what's expected from the wireframes. An example is the gap between each spot.
+  Spot Details --Css does not match the wireframes https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_callout_box_on_the_left.png
+  View Rating and Reviews --1 reviews is shown https://jeffbnb.s3.us-east-2.amazonaws.com/Grading/Jun23/William/Shauck_William_reviews_is_shown_instead_of_review.png
+  Post Review --Css does not match the wireframes.
+  Manage Spots --Css does not fully match the wireframes.
+  Delete a Review --Css does not match the wireframes.
+The callout information box on the right of the spot's detail page should state the price for the spot followed by the label "night", and have a "Reserve" button.
+  Callout box is not located on the right side
+If no reviews have been posted yet and the current user is logged-in and is NOT the owner of the spot, replace the reviews list with the text "Be the first to post a review!"
+  _not_be_the_first_to_post_a_review_text.png
+If the current user is logged-in and they are viewing a spot's detail page for a spot that they HAVE NOT posted a review yet, a "Post Your Review" button shows between the rating/reviews heading and the list of reviews.
+  In new spots this button does not show.
+The spot management page should contain a spot tile list similar to the one in the landing page (thumbnail image, location, rating, price).
+  Rating on the manage page does not match what is actually on the db.
+When the update form submission is successful, the user is navigated to the updated spot's details page.
+  Update does not seem to work.
+The updated spot's detail page should display the updated information. No refresh should be necessary.
+  Update does not seem to work.

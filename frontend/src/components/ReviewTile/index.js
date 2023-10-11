@@ -1,9 +1,10 @@
+import { useSelector } from "react-redux";
 import OpenModalButton from "../OpenModalButton";
 import ReviewDeleteFormModal from "../ReviewDeleteFormModal";
 
 
-function ReviewTile({ review, user }) {
-
+function ReviewTile({ reviewId, user }) {
+  const review = useSelector(state => state.reviews.id[reviewId])
 
   function handleDeleteClick() {
 
@@ -21,7 +22,7 @@ return (
   year: "numeric"
 })}</div>
     </div>
-    <div className="tileReviewTextDiv" >{review.review}</div>
+    <div className="tileReviewTextDiv" >{review.commentary}</div>
     {user && review.userId === user.id && <OpenModalButton
       buttonText="Delete"
       className="deleteReviewButton"

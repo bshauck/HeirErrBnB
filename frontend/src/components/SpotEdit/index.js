@@ -5,7 +5,7 @@ import SpotForm from '../SpotForm';
 
 const SpotEdit = () => {
   const { id } = useParams();
-  const spot = useSelector(state => state.spots?.userSpots[id]);
+  const spot = useSelector(state => state.spots.id[id]);
 
   return (
     <SpotForm spot={spot} formType="Update your Spot" />

@@ -30,34 +30,40 @@
 
 /* NEW review state shape
 {
-[reviewId]:
-  {
-    id,
-    userId,
-    spotId,
-    commentary,
-    stars,
+  id:
+    {
+      [reviewId]:
+        {
+          id,
+          userId,
+          spotId,
+          commentary, // renamed review column
+          stars, // 1-5
 
-    // additional detail
-    firstName, // from user via userId
-    images: [reviewImageIdArray]
-  },
-  "list": [idsOrderedByDescUpdatedDate]
+          // additional details
+          images: [reviewImageIds,]
+        },
+    }
+  spotLatest: { [spotId]: [idsOrderedByDescUpdatedDate], }
 }
 */
 
-import { READ_SPOT_REVIEWS, readAllSpotReviews } from "./commonActionCreators";
+import { READ_SPOT_REVIEWS, READ_USER_REVIEWS } from "./commonActionCreators";
 import { fetchData } from "./csrf";
 
-console.log("made it to beginning of store.reviews.js")
 
-const READ_USER_REVIEWS = "reviews/READ_USER_REVIEWS";
 const READ_REVIEW = "reviews/READ_REVIEW";
 const DELETE_REVIEW = "reviews/DELETE_REVIEW";
 const CREATE_REVIEW = "reviews/CREATE_REVIEW";
 const UPDATE_REVIEW = "reviews/UPDATE_REVIEW";
 
-console.log("made it to beginning of store.reviews.js")
+
+export function readAllSpotReviews(reviews, spotId) {
+  return {
+      type: READ_SPOT_REVIEWS,
+      payload: {reviews, spotId}
+  }
+}
 
 function readAllUserReviews(reviews) {
     return {
@@ -79,7 +85,6 @@ function deleteReview(id) {
         payload: id
     };
 };
-console.log("made it to beginning of store.reviews.js")
 
 function createReview(review) {
     return {
@@ -97,8 +102,10 @@ function updateReview(review) {
 
 
 export const thunkReadAllReviews = spot => async dispatch => {
+  console.log("🚀 ~ file: reviews.js:99 ~ thunkReadAllReviews ~ spot:", spot)
   const url = `/api/spots/${spot.id}/reviews`
   const answer = await fetchData(url)
+  console.log("🚀 ~ file: reviews.js:102 ~ thunkReadAllReviews ~ answer:", answer)
   if (!answer.errors) {
     spot.reviews = answer.Reviews
     dispatch(readAllSpotReviews(answer.Reviews, spot.id))
@@ -126,15 +133,15 @@ export const thunkDeleteReview = id => async dispatch => {
   return answer
 }
 
-export const thunkCreateReview = (reviewArg, firstName) => async dispatch => {
-  const { spotId, userId, review, stars } = reviewArg;
+export const thunkCreateReview = (review, firstName) => async dispatch => {
+  const { spotId, userId, commentary, stars } = review;
   const url = `/api/spots/${spotId}/reviews`
   const options = {
     method: "POST",
     body: JSON.stringify({
       spotId,
       userId,
-      review,
+      commentary,
       stars
     })
   }
@@ -145,8 +152,8 @@ export const thunkCreateReview = (reviewArg, firstName) => async dispatch => {
   return answer
 }
 
-export const thunkUpdateReview = reviewObj => async dispatch => {
-  const { id, spotId, userId, review, stars } = reviewObj;
+export const thunkUpdateReview = review => async dispatch => {
+  const { id, spotId, userId, commentary, stars } = review;
   const url = `/api/reviews/${id}`
   const options = {
     method: "PUT",
@@ -154,7 +161,7 @@ export const thunkUpdateReview = reviewObj => async dispatch => {
       id,
       spotId,
       userId,
-      review,
+      commentary,
       stars
     })
   }
@@ -164,19 +171,21 @@ export const thunkUpdateReview = reviewObj => async dispatch => {
 }
 
 const initialState = {
-    spot: {},
-    user: {},
+    id: {},
+    spotLatest: {},
 };
 
 const reviewsReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
-    case READ_SPOT_REVIEWS: {
+    case READ_SPOT_REVIEWS: { /* reviews, spotId */
         const reviews = action.payload.reviews;
+        if (!reviews.length) return state; /* nothing to update */
         const normalized = {};
         reviews.forEach(r => normalized[r.id]=r)
         newState = {...state};
-        newState.spot = normalized;
+        newState.id = {...state.id, ...normalized};
+        newState.spotLatest = {...state.spotLatest, }
         return newState;
     }
     case READ_USER_REVIEWS: {

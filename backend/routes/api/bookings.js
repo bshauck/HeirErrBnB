@@ -37,7 +37,7 @@ async function bookingOk(startDate, endDate, next, id) {
         if (conflict3) {errors.endDate = "End date conflicts with an existing booking"; err.message = specificErrText;}
     }
     if (conflict) {
-        err.title = "Bad request";
+        err.title = "Bad Request";
         err.errors = errors;
         return unauthor(next, err);
     }
@@ -49,11 +49,10 @@ async function bookingOk(startDate, endDate, next, id) {
 router.get('/current', requireAuth, async (req, res) => {
     let Bookings = await Booking.findAll({
         include: {model: Spot, attributes: {exclude: ['description', 'createdAt', 'updatedAt']},
-                include: SpotImage},
+         },
         where: {userId: req.user.id}
     });
     Bookings = Bookings.map(e=>adjustPojo(e.toJSON(),['id', 'spotId', 'Spot','userId', 'startDate', 'endDate', 'createdAt', 'updatedAt']));
-    Bookings.forEach(b=> { let value = b.Spot && b.Spot.SpotImages && b.Spot.SpotImages.length ? b.Spot.SpotImages[0].url : null; b.Spot.previewImage = value; delete b.Spot.SpotImages});
     return res.json({Bookings});
 });
 

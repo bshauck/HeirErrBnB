@@ -1,5 +1,4 @@
 // frontend/src/components/SpotTile/index.js
-// import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 import StarRating from '../StarRating';
@@ -11,10 +10,9 @@ import { thunkReadSpot } from '../../store/spots';
 const placeholderSrc = "https://placehold.co/100?text=Photo+needed&font=montserrat"
 
 function SpotTile ({spot, isManaged}) {
-  const stateSpot = useSelector(state => state.spots.allSpots[spot.id])
+  const stateSpot = useSelector(state => state.spots.id[spot.id])
   const history = useHistory();
   const dispatch = useDispatch();
-  // const sessionUser = useSelector(state => state.session.user);
 
 
   function handleUpdateClick() {
@@ -34,7 +32,7 @@ function SpotTile ({spot, isManaged}) {
   }
   return (
     <div className="tileDiv">
-    <img className="spotTileImg" alt="preview" title={spot.name} src={spot.previewImage || placeholderSrc} onClick={handleTileClick}>
+    <img className="spotTileImg" alt="preview" title={spot.name} src={spot.previewUrl || placeholderSrc} onClick={handleTileClick}>
     </img>
     <div className="tileLocationAndRatingDiv">
         <span className="tileLocation">{`${spot.city}, ${spot.state}`}</span>

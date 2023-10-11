@@ -162,10 +162,15 @@ const spotPrice =
     .notEmpty()
     .isInt({min: 0})
     .withMessage('Price per day is required');
+const spotPreviewUrl =
+    check('previewUrl')
+      .trim()
+      .notEmpty()
+      .withMessage('Preview URL is required');
 
 const validateSpot = [
   spotAddress, spotCity, spotState, spotCountry, spotLat,
-  spotLng, spotName, spotDescription, spotPrice,
+  spotLng, spotName, spotDescription, spotPrice, spotPreviewUrl,
   handleValidationErrors
 ];
 const validateEditSpot = [
@@ -178,16 +183,17 @@ const validateEditSpot = [
   spotName.optional(),
   spotDescription.optional(),
   spotPrice.optional(),
+  spotPreviewUrl.optional(),
   handleValidationErrors
 ];
 
 
 
 const validateReview = [
-  check('review')
+  check('commentary')
     .trim()
     .notEmpty()
-    .withMessage('Review text is required'),
+    .withMessage('Commentary is required'),
   check('stars')
     .trim()
     .notEmpty()
@@ -247,7 +253,7 @@ function handleValidationErrors(req, _res, next){
       .array()
       .forEach(error => errors[error.path] = error.msg);
 
-    const err = Error("Bad request");
+    const err = Error("Bad Request");
     err.errors = errors;
     err.status = 400;
     next(err);
