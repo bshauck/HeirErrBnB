@@ -50,7 +50,7 @@
 
 import { READ_SPOT_REVIEWS, READ_USER_REVIEWS } from "./commonActionCreators";
 import { fetchData } from "./csrf";
-
+import { thunkReadSpot } from "./spots";
 
 const READ_REVIEW = "reviews/READ_REVIEW";
 const DELETE_REVIEW = "reviews/DELETE_REVIEW";
@@ -101,14 +101,11 @@ function updateReview(review) {
 }
 
 
-export const thunkReadAllReviews = spot => async dispatch => {
-  console.log("🚀 ~ file: reviews.js:99 ~ thunkReadAllReviews ~ spot:", spot)
-  const url = `/api/spots/${spot.id}/reviews`
+export const thunkReadAllReviews = spotId => async dispatch => {
+  const url = `/api/spots/${spotId}/reviews`
   const answer = await fetchData(url)
-  console.log("🚀 ~ file: reviews.js:102 ~ thunkReadAllReviews ~ answer:", answer)
   if (!answer.errors) {
-    spot.reviews = answer.Reviews
-    dispatch(readAllSpotReviews(answer.Reviews, spot.id))
+    dispatch(readAllSpotReviews(answer.Reviews, spotId))
   }
   return answer
 }
@@ -127,9 +124,12 @@ export const thunkReadReview = id => async dispatch => {
   return answer
 }
 
-export const thunkDeleteReview = id => async dispatch => {
+export const thunkDeleteReview = (id, spotId) => async dispatch => {
   const answer = await fetchData(`/api/reviews/${id}`, {method: 'DELETE'})
-  if (!answer.errors) dispatch(deleteReview(id))
+  if (!answer.errors) {
+    dispatch(deleteReview(id)) // probably should pass spotId and let other reducer
+    dispatch(thunkReadSpot(spotId))
+  }
   return answer
 }
 
@@ -148,7 +148,9 @@ export const thunkCreateReview = (review, firstName) => async dispatch => {
   const answer = await fetchData(url, options)
   if (!answer.errors) {
     answer.firstName = firstName
-  } dispatch(createReview(answer))
+    dispatch(createReview(answer))  // recalculate spot info
+    dispatch(thunkReadSpot(spotId)) // unsure this is the place
+  }
   return answer
 }
 
@@ -182,7 +184,14 @@ const reviewsReducer = (state = initialState, action) => {
         let {reviews,spotId} = action.payload
         if (!reviews.length) return state; /* nothing to update */
         const normalized = {};
-        reviews.forEach(r => normalized[r.id]=r)
+        reviews = [...reviews]
+        reviews.forEach(r => {
+          r.firstName = r.User.firstName
+          delete r.User
+          r.images=r.ReviewImages.map(i=>i.id)
+          delete r.ReviewImages
+          normalized[r.id]=r
+        })
         newState = {...state};
         newState.id = {...state.id, ...normalized};
         reviews = reviews.map(r => r.id)

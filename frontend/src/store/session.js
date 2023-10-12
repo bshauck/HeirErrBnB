@@ -45,7 +45,7 @@ and without logged-in user
  */
 
 import { csrfFetch, fetchData } from "./csrf";
-import { READ_SPOT, READ_USER_REVIEWS } from "./commonActionCreators";
+import { READ_SPOT, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
@@ -114,6 +114,7 @@ export const thunkLogout = () => async dispatch => {
 }
 
 const initialState = {
+  values: {spots:{},reviews:{},bookings:{}},
   user: null,
   id: {}
  };
@@ -137,13 +138,20 @@ const sessionReducer = (state = initialState, action) => {
       return newState;
     case READ_USER_REVIEWS:
       const reviews = action.payload.map(r => r.id)
-      console.log("🚀 ~ file: session.js:137 ~ sessionReducer ~ reviews:", reviews)
-      console.log("🚀 ~ file: session.js:137 ~ sessionReducer ~ action.payload:", action.payload)
       const updatedUser = {...state.user, reviews}
-      console.log("🚀 ~ file: session.js:140 ~ sessionReducer ~ updatedUser:", updatedUser)
       newState.user = updatedUser
       newState.id[updatedUser.id] = updatedUser
       return newState
+    case READ_USER_SPOTS: {
+      const spots = action.payload
+      const normalized = {}
+      spots.forEach(s => normalized[s.id]=s);
+      const newState = {...state,
+        "values": {...state.values,
+             "spots": {...state.values.spots, ...normalized}}}
+      newState.user.spots = Object.keys(normalized)
+      return newState;
+    }
     default:
       return state;
   }

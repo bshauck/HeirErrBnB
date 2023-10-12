@@ -15,8 +15,14 @@ new STORE layout (except since users cannot be deleted, and all
    },
    */
    /* session */ /*
-   {
-     user: user || null,
+   { values: {
+              spots: {[spotId]: spot,}
+              reviews: {[reviewId}: review,}
+              bookings: {[bookingId]: booking,}
+              }
+     user: user || null
+
+                  }},
      id: (really all the user stuff below goes here)
    }
    */
@@ -273,6 +279,8 @@ res =
     only SpotImage info is spotDetails
     also only source of API numReviews
       (could easily be added to API getAll/UserSpots)
+
+      add numReviews and avgRating to all
 */
 
 /* extra info frontend will hold and when to get it
@@ -281,12 +289,17 @@ res =
   extra is
     spots: [spotIds,],      // allUserSpots; CD Spot
     reviews: [reviewIds,],  // allUserReviews, CD Review
+So, listen for spotDetails / allSpotReviews and ensure
+partial users are there (if so, just return state)
+listen for allUserSpots & CD Spot and update spots
+listen for allUserReviews and CD Review and update reviewIds
 
   Spot
     avgRating: 4.5,           // getAll/UserSpots, CUD Review
     numReviews: 4,            // spotDetails, CD Review
     images: [spotImageIds,],  // spotDetails, CD SpotImage
     reviews: [reviewIds,],    // allSpotReviews, CD Review
+  add userId to allUserSpots
 
   Review
     firstName // sllUser/SpotReviews

@@ -1,11 +1,10 @@
 // backend/routes/api/session.js
-const { check } = require('express-validator');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 const { validateLogin } = require('../../utils/validation');
-const { restoreUser, setTokenCookie } = require('../../utils/auth');
+const { setTokenCookie } = require('../../utils/auth');
 const { getSafeUser } = require('../../utils/safeUser');
-const { User } = require('../../db/models');
+const { Booking, Review, Spot, User } = require('../../db/models');
 const router = require('express').Router();
 
 
@@ -26,7 +25,7 @@ router.route('')
         [Op.or]: {
           username: credential,
           email: credential
-        }
+        },
       }
     });
 

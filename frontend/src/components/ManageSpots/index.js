@@ -9,7 +9,7 @@ import SpotTile from '../SpotTile';
 
 const ManageSpots = () => {
     const sessionUser = useSelector(state => state.session.user);
-    const spots = useSelector(state => state.spots?.userSpots)
+    const spots = useSelector(state => state.session.user.spots)
     const dispatch = useDispatch();
     const history = useHistory();
 

@@ -42,7 +42,7 @@ module.exports = {
       },
       {
         firstName: "Josh",
-        lastName: "Goldberg",
+        lastName: "Goldenberg",
         email: "josh@user.io",
         username: seederUserNames[4],
         hashedPassword: bcrypt.hashSync(seederUserNames[4])

@@ -4,18 +4,16 @@ import { useSelector } from 'react-redux';
 import ReviewTile from '../ReviewTile';
 
 function ReviewList({ spot }) {
-    const reviews = useSelector(state => state.reviews.spotLatest[spot.id]);
-    const user = useSelector(state => state.session.user);
+    let reviewIds = useSelector(state => state.reviews.spotLatest[spot.id]);
 
     // ok to have 0 reviews; may be new, etc.
-
-    /* reviews already sorted by updatedAt */
+    if (spot.numReviews === 0) reviewIds = [];
 
     return (
       <>
-      {reviews.map(reviewId =>
+      {reviewIds.map(reviewId =>
         (
-        <ReviewTile key={reviewId} reviewId={reviewId} user={user} />
+        <ReviewTile key={reviewId} reviewId={reviewId} />
       ))}
       </>
     );

@@ -153,9 +153,26 @@ router.route('/:spotId(\\d+)/reviews')
     });
 
 
-router.get('/current', requireAuth, async (req, res) =>
-    spotsWhere(req, res, {ownerId: req.user.id}))
-
+router.get('/current', requireAuth, async (req, res) => {
+    let Spots = await Spot.findAll({
+        include: [
+            {
+                model: Review,
+                attributes: ['id','stars']
+            },
+        ],
+        where: {ownerId: req.user.id}
+    });
+    Spots = Spots.map(e=>e.toJSON());
+    Spots.forEach(s=>{s.avgRating =
+        s.Reviews && s.Reviews.length && (s.Reviews.reduce((acc, next)=> acc + next.stars, 0) / s.Reviews.length);
+        s.numReviews = s.Reviews.length;
+        if (!s.avgRating) s.avgRating = null;
+        s.reviews = s.Reviews.map(r=>r.id);
+        delete s.Reviews;
+    });
+    return res.json({Spots});
+})
 
 router.route('/:spotId(\\d+)')
     .delete(requireAuth, async (req, res, next) => {
@@ -173,23 +190,25 @@ router.route('/:spotId(\\d+)')
             attributes: { include: []  }  ,
             include: [
               { model: SpotImage,
-                attributes: {exclude: ['spotId', 'createdAt', 'updatedAt']}},
+                attributes: {exclude: ['createdAt', 'updatedAt']}},
               { model: User,
                 as: 'Owner',
-                attributes: {exclude: ['username', 'hashedPassword', 'email', 'updatedAt', 'createdAt']}}
+                attributes: {exclude: ['username', 'hashedPassword', 'email', 'updatedAt', 'createdAt']}},
+                {
+                    model: Review,
+                    attributes: ['id','stars']
+                }
                 ],
         });
         if (!spot) return res.status(404).json({message: "Spot couldn't be found"});
-        let reviewInfo = await Review.findAll({
-            attributes: [
-                [sequelize.fn('COUNT', sequelize.col('stars')), 'numReviews'],
-                [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating']
-            ],
-            where: {spotId: spot.id}
-        });
-        reviewInfo = reviewInfo[0].toJSON();
-        spot = spot.toJSON(); spot.numReviews = reviewInfo.numReviews; spot.avgRating = reviewInfo.avgRating;
-        spot = adjustPojo(spot, ['id', 'ownerId', 'address', 'city','state', 'country', 'lat', 'lng', 'name', 'description', 'price', 'previewUrl', 'createdAt', 'updatedAt', 'numReviews', 'avgRating', 'SpotImages', 'Owner']);
+        spot = spot.toJSON();
+        spot.avgRating =
+            spot.Reviews && spot.Reviews.length && (spot.Reviews.reduce((acc, next)=> acc + next.stars, 0) / spot.Reviews.length);
+            spot.numReviews = spot.Reviews.length;
+            if (!spot.avgRating) spot.avgRating = null;
+            spot.reviews = spot.Reviews.map(r=>r.id)
+            delete spot.Reviews;
+        spot = adjustPojo(spot, ['id', 'ownerId', 'address', 'city','state', 'country', 'lat', 'lng', 'name', 'description', 'price', 'previewUrl', 'createdAt', 'updatedAt', 'numReviews', 'avgRating', 'SpotImages', 'Owner', 'reviews']);
         return res.json(spot);
     })
     .put(requireAuth, validateEditSpot, async (req, res, next) => {
@@ -268,16 +287,19 @@ router.route('')
         include: [
             {   model: Review,
                 required: false,
-                attributes: ['stars']},
+                attributes: ['id', 'stars']},
         ],
         ...options,
         limit: size,
-        offset: (page - 1) * size
+        offset: (page - 1) * size,
+        required: false
     });
     Spots = Spots.map(e=>e.toJSON());
     Spots.forEach(s=>{s.avgRating =
         s.Reviews && s.Reviews.length && (s.Reviews.reduce((acc, next)=> acc + next.stars, 0) / s.Reviews.length);
+        s.numReviews = s.Reviews.length;
         if (!s.avgRating) s.avgRating = null;
+        s.reviews = s.Reviews.map(r=>r.id)
         delete s.Reviews;
     });
     return res.json({Spots, page, size});
@@ -295,23 +317,5 @@ router.route('')
         });
 
 
-async function spotsWhere(req, res, where={}) {
-    let Spots = await Spot.findAll({
-        include: [
-            {   model: Review,
-                required: false,
-                attributes: [[sequelize.fn('AVG', sequelize.col('stars')), 'avgRating']]
-            }
-        ],
-        where: {...where},
-    });
-    Spots = Spots.map(e=>e.toJSON());
-    Spots.forEach(s=>{s.avgRating =
-        s.Reviews && s.Reviews.length && s.Reviews[0] && s.Reviews[0].avgRating
-            ? s.Reviews[0].avgRating : null;
-        delete s.Reviews;
-    });
-    return res.json({Spots});
-};
 
 module.exports = router;

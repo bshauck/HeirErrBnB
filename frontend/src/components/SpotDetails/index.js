@@ -17,8 +17,6 @@ function SpotDetails() {
     console.log("🚀 ~ file: index.js:15 ~ SpotDetails ~ spotImages:", spotImages)
 
 
-    for (const imageId in imageIds)
-        otherImages.push(spotImages[imageId])
 
 
   const ref = useRef({});
@@ -26,6 +24,9 @@ function SpotDetails() {
     if (!ref.current[id]) ref.current[id] = dispatch(thunkReadSpot(id))
     return null;
   } else if (ref.current[id]) delete ref.current[id]
+
+  for (const imageId in imageIds)
+  otherImages.push(spotImages[imageId])
 
   const owner = spot?.Owner;
   function handleReserveClick(){
@@ -55,7 +56,7 @@ function SpotDetails() {
             </div>
             <hr></hr>
         </section>
-        <SpotDetailReviewArea detailedSpot={spot} />
+        <SpotDetailReviewArea spot={spot} />
     </div>
     )
 };

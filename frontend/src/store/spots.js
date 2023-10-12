@@ -112,12 +112,11 @@ in state.spots.id
 }
 */
 
-import { READ_SPOT, READ_SPOT_REVIEWS } from "./commonActionCreators";
+import { READ_SPOT, READ_SPOT_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
 
 import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
-const READ_USER_SPOTS = "spots/READ_USER_SPOTS";
 const DELETE_SPOT = "spots/DELETE_SPOT";
 const CREATE_SPOT = "spots/CREATE_SPOT";
 const UPDATE_SPOT = "spots/UPDATE_SPOT";
@@ -180,6 +179,9 @@ export const thunkReadAllUserSpots = (args) => async dispatch => {
 }
 
 export const thunkReadSpot = id => async dispatch => {
+  if (typeof id === 'object')
+  console.log("🚀 ~ thunkReadSpot ~values of id:", Object.values(id) )
+
   const url = `/api/spots/${id}`
   const answer = await fetchData(url)
   if (!answer.errors) dispatch(readSpot(answer))
@@ -284,7 +286,7 @@ const spotsReducer = (state = initialState, action) => {
     case READ_USER_SPOTS: {
         const normalized = {};
         action.payload.forEach(s => normalized[s.id]=s)
-        newState = {...state, userSpots: normalized};
+        newState = {...state, "id": {...state.id, ...normalized}};
         return newState;
     }
     case CREATE_SPOT:
@@ -293,8 +295,6 @@ const spotsReducer = (state = initialState, action) => {
       const id = spot.id;
       newState = {...state};
       newState.id = {...state.id, [id]: spot};
-      if (state.session?.user?.id === spot.ownerId)
-        newState.userSpots = {...state.userSpots, [id]: spot};
       return newState;
     }
     case READ_SPOT: { /* old singleSpot */
@@ -312,11 +312,9 @@ const spotsReducer = (state = initialState, action) => {
       newState.id = {...state.id};
       delete newState.id[action.payload]
       newState.userQuery = {...state.userQuery};
-      delete newState.userSpots[action.payload];
       return newState;
     case READ_SPOT_REVIEWS: {
       let {reviews,spotId} = action.payload
-      reviews = reviews.map(r => r.id)
       newState = {...state}
       newState.id = {...state.id}
       newState.id[spotId] = {...state.id[spotId], reviews }

@@ -55,14 +55,12 @@ root.render(
   <StrictMode>
     <Root />
   </StrictMode>
-);
+  );
 
 } else { // v17
 
   ReactDOM.render(
-    <StrictMode>
-      <Root />
-    </StrictMode>,
+      <Root />,
     document.getElementById("root")
   );
 

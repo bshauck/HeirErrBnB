@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useModal } from "../../context/Modal";
 import { thunkCreateReview } from "../../store/reviews";
 import StarRatingInput from "../StarRatingInput";
-import { thunkReadSpot } from "../../store/spots";
 
 function ReviewFormModal({spot, userId}) {
     const dispatch = useDispatch();
@@ -23,7 +22,6 @@ function ReviewFormModal({spot, userId}) {
       commentary,
       stars,
     }, user.firstName))
-    dispatch(thunkReadSpot(spotId)) // unsure this is the place
     closeModal();
   };
 
