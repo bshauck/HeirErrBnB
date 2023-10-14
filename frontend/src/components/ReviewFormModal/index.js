@@ -5,11 +5,10 @@ import { useState } from "react";
 import { useModal } from "../../context/Modal";
 import { thunkCreateReview } from "../../store/reviews";
 import StarRatingInput from "../StarRatingInput";
-import { thunkReadSpot } from "../../store/spots";
 
 function ReviewFormModal({spot, userId}) {
     const dispatch = useDispatch();
-    const [review, setReview] = useState("");
+    const [commentary, setCommentary] = useState("");
     const [stars, setStars] = useState("");
     const { closeModal } = useModal();
     const spotId = spot.id;
@@ -20,10 +19,9 @@ function ReviewFormModal({spot, userId}) {
     await dispatch(thunkCreateReview({
       spotId,
       userId,
-      review,
+      commentary,
       stars,
     }, user.firstName))
-    dispatch(thunkReadSpot(spotId))
     closeModal();
   };
 
@@ -33,14 +31,14 @@ function ReviewFormModal({spot, userId}) {
       <form className="createReviewForm" onSubmit={handleSubmit}>
         <h1>How was your stay?</h1>
         <textarea className="createReviewTextarea"
-        value={review} onChange={e => setReview(e.target.value)} placeholder="Leave your review here..." />
+        value={commentary} onChange={e => setCommentary(e.target.value)} placeholder="Leave your review here..." />
         <StarRatingInput
           disabled={false}
           onChange={handleChange}
           rating={stars}
         />
         <div className="createReviewFormButtonDiv">
-          <button className="createReviewButton" disabled={review.length < 10 || !stars}>Submit Your Review</button>
+          <button className="createReviewButton" disabled={commentary.length < 10 || !stars}>Submit Your Review</button>
         </div>
       </form>
   );

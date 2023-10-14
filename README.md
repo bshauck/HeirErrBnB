@@ -300,10 +300,10 @@ Returns all the spots.
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
+          "previewUrl": "image url",
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36",
           "avgRating": 4.5,
-          "previewImage": "image url"
         }
       ]
     }
@@ -340,10 +340,10 @@ Returns all the spots owned (created) by the current user.
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
+          "previewUrl": "image url",
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36",
           "avgRating": 4.5,
-          "previewImage": "image url"
         }
       ]
     }
@@ -378,6 +378,7 @@ Returns the details of a spot specified by its id.
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
+      "previewUrl": "image.jpg",
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-19 20:39:36" ,
       "numReviews": 5,
@@ -386,12 +387,10 @@ Returns the details of a spot specified by its id.
         {
           "id": 1,
           "url": "image url",
-          "preview": true
         },
         {
           "id": 2,
           "url": "image url",
-          "preview": false
         }
       ],
       "Owner": {
@@ -436,7 +435,8 @@ Creates and returns a new spot.
       "lng": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
-      "price": 123
+      "price": 123,
+      "previewUrl": "image.jpg"
     }
     ```
 
@@ -459,6 +459,7 @@ Creates and returns a new spot.
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
+      "previewUrl": "image.jpg",
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-19 20:39:36"
     }
@@ -482,7 +483,8 @@ Creates and returns a new spot.
         "lng": "Longitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
-        "price": "Price per day is required"
+        "price": "Price per day is required",
+        "previewUrl": "Preview URL is required"
       }
     }
     ```
@@ -503,7 +505,7 @@ Create and return a new image for a spot specified by id.
     ```json
     [
       {
-      "urls": ["str1", "str2", ...] //(first url is considered the preview)
+      "urls": ["str1", "str2", ...]
       }
     ]
     ```
@@ -515,11 +517,10 @@ Create and return a new image for a spot specified by id.
   * Body:
 
     ```json
-    [
+    [ // if single object given, single returned
       {
       "id": 1,
       "url": "image url",
-      "preview": true
      }
     ]
     ```
@@ -559,7 +560,8 @@ Updates and returns an existing spot.
       "lng": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
-      "price": 123
+      "price": 123,
+      "previewUrl": "image.jpg"
     }
     ```
 
@@ -582,6 +584,7 @@ Updates and returns an existing spot.
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
+      "previewUrl": "image.jpg",
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-20 10:06:40"
     }
@@ -605,7 +608,8 @@ Updates and returns an existing spot.
         "lng": "Longitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
-        "price": "Price per day is required"
+        "price": "Price per day is required",
+        "previewUrl": "Preview URL is required",
       }
     }
     ```
@@ -682,7 +686,7 @@ Returns all the reviews written by the current user.
           "id": 1,
           "userId": 1,
           "spotId": 1,
-          "review": "This was an awesome spot!",
+          "commentary": "This was an awesome spot!",
           "stars": 5,
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36" ,
@@ -702,7 +706,7 @@ Returns all the reviews written by the current user.
             "lng": -122.4730327,
             "name": "App Academy",
             "price": 123,
-            "previewImage": "image url"
+            "previewUrl": "image url"
           },
           "ReviewImages": [
             {
@@ -738,7 +742,7 @@ Returns all the reviews that belong to a spot specified by id.
           "id": 1,
           "userId": 1,
           "spotId": 1,
-          "review": "This was an awesome spot!",
+          "commentary": "This was an awesome spot!",
           "stars": 5,
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36" ,
@@ -784,7 +788,7 @@ Create and return a new review for a spot specified by id.
 
     ```json
     {
-      "review": "This was an awesome spot!",
+      "commentary": "This was an awesome spot!",
       "stars": 5,
     }
     ```
@@ -800,7 +804,7 @@ Create and return a new review for a spot specified by id.
       "id": 1,
       "userId": 1,
       "spotId": 1,
-      "review": "This was an awesome spot!",
+      "commentary": "This was an awesome spot!",
       "stars": 5,
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-19 20:39:36"
@@ -817,7 +821,7 @@ Create and return a new review for a spot specified by id.
     {
       "message": "Bad Request", // (or "Validation error" if generated by Sequelize),
       "errors": {
-        "review": "Review text is required",
+        "commentary": "Commentary is required",
         "stars": "Stars must be an integer from 1 to 5",
       }
     }
@@ -919,7 +923,7 @@ Update and return an existing review.
 
     ```json
     {
-      "review": "This was an awesome spot!",
+      "commentary": "This was an awesome spot!",
       "stars": 5,
     }
     ```
@@ -935,7 +939,7 @@ Update and return an existing review.
       "id": 1,
       "userId": 1,
       "spotId": 1,
-      "review": "This was an awesome spot!",
+      "commentary": "This was an awesome spot!",
       "stars": 5,
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-20 10:06:40"
@@ -952,7 +956,7 @@ Update and return an existing review.
     {
       "message": "Bad Request", // (or "Validation error" if generated by Sequelize),
       "errors": {
-        "review": "Review text is required",
+        "commentary": "Review text is required",
         "stars": "Stars must be an integer from 1 to 5",
       }
     }
@@ -1040,7 +1044,7 @@ Return all the bookings that the current user has made.
             "lng": -122.4730327,
             "name": "App Academy",
             "price": 123,
-            "previewImage": "image url"
+            "previewUrl": "image url"
           },
           "userId": 2,
           "startDate": "2021-11-19",
@@ -1451,10 +1455,10 @@ Return spots filtered by query parameters.
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
+          "previewUrl": "image url",
           "createdAt": "2021-11-19 20:39:36",
           "updatedAt": "2021-11-19 20:39:36",
           "avgRating": 4.5,
-          "previewImage": "image url"
         }
       ],
       "page": 2,

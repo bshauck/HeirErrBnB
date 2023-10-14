@@ -1,22 +1,36 @@
 /* bookings slice of state
 {
-    user: {
-      [bookingId]: {
-        bookingData,
-        Spot: {
-          bookingData,
+  id:
+    {
+      [bookingId]:
+        {
+          id,
+          userId,
+          spotId,
+          startDate,
+          endDate,
+          createdAt,
+          updatedAt
         },
-      },
-      optionalOrderedList: [],
+    }
+  spot: { [spotId]: [idsOrderedBySpotAndAscFutureEndDatePerhaps], }
+  user: { [userId]: [idsOrderedByUserAndAscFutureEndDatePerhaps], }
+}
+*/
+
+/* New store shape
+{
+  [bookingId]:
+    {
+      id,
+      userId,
+      spotId,
+      startDate,
+      endDate,
+      createdAt,
+      updatedAt
     },
-    // Note here that your responses can actually be different here as well.
-    // HINT: What information should you see if you own this booking? (Refer to API Docs).
-    booking: {
-      [bookingId]: {
-        bookingData,
-      },
-      optionalOrderedList: [],
-    },
+    "list": [idsOrderedByEndDatePerhaps]
 }
 */
 

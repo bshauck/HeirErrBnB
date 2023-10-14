@@ -3,13 +3,29 @@ import thunk from "redux-thunk";
 import sessionReducer from "./session";
 import spotsReducer from "./spots";
 import reviewsReducer from "./reviews";
-import bookingsReducer from "./bookings";
+import spotImagesReducer from "./spotImages";
+// import bookingsReducer from "./bookings";
+
+/* New store shape (see each slice for details)
+{
+  session:
+  users:
+  spots:
+  reviews:
+//  bookings: // TODO
+  spotImages:
+  reviewImages:
+},
+*/
 
 const rootReducer = combineReducers({
   session: sessionReducer,
+  // users: [], // apparently handled by session
   spots: spotsReducer,
   reviews: reviewsReducer,
-  bookings: bookingsReducer
+  // bookings: bookingsReducer
+  spotImages: spotImagesReducer,
+  // reviewImages: []
 });
 
 let enhancer;

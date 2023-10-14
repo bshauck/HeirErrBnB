@@ -1,8 +1,8 @@
-// frontend/src/components/SpotDefailReviewArea/index.js
-import { useEffect } from "react";
+// frontend/src/components/SpotDetailReviewArea/index.js
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux"
 
-import { thunkReadAllReviews } from "../../store/reviews";
+import { thunkReadAllReviews, thunkReadAllUserReviews } from "../../store/reviews";
 import ReviewList from "../ReviewList"
 import OpenModalButton from "../OpenModalButton";
 import ReviewFormModal from "../ReviewFormModal";
@@ -12,46 +12,74 @@ import StarRating from "../StarRating";
 * and he isn't owner of the spot, then put a Post Your Review
 * button; so have to get reviewsBySpot
 */
-function SpotDetailReviewArea({ detailedSpot }) {
+function SpotDetailReviewArea({ spot }) {
+  console.log("Starting render for review area on spot: ", spot.id)
     const user = useSelector(state => state.session.user);
-    const reviews = useSelector(state => state.reviews.spot);
+    const userReviews = useSelector(state => state.session.reviews);
+    const spotReviews = useSelector(state => state.spots.id[spot.id].reviews);
+    const orderedReviews = useSelector(state => state.reviews.spotLatest[spot.id])
     const dispatch = useDispatch();
+    console.log("userRevlen,spotRevlen,orderedLen; ", userReviews?.length, spotReviews?.length, orderedReviews?.length);
+    let mayPost = false;
+    let mayPostNoReviews = false;
 
-    useEffect(() => {
-        dispatch(thunkReadAllReviews(detailedSpot.id));
-    }, [dispatch, detailedSpot.id])
+    useEffect(()=>{
+      if (!orderedReviews)
+      dispatch(thunkReadAllReviews(spot.id))
+    }, [dispatch,orderedReviews,spot.id]);
 
-    function handlePostClick() {
+    function handlePostClick() {}
+    /* here, user may have its userReviews id list, and
+    reviews may have the ordered list of reviews for the
+    spot (newest first). Make sure these are both filled
+    in so you can determine (1) if ANY reviews exist for
+    the spot, and (2) if so, does the user have one */
 
-    }
+    const userRef = useRef({});
+    const reviewRef = useRef({});
 
-    if (detailedSpot.numReviews && !Object.keys(reviews).length) {
-        async function readAllSpotReview(id) {
-            await dispatch(thunkReadAllReviews(id));
-        };
-        readAllSpotReview(detailedSpot.id);
+    if (!orderedReviews || !spotReviews) {
+      if (!reviewRef.current[spot.id])
+        reviewRef.current[spot.id] = dispatch(thunkReadAllReviews(spot.id))
+      return null;
+    } else if (Array.isArray(spotReviews))
+    if (reviewRef.current[spot.id]) delete reviewRef.current[spot.id]
+
+    if (user) {
+      if (user.id !== spot.ownerId) {
+      if (spotReviews.length && !Array.isArray(user.reviews)) { /* need user reviews */
+        if (!userRef.current[user.id]) // first request
+          userRef.current[user.id] = dispatch(thunkReadAllUserReviews())
         return null;
-    }
+      } else if (Array.isArray(user.reviews))
+        if (userRef.current[user.id]) delete userRef.current[user.id]
 
-    const reviewArray = Object.values(reviews)
-    const hasReviewed = reviewArray.find(r => r.userId === user?.id) || user === null;
-    const isPostable = user?.id !== detailedSpot.ownerId && !hasReviewed;
-    const isPostableNoReviews = isPostable && !reviewArray.length;
+      console.log("🚀 ~ SpotDetailReviewArea ~ user:", user)
+      console.log("🚀 ~ SpotDetailReviewArea ~ spot:", spot)
+      console.log("reviews: user, spot", userReviews, spotReviews)
+
+
+        console.log("userrevs", userReviews)
+        console.log("spotrevs", spotReviews)
+        mayPost = !spotReviews.length || !userReviews || !userReviews.length || userReviews.every(urev => !spotReviews.includes(urev));
+        mayPostNoReviews = mayPost && !spotReviews.length;
+    }}
+    console.log("🚀 ~  mayPost, noReviews:", mayPost, mayPostNoReviews)
+
     return (
       <div className="spotDetailReviewAreaDiv">
-        <div className="reviewListStarRatingHeaderDiv"><StarRating avgRating={detailedSpot.avgRating} numReviews={detailedSpot.numReviews} /></div>
-        {isPostable &&
+        <div className="reviewListStarRatingHeaderDiv"><StarRating avgRating={spot.avgRating} numReviews={spot.numReviews} /></div>
+        {mayPost &&
           <OpenModalButton
             buttonText="Post Your Review"
             onButtonClick={handlePostClick}
-            modalComponent={<ReviewFormModal spot={detailedSpot} userId={user.id} />}
+            modalComponent={<ReviewFormModal spot={spot} userId={user.id} />}
           />}
-        {isPostableNoReviews &&
+        {mayPostNoReviews &&
             <div className="beTheFirstDiv">Be the first to post a review!</div>}
-        <ReviewList reviews={reviews} spot={detailedSpot}  />
+        <ReviewList reviews={orderedReviews} spot={spot}  />
       </div>
     )
 }
-
 
 export default SpotDetailReviewArea ;

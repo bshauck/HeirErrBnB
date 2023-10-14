@@ -44,14 +44,12 @@ and without logged-in user
  *
  */
 
-import { csrfFetch } from "./csrf";
-import { READ_SPOT } from "./spots";
+import { csrfFetch, fetchData } from "./csrf";
+import { READ_SPOT, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
 const SET_SPOT_OWNER = "session/SET_SPOT_OWNER"
-
-console.log("made it to beginning of store.session.js")
 
 
 export const setSpotOwner = (partialUser) => {
@@ -74,28 +72,27 @@ const removeUser = () => {
   };
 };
 
-export const login = (user) => async (dispatch) => {
+
+export const thunkLogin = user => async dispatch => {
   const { credential, password } = user;
-  const response = await csrfFetch("/api/session", {
+  const url = `/api/session`
+  const options = {
     method: "POST",
     body: JSON.stringify({
       credential,
       password,
-    }),
-  });
-  if (response.status >= 400)
-    throw response;
-  const data = await response.json();
-  // if (data && data?.errors)
-  //   throw data;
-  dispatch(setUser(data.user));
-  return response;
-};
-export const thunkLogin=login;
+    })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) dispatch(setUser(answer.user))
+  else throw answer;
+  return answer.user
+}
 
-export const signup = (user) => async (dispatch) => {
+export const thunkSignup = user => async dispatch => {
   const { username, firstName, lastName, email, password } = user;
-  const response = await csrfFetch("/api/users", {
+  const url = `/api/users`
+  const options = {
     method: "POST",
     body: JSON.stringify({
       username,
@@ -103,42 +100,62 @@ export const signup = (user) => async (dispatch) => {
       lastName,
       email,
       password,
-    }),
-  });
-  const data = await response.json();
-  dispatch(setUser(data.user));
-  return response;
-};
-export const thunkSignup = signup;
+    })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) dispatch(setUser(answer.user))
+  return answer
+}
 
-export const logout = () => async (dispatch) => {
-  const response = await csrfFetch('/api/session', {
-    method: 'DELETE',
-  });
-  dispatch(removeUser());
-  return response;
-};
-export const thunkLogout = logout;
+export const thunkLogout = () => async dispatch => {
+  const answer = await fetchData(`/api/session`, { method: 'DELETE' })
+  if (!answer.errors) dispatch(removeUser())
+  return answer
+}
 
-const initialState = { user: null };
+const initialState = {
+  user: null,
+  id: {},
+  spots:null,
+  reviews:null,
+  bookings:null,
+ };
 
 const sessionReducer = (state = initialState, action) => {
   const newState = {...state};
+
   switch (action.type) {
     case SET_USER:
       const newUser = action.payload
       newState.user = newUser;
-      if (newUser && !state[newUser.id]?.username) /* didn't have full user info */
-        newState[newUser.id] = newUser;
+      if (newUser && !state.id[newUser.id]?.username) /* didn't have full user info */
+        newState.id[newUser.id] = newUser;
       return newState;
-    case READ_SPOT:
+
+    case READ_SPOT:{
       const partialUser = action.payload.Owner;
-      if (state[partialUser.id]) return state; /* already have this */
-      newState[partialUser.id] = partialUser;
+      if (state.id[partialUser.id]) return state; /* already have this */
+      newState.id = {...state.id}
+      newState.id[partialUser.id] = partialUser;
       return newState;
+    }
     case REMOVE_USER: /* don't remove key; names still used in spot details */
-      newState.user = null;
+      newState.user = newState.reviews = newState.spots = newState.bookings = null;
       return newState;
+
+    case READ_USER_REVIEWS:{
+      const reviews = action.payload.map(r => r.id)
+      newState.user = {...state.user}
+      newState.id = {...state.id}
+      newState.reviews = newState.user.reviews = newState.id[state.user.id] = reviews
+      return newState
+    }
+    case READ_USER_SPOTS: {
+      const spots = action.payload.map(s=>s.id)
+      newState.user = {...state.user}
+      newState.spots = newState.user.spots = spots;
+      return newState;
+    }
     default:
       return state;
   }

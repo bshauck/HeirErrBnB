@@ -27,12 +27,12 @@ module.exports = {
       const startIndex = getRandomInt(0, filteredIds.length-(numReviews+1));
       const spotId = spot.id;
       for (let i=0; i < numReviews; i++) {
-        const [review, stars] = getReviewInfo();
+        const [commentary, stars] = getReviewInfo();
         let userId = filteredIds[startIndex+i];
         generatedReviews.push({
           userId,
           spotId,
-          review,
+          commentary,
           stars
         });
       }}

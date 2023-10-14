@@ -1,40 +1,42 @@
 // frontend/src/components/SpotTile/index.js
-// import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory } from 'react-router-dom/';
+import { useDispatch, useSelector } from 'react-redux';
 
 import StarRating from '../StarRating';
 import OpenModalButton from '../OpenModalButton';
 import SpotDeleteFormModal from '../SpotDeleteFormModal';
-import { useDispatch, useSelector } from 'react-redux';
 import { thunkReadSpot } from '../../store/spots';
 
 const placeholderSrc = "https://placehold.co/100?text=Photo+needed&font=montserrat"
 
-function SpotTile ({spot, isManaged}) {
-  const stateSpot = useSelector(state => state.spots.allSpots[spot.id])
+function SpotTile ({spotId, spot, isManaged}) {
+  console.log("🚀 rendering SpotTile ~ spotId, spot:", spotId, spot)
+  const stateSpot = useSelector(state => state.spots.id[spotId])
   const history = useHistory();
   const dispatch = useDispatch();
-  // const sessionUser = useSelector(state => state.session.user);
 
 
   function handleUpdateClick() {
-    history.push(`/spots/${spot.id}/edit`)
+    if (stateSpot !== true)
+    history.push(`/spots/${spotId}/edit`)
   }
 
   function handleDeleteClick() {
   }
 
   function handleTileClick() {
-    history.push(`/spots/${spot.id}`)
+    history.push(`/spots/${spotId}`)
   }
 
-  if (!stateSpot) {
-    (async()=>await(dispatch(thunkReadSpot(spot.id))))()
+  if (!spot) {
+    (async()=>await(dispatch(thunkReadSpot(spotId))))()
     return null;
   }
+
+
   return (
     <div className="tileDiv">
-    <img className="spotTileImg" alt="preview" title={spot.name} src={spot.previewImage || placeholderSrc} onClick={handleTileClick}>
+    <img className="spotTileImg" alt="preview" title={spot.name} src={spot.previewUrl || placeholderSrc} onClick={handleTileClick}>
     </img>
     <div className="tileLocationAndRatingDiv">
         <span className="tileLocation">{`${spot.city}, ${spot.state}`}</span>
@@ -49,7 +51,7 @@ function SpotTile ({spot, isManaged}) {
               buttonText="Delete"
               onButtonClick={handleDeleteClick}
               // onModalClose={??}
-              modalComponent={<SpotDeleteFormModal id={spot.id}/>}
+              modalComponent={<SpotDeleteFormModal id={spotId}/>}
               />
     </div>
     }

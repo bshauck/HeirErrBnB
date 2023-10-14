@@ -1,0 +1,164 @@
+Here's the list of changes made for Lillith's Postman test script to work
+
+Errors in API I corrected
+    2 500s should be 400s
+    1 500 should be 403
+    Several (4?) 200s should be 201s (that create new table rows)
+    It IS OK for a startDate and different booking endDate to be the same.
+    People leave in the morning and come in the evening. (Similarly for
+    endDates)
+    Allow owner to make booking of own spot (implementation of unavailable)
+change all review things to look for commentary instead of review
+
+Errors in script:
+  line 12 of POST Signup needs ()s after keyword function
+
+
+
+Investigate if you can run something before test script run
+
+if cascade delete is set appropriately, only this one delete
+command needs to run to clean up after a rest:
+DELETE FROM Users WHERE lastName='AATester';
+Ensure no cookies, or perhaps run option don't use cookies
+
+    POST Create an Image for a Spot
+
+    GET Details of a Spot by Id - Verify Creation, Image updatedAt
+Got NaN
+
+
+    POST Error - Log In - Invalid credentials
+ "The provided credentials [were] invalid" ==> "The provided credentials [are] invalid"
+    POST Create an Image for a Spot (extended to allow multiple in one request)
+So return value is an array of spot images, not just a single spot
+[
+    {
+        "id": 187,
+        "url": "image.jpg",
+    }
+]
+
+    GET Get Details of a Spot by Id - Verify Creation, Image updatedAt
+expected NaN not to be NaN
+{
+    "id": 44,
+    "ownerId": 30,
+    "address": "123 Should Exist Street",
+    "city": "San Frangoodtogo",
+    "state": "California",
+    "country": "United States of Valid Data",
+    "lat": 37.7645358,
+    "lng": -122.4730327,
+    "name": "The Good Spot",
+    "description": "Place where valid data can stay",
+    "price": 123,
+    "createdAt": "2023-10-09T22:39:51.510Z",
+    "updatedAt": "2023-10-09T22:39:51.510Z",
+    "numReviews": 0,
+    "avgRating": null,
+    "previewUrl": "image.jpg"
+    "SpotImages": [
+        {
+            "id": 187,
+            "url": "image.jpg",
+        }
+    ],
+    "Owner": {
+        "id": 30,
+        "firstName": "FirstTest",
+        "lastName": "AATester"
+    }
+}
+
+
+    POST Not AUTHED - Create an Image for a Spot
+Wanted error message to be "Spot doesn't belong to you"
+Wanted title to be Forbidden (optional)
+{
+    "message": "Forbidden",
+    "stack": "Error: Forbidden\n    at unauthor (/home/shauck/aa-projects/project/HeirErrBnb/backend/utils/auth.js:95:11)\n    at fitsAuthor (/home/shauck/aa-projects/project/HeirErrBnb/backend/utils/auth.js:107:5)\n    at /home/shauck/aa-projects/project/HeirErrBnb/backend/routes/api/spots.js:97:9"
+}
+
+
+    PUT NOT AUTHED - Edit a Spot
+    DELETE NOT AUTHED - Delete a Spot
+    DELETE NOT AUTHED - Delete a Spot (given null for spotId)
+same issues as last, but also got a 404 "instead" of a 403
+    POST Create an Image for a Review - 1,2,3,4 through 11
+all gave back 500 instead of 200 but passed id did not correspond
+    to a reviewId; 166 instead of 158 was the highest; but why not
+    404 instead of 500
+
+GET Get Reviews of Current User - Verify Creation, Prevention, Image updated
+GET Get Reviews of Current Spot
+    Manually check is reason for error
+
+POST ERROR - Create a Booking - Same Start and End Date (I disagree with test)
+    Did give error, but text was not just "Bad Request" started with
+    "End date must be la"
+POST ERROR - Create a Booking - end date earlier than startDate
+    Wanted only "Bad Request"
+POST ERROR - Create a Booking - Start on existing Ending date
+I disagree this is an error, and it succeeded with 201
+POST ERROR - Create a Booking - End date on existing startDate
+I disagree this is an error, and it succeeeded with 201
+POST ERROR - Create a Booking - dates encompass other booking
+Error text different
+
+GET CURRENT USER Bookings
+returns 200, but has problem, but says test manually, test script could be off
+PUT Edit a Booking
+    Wanted 200, but got 403, I'm guessing difference in approach for
+    when a booking may be edited. I said no if startDate has happened
+
+PUT Edit a Booking checking if ignore yourself when surrounding
+    I fail; may not have handled this case correctly
+
+PUT ERROR Edit a Booking - Same Start / End
+PUT ERROR Edit a Booking - End before Start
+    Error text wanted was Bad Request
+
+PUT ERROR Edit a Booking - surrounding
+    manually check
+GET Get all Current User's Bookings; manually verify validateEditSpot
+GET Get all Bookings for a Spot by Id - manually verify
+
+POST NOT AUTHED -Create an Image for a Review
+    may be related to returning multiple imagers, not sure
+POST Booking another reconsideration; I believe I will implement
+    Owner marking Spots unavailable for booking, whatever the
+    front end looks like, simply by making a booking for their
+    own spot, so I disagree with the API here too.
+
+POST NOT AUTHED Edit a Review that isn't yourself
+PUT NOT AUTHED Edit  Booking that isn't yours
+DELETE NOT AUTHED Try to delete a review /image /booking that isn't yours
+    Disagree about error text
+
+DELETE doesn't correctly check for Review Image not existing with null
+    returns 404, but body says Successfully
+    ABOVE POINTS OUT have common 404 return case
+
+DELETE Review
+    disagree about success text
+DELETE Booking with invalid id
+    Optional title not set
+
+DELETE Spot-Image/null expects 200, doesn't like 404
+    Thinks message should say successfully deleted; DISAGREE
+DELETE Spot-Image/null invalid id (but has same subject as above)
+    Says Request resource instead of Spot Image couldn't be found
+
+Want attempts to delete/edit booking/review/review-image with 403 to says blah doesn't belong to you
+(although review-image incorrectly tests for review)
+I do have code to attempt to check for PUT Booking its own id as not
+part of the possible conflicting dates; but possibly I need to manually
+check it is working
+
+  Looks like test for GET All current user bookings checks for
+something wrong
+  Looks like the POST req body for ReviewImage didn't include a reviewId.
+
+  the string for urls could be improved (for front-end, they will
+actually restrict you, unnecesarily, to .jpg, .jpeg, and .png)

@@ -1,0 +1,58 @@
+
+
+
+ISSUES
+Passing certain db errors like signup uniqueness for email/username back up.
+Figure out default image sizes and layout
+Adding Callout with price night, small review avg, Reserve button
+StarRatings add to SpotDetails' callout box
+Ensure spot delete updates landing pages/manage spot pages
+Use placeholders when users have not contributed enough images
+Have SpotForm show first 4 validation error messages to side of label
+Comma misplaced on Create Spot (city, state)
+Add buttons to page through more spots than default page size
+Change default page size back to 20 (from 50), and track how you do
+  listing of landing spots, and maintain that, and know page being
+  displayed through renders
+
+
+Subheading size too large
+Subheading weight too heavy
+Regular text too large
+Heading weight somewhat more
+Textarea needs to extend across
+L/R edges of most elements need to align
+Submit button needs to be centered and colored
+Remove DEFAULT button (LAST THING)
+Confirm spot image creation working NO
+Have reasonable image sizing (tiles should be 3x6)
+CSS Delete Spot modal
+CSS not-logged-in menu
+CSS sign up dialog form
+
+Adding Fake descriptive text for host
+Adding divider on Spot details
+
+Understanding entire flow of error-handling and implementing correctly
+from front request with thunk to thunk fetch (I understand backend, and
+csrfFetch checking status code and throwing error when code >= 400) (decoration
+suggested removing the csrfFetch throw, just checking the error code, using
+async/await; changed login modal handling but need to do that for signup;
+long term do better with then.catch consistency)
+If we do throws from thunk then all app code has to have catch and handle throws;
+instead we do returns from thunk and only check for thing.errors.
+
+Better understanding of Promise .then.catch
+Knowing when things may be promises; and why some things that are
+    Promises are sometimes, are also not sometimes
+    e.g., response from fetch does not always understand .JSON
+
+
+FINALLY CSS
+Form placeholder text lighter
+price "night", star rating "review" both darker
+Generate better, larger amount of data
+
+BUGS:
+Login on error (invalid password/credential) changes size,
+and a sliver of a modalDiv appears underneath main modal

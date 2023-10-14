@@ -17,11 +17,11 @@
         "createdAt": "2021-11-19 20:39:36",
         "updatedAt": "2021-11-19 20:39:36",
         "avgRating": 4.5,
-        "previewImage": "image url"
+        "previewUrl": "image url"
       }
     optionalOrderedList: [],
     }
-  singleSpot: {
+  singleSpot: { // spot details
       "id": 1,
       "ownerId": 1,
       "address": "123 Disney Lane",
@@ -41,12 +41,10 @@
         {
           "id": 1,
           "url": "image url",
-          "preview": true
         },
         {
           "id": 2,
           "url": "image url",
-          "preview": false
         }
       ],
       "Owner": { // put into session as partialUser
@@ -77,11 +75,48 @@
     }
 }
 */
+
+/* New store shape for spots
+old userSpots now are keys in state.users.spots, and the spot info is
+in state.spots.id
+{
+  id:
+    {
+      [spotId]:
+        {
+          id: 1,
+          ownerId: 1,
+          address: "123 Disney Lane",
+          city: "San Francisco",
+          state: "California",
+          country: "United States",
+          lat: 37.7645358,
+          lng: -122.4730327,
+          name: "App Academy",
+          description: "Place where web developers are created",
+          price: 123,
+          createdAt: "2021-11-19 20:39:36",
+          updatedAt: "2021-11-19 20:39:36",
+          numReviews: 4,
+          avgRating: 4.5,
+          previewUrl: "image url",
+
+          // additional info; Details page gets images & reviews
+          // reserve button gets bookings
+          images: [spotImageIds,],
+          reviews: [reviewIds,],
+          // bookings: [bookingIds,], // perhaps only ids with future endDates
+        },
+    }
+  userQuery: { [userId]: [orderedSpotIdsBySomeInterestingCriteriaFromQuery], }
+}
+*/
+
+import { READ_SPOT, READ_SPOT_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
+
 import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
-const READ_USER_SPOTS = "spots/READ_USER_SPOTS";
-export const READ_SPOT = "spots/READ_SPOT";
 const DELETE_SPOT = "spots/DELETE_SPOT";
 const CREATE_SPOT = "spots/CREATE_SPOT";
 const UPDATE_SPOT = "spots/UPDATE_SPOT";
@@ -132,17 +167,23 @@ export const thunkReadAllSpots = () => async dispatch => {
   const url = `/api/spots`
   const answer = await fetchData(url)
   if (!answer.errors) dispatch(readAllSpots(answer.Spots))
+  return answer.Spots
+}
+
+
+export const thunkReadAllUserSpots = (args) => async dispatch => {
+  const url = '/api/spots/current'
+  const answer = await fetchData(url)
+  if (!answer.errors) dispatch(readAllUserSpots(answer.Spots))
   return answer
 }
 
-export const thunkReadAllUserSpots = () => async (dispatch) => {
-  const url = '/api/spots/current'
-  const answer = await fetchData(url)
-  if (!answer.errors) dispatch(readAllUserSpots(answer.Spots));
-  return answer;
-};
-
 export const thunkReadSpot = id => async dispatch => {
+  console.log("thunkreadspot id", id)
+  if (typeof id === 'object')
+  console.log("🚀 ~ thunkReadSpot ~values of id:", Object.values(id) )
+  else if (typeof id === 'undefined') throw new Error('eek')
+
   const url = `/api/spots/${id}`
   const answer = await fetchData(url)
   if (!answer.errors) dispatch(readSpot(answer))
@@ -173,29 +214,31 @@ export const thunkDeleteSpot = id => async dispatch => {
       "price": 123,
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-19 20:39:36" ,
+      "previewUrl": "image url",
       "SpotImages": [
         {
           "id": 1,
           "url": "image url",
-          "preview": true
         },
 */
 
 /* TODO eventually it should be wrapped in a transaction and
 rolled back if errors in either spot or image creations */
 export const thunkCreateSpot = (spot, urls) => async dispatch => {
-  const { ownerId, address, city, state, country, lat, lng, name, description, price } = spot;
+  const { ownerId, address, city, state, country, lat, lng, name, description, price, previewUrl } = spot;
   const url = `/api/spots`
   const options = {
     method: "POST",
     headers: jsonHeaderContent,
     body: JSON.stringify({
       ownerId, address, city, state, country, lat, lng,
-      name, description, price
+      name, description, price, previewUrl
   })
   }
   const answer = await fetchData(url, options)
   if (!answer.errors) {
+    answer.numReviews = 0; /* ponder in db */
+    answer.avgRating = null; /* ponder in db */
     options.body = JSON.stringify(urls)
     const answer2 = await csrfFetch(`/api/spots/${answer.id}/images`, options)
     if (!answer2.errors) {
@@ -206,7 +249,6 @@ export const thunkCreateSpot = (spot, urls) => async dispatch => {
   return answer
 }
 
-/* TODO when images added in change */
 export const thunkUpdateSpot = (spot /*, urls */) => async dispatch => {
   const { id, ownerId, address, city, state, country, lat, lng, name, description, price } = spot;
   const url = `/api/spots/${spot.id}`
@@ -222,14 +264,15 @@ export const thunkUpdateSpot = (spot /*, urls */) => async dispatch => {
   * it could be a mixture of updates and creation
   */
   const answer = await fetchData(url, options)
-  if (!answer.errors) dispatch(updateSpot(answer))
+  if (!answer.errors) {
+    dispatch(updateSpot(answer))
+  }
   return answer
 }
 
 const initialState = { /* for {} at state.spots */
-    allSpots: {}, /* when filled, normalized by spotId: {spotData} */
-    singleSpot: {}, /* when filled, {spotData} */
-    userSpots: {} /* when filled, normalized by spotId: {spotData} */
+    id: {}, /* when filled, normalized by spotId: {spotData} */
+    userQuery: {}, /* when filled, {[userId}: [spotIdsLandingOrderdBySomeUserQuery]} */
 };
 
 const spotsReducer = (state = initialState, action) => {
@@ -238,13 +281,14 @@ const spotsReducer = (state = initialState, action) => {
     case READ_SPOTS: {
         const normalized = {};
         action.payload.forEach(s => normalized[s.id]=s)
-        newState = {...state, allSpots: normalized};
+        newState = {...state}
+        newState.id = {...state.id, ...normalized};
         return newState;
     }
     case READ_USER_SPOTS: {
         const normalized = {};
         action.payload.forEach(s => normalized[s.id]=s)
-        newState = {...state, userSpots: normalized};
+        newState = {...state, "id": {...state.id, ...normalized}};
         return newState;
     }
     case CREATE_SPOT:
@@ -252,34 +296,34 @@ const spotsReducer = (state = initialState, action) => {
       const spot = action.payload
       const id = spot.id;
       newState = {...state};
-      newState.allSpots = {...state.allSpots, [id]: spot};
-      if (state.session?.user?.id === spot.ownerId)
-        newState.userSpots = {...state.userSpots, [id]: spot};
-      if (state.singleSpot?.id === id)
-        newState.singleSpot = {...state.singleSpot, ...spot}
+      newState.id = {...state.id, [id]: spot};
       return newState;
     }
-    case READ_SPOT: {
-      const id = action.payload.id;
-      const previewImage = action.payload.SpotImages.find(e => e.preview).url;
-      const spot = {...action.payload, previewImage};
-      newState = {...state};
-      newState.singleSpot = spot;
-      newState.allSpots = {...state.allSpots,  [id]: spot};
-      if (state.session?.user?.id === spot.ownerId)
-        newState.userSpots = {...state.userSpots,  [id]: spot};
-      return newState;
+    case READ_SPOT: { /* old singleSpot */
+      const id = action.payload.id
+      const spot = action.payload
+      const images = action.payload.SpotImages.map(s=>s.id)
+      spot.images = images
+      newState = {...state}
+      newState.id = {...state.id,  [id]: spot}
+      return newState
     }
 
-    case DELETE_SPOT:
+    case DELETE_SPOT: /* payload is spotId */
       newState = {...state};
-      newState.allSpots = {...state.allSpots};
-      delete newState.allSpots[action.payload]
-      newState.userSpots = {...state.userSpots};
-      delete newState.userSpots[action.payload];
-      if (newState.singleSpot?.id === action.payload)
-        newState.singleSpot = {};
+      newState.id = {...state.id};
+      delete newState.id[action.payload]
+      newState.userQuery = {...state.userQuery};
       return newState;
+
+    case READ_SPOT_REVIEWS: {
+      let {reviews, spotId} = action.payload
+      reviews = reviews.map(r=>r.id)
+      newState = {...state}
+      newState.id = {...state.id}
+      newState.id[spotId] = {...state.id[spotId], reviews }
+      return newState
+    }
     default:
       return state;
   }

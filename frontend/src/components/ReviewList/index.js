@@ -1,31 +1,36 @@
 // frontend/src/components/ReviewList/index.js
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { thunkReadAllReviews } from '../../store/reviews';
 import ReviewTile from '../ReviewTile';
+import { thunkReadAllReviews } from '../../store/reviews';
 
 function ReviewList({ spot }) {
-    const reviews = useSelector(state => state.reviews.spot);
-    const user = useSelector(state => state.session.user);
-    const dispatch = useDispatch();
+    let reviewIds = useSelector(state => state.reviews.spotLatest[spot.id]);
+    const ref = useRef({});
+    const dispatch = useDispatch()
 
-    if (!reviews) {
-      async function getTheDarnReviews() {
-        await dispatch(thunkReadAllReviews(spot.id))
-      }
-      getTheDarnReviews();
-      return null;
+    useEffect(()=>{
+      if (!reviewIds) {
+          if (!ref.current[spot.id])
+            ref.current[spot.id] = dispatch(thunkReadAllReviews(spot.id))
+          return;
+      } else if (ref.current[spot.id]) delete ref.current[spot.id]
+    }, [reviewIds,dispatch, spot.id])
+
+    // ok to have 0 reviews; may be new, etc.
+    if (spot.numReviews === 0) return null
+    if (!reviewIds) return null
+    if (reviewIds.includes(null) || reviewIds.includes(undefined)) {
+      console.log("baaad review id; ", reviewIds)
+      return null
     }
-
-    /* sort reviews by updatedAt date*/
-    let arr = Object.values(reviews);
-    arr.sort((a,b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
 
     return (
       <>
-      {arr.map(review =>
+      {reviewIds.map(reviewId =>
         (
-        <ReviewTile key={review.id} review={review} user={user} />
+        <ReviewTile key={reviewId} reviewId={reviewId} />
       ))}
       </>
     );

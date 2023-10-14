@@ -6,7 +6,7 @@ const seederUserNames = [
     'francoportin',
     'aleckeeler',
     'anthonylovern',
-    'joshgoldberg',
+    'joshgoldenberg',
     'adamtifrit',
     'elliotstarr',
     'haydengogan',
@@ -64,9 +64,9 @@ const reviewTextArrays = [reviewText1, reviewText2, reviewText3, reviewText4, re
  * specific level of review text)
  */
 function getReviewInfo(rating = getRandomInt(1,5)) {
-  texts = reviewTextArrays[rating-1];
-  text = texts[getRandomInt(0, texts.length-1)]
-  return [text, rating];
+  const commentaries = reviewTextArrays[rating-1];
+  const commentary = commentaries[getRandomInt(0, commentaries.length-1)]
+  return [commentary, rating];
 }
 
 const seederUserIds = async () => {
@@ -127,19 +127,25 @@ function getRandomInt(min, max) {
 
 const previewURLs = [
 
+
   "https://live.staticflickr.com/65535/53215558252_7d145ef3d7.jpg",
-  "https://live.staticflickr.com/65535/53217555015_b9c0f8418a.jpg",
   "https://live.staticflickr.com/65535/53218309946_91eefa43ca_z.jpg",
   "https://live.staticflickr.com/65535/53219517230_a3d4edb8c2.jpg",
-  "https://live.staticflickr.com/65535/53217167864_3a866d3562_n.jpg",
   "https://live.staticflickr.com/65535/53216589804_ba0a1686de.jpg",
   "https://live.staticflickr.com/65535/53218438651_c8ed53dcc2_m.jpg",
   "https://live.staticflickr.com/65535/53216245851_4f5b6e4cfd.jpg",
   "https://live.staticflickr.com/65535/53219667304_c87645c7a9_w.jpg",
   "https://live.staticflickr.com/65535/52936031382_f476c5a215.jpg",
   "https://live.staticflickr.com/65535/52462699498_8080076771.jpg",
+  "https://live.staticflickr.com/3160/2450316867_5c0a17b457_n.jpg",
+  "https://live.staticflickr.com/7147/6844429643_26403a8484_n.jpg",
+  "https://live.staticflickr.com/677/19957157014_bd94958eb2_m.jpg",
+  "https://live.staticflickr.com/2242/2044299449_2d258252ba_n.jpg",
+  "https://live.staticflickr.com/29/63352203_a8c1931428_n.jpg",
+  "https://live.staticflickr.com/6021/6017298800_539c6f5456_n.jpg",
   "https://live.staticflickr.com/7833/47532037102_3a3228062f_m.jpg",
-  "https://live.staticflickr.com/4548/38445993762_9253c699fa_n.jpg",
+  "https://live.staticflickr.com/4548/38445993762_9253c699fa_n.jpg"
+
 
   ]
 
@@ -175,13 +181,17 @@ const previewURLs = [
 
   ];
 
+  function getRandomPreviewImageUrl() {
+    const index = getRandomInt(0, previewURLs.length-1);
+    return previewURLs[index]
+  }
 
 function getRandomInteriorImageUrl() {
   const index = getRandomInt(0, interiorURLs.length-1);
   return interiorURLs[index]
 }
   function getFullImages() {
-      const urls = [previewURLs[getRandomInt(0, previewURLs.length-1)]];
+      const urls = [getRandomPreviewImageUrl()];
       let min = getRandomInt(0, interiorURLs.length-1);
       let max = min + 3;
       if (max > interiorURLs.length-1) { max = min; min -= 3};
@@ -189,4 +199,4 @@ function getRandomInteriorImageUrl() {
       return urls;
   }
 
-module.exports = { getRandomInt, getRandomInteriorImageUrl, getReviewInfo, seederBookingIds, seederReviewIds, seederReviewImageIds, seederSpotIds, seederSpotImageIds, seederUserIds, seederUserNames, getFullImages }
+module.exports = { getRandomInt, getRandomInteriorImageUrl, getRandomPreviewImageUrl, getReviewInfo, seederBookingIds, seederReviewIds, seederReviewImageIds, seederSpotIds, seederSpotImageIds, seederUserIds, seederUserNames, getFullImages }

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import * as sessionActions from '../../store/session';
+
+import { thunkLogout } from '../../store/session';
+import { thunkReadAllUserSpots } from "../../store/spots";
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { thunkReadAllUserSpots } from "../../store/spots";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ function ProfileButton({ user }) {
 
   const logout = (e) => {
     e.preventDefault();
-    dispatch(sessionActions.logout());
+    dispatch(thunkLogout());
     closeMenu();
     history.push("/");
   };

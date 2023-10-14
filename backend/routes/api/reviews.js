@@ -1,6 +1,6 @@
 const { validateReview } = require('../../utils/validation');
 const { fitsAuthor, requireAuth } = require('../../utils/auth');
-const { Review, ReviewImage, Spot, SpotImage, User  } = require('../../db/models');
+const { Review, ReviewImage, Spot, User } = require('../../db/models');
 const router = require('express').Router();
 
 // Create and return a new image for current user's review by reviewId.
@@ -48,8 +48,8 @@ router.route('/:reviewId(\\d+)')
         const oldReview = await Review.unscoped().findByPk(req.params.reviewId);
         if (!oldReview) return res.status(404).json({message: "Review couldn't be found"});
         if (fitsAuthor(req, next, oldReview.userId)) {
-            const {review, stars} = req.body;
-            if (review) oldReview.review = review;
+            const {commentary, stars} = req.body;
+            if (commentary) oldReview.commentary = commentary;
             if (stars) oldReview.stars = stars;
             await oldReview.save();
             return res.json(oldReview)
@@ -63,15 +63,13 @@ router.get('/current', requireAuth, async (req, res) => {
             {model: User, attributes: ['id', 'firstName', 'lastName']},
             {model: Spot,
             attributes: {exclude: ['description', 'createdAt', 'updatedAt']},
-            include: {model: SpotImage,
-                        where: {preview: true}}},
+            },
             {model: ReviewImage, attributes: ['id', 'url']}
         ],
         where: {userId: req.user.id},
         order: [["updatedAt", "DESC"]]
     });
     Reviews = Reviews.map(e=>e.toJSON());
-    Reviews.forEach(b=> { let value = b.Spot && b.Spot.SpotImages && b.Spot.SpotImages.length ? b.Spot.SpotImages[0].url : null; b.Spot.previewImage = value; delete b.Spot.SpotImages});
     return res.json({Reviews});
 });
 

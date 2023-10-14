@@ -354,7 +354,7 @@ i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
     cursor: pointer;
 }
 
-.profile-dropdown > li {
+.fa-star,.profile-dropdown > li {
     cursor: default;
 }
 
@@ -421,4 +421,14 @@ i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
 
 .spotDetailsReviewAreaDiv {
     margin-top: 30px;
+}
+
+.spotDetailsSection {
+    display:flex;
+    justify-content: space-between;
+}
+
+.spotDetailsCalloutDiv {
+    border: 2px solid black;
+    border-radius: 10px;
 }

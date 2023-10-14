@@ -67,6 +67,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.DECIMAL(4,2)
     },
+    previewUrl: {
+      allowNull: false,
+      type: DataTypes.STRING
+    },
+
 }, {
     sequelize,
     modelName: 'Spot',

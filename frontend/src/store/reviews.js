@@ -1,4 +1,4 @@
-/* reviews slice of state
+/* reviews OLD slice of state
 {
     spot: {
       [reviewId]: {
@@ -26,25 +26,43 @@
 
 }
 */
-import { csrfFetch } from "./csrf";
 
-console.log("made it to beginning of store.reviews.js")
 
-const READ_REVIEWS = "reviews/READ_REVIEWS";
-const READ_USER_REVIEWS = "reviews/READ_USER_REVIEWS";
+/* NEW review state shape
+{
+  id:
+    {
+      [reviewId]:
+        {
+          id,
+          userId,
+          spotId,
+          commentary, // renamed review column
+          stars, // 1-5
+
+          // additional details
+          images: [reviewImageIds,]
+        },
+    }
+  spotLatest: { [spotId]: [idsOrderedByDescUpdatedDate], }
+}
+*/
+
+import { READ_SPOT_REVIEWS, READ_USER_REVIEWS } from "./commonActionCreators";
+import { fetchData } from "./csrf";
+import { thunkReadSpot } from "./spots";
+
 const READ_REVIEW = "reviews/READ_REVIEW";
 const DELETE_REVIEW = "reviews/DELETE_REVIEW";
 const CREATE_REVIEW = "reviews/CREATE_REVIEW";
 const UPDATE_REVIEW = "reviews/UPDATE_REVIEW";
 
-console.log("made it to beginning of store.reviews.js")
 
-
-function readAllReviews(reviews) {
-    return {
-        type: READ_REVIEWS,
-        payload: reviews
-    }
+export function readAllSpotReviews(reviews, spotId) {
+  return {
+      type: READ_SPOT_REVIEWS,
+      payload: {reviews, spotId}
+  }
 }
 
 function readAllUserReviews(reviews) {
@@ -61,13 +79,12 @@ function readReview(review) {
     }
 }
 
-function deleteReview(id) {
+function deleteReview(reviewId, spotId) {
     return {
         type: DELETE_REVIEW,
-        payload: id
+        payload: {reviewId, spotId}
     };
 };
-console.log("made it to beginning of store.reviews.js")
 
 function createReview(review) {
     return {
@@ -83,110 +100,151 @@ function updateReview(review) {
     }
 }
 
-export const thunkReadAllReviews = id => async dispatch => {
-  const response = await csrfFetch(`/api/spots/${id}/reviews`);
-  const data = await response.json();
-  dispatch(readAllReviews(data.Reviews));
-  return response;
-};
+
+export const thunkReadAllReviews = spotId => async dispatch => {
+  const url = `/api/spots/${spotId}/reviews`
+  const answer = await fetchData(url)
+  if (!answer.errors) {
+    dispatch(readAllSpotReviews(answer.Reviews, spotId))
+  }
+  return answer
+}
 
 export const thunkReadAllUserReviews = () => async dispatch => {
-  const response = await csrfFetch("/api/reviews/current");
-  const data = await response.json();
-  dispatch(readAllUserReviews(data.Reviews));
-  return response;
-};
+  const url = `/api/reviews/current`
+  const answer = await fetchData(url)
+  if (!answer.errors) dispatch(readAllUserReviews(answer.Reviews))
+  return answer
+}
 
 export const thunkReadReview = id => async dispatch => {
-    const response = await csrfFetch(`/api/reviews/${id}`);
-    const data = await response.json();
-    dispatch(readReview(data));
-    return response;
-};
+  const url = `/api/reviews/${id}`
+  const answer = await fetchData(url)
+  if (!answer.errors) dispatch(readReview(answer))
+  return answer
+}
 
-export const thunkDeleteReview = id => async dispatch => {
-    const response = await csrfFetch(`/api/reviews/${id}`, {
-        method: 'DELETE',
-    });
-    await response.json();
-    dispatch(deleteReview(id));
-    return response;
-};
+export const thunkDeleteReview = (id, spotId) => async dispatch => {
+  const answer = await fetchData(`/api/reviews/${id}`, {method: 'DELETE'})
+  if (!answer.errors) {
+    dispatch(deleteReview(id, spotId)) // probably should pass spotId and let other reducer
+    dispatch(thunkReadSpot(spotId))
+  }
+  return answer
+}
 
-export const thunkCreateReview = (reviewArg,firstName) => async dispatch => {
-  const { spotId, userId, review, stars } = reviewArg;
-  const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
+export const thunkCreateReview = (review, firstName) => async dispatch => {
+  const { spotId, userId, commentary, stars } = review;
+  const url = `/api/spots/${spotId}/reviews`
+  const options = {
     method: "POST",
     body: JSON.stringify({
       spotId,
       userId,
-      review,
+      commentary,
       stars
-    }),
-  });
-  const data = await response.json();
-  data.firstName=firstName;
-  dispatch(createReview(data));
-  return response;
-};
+    })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) {
+    answer.firstName = firstName
+    dispatch(createReview(answer))  // recalculate spot info
+    dispatch(thunkReadSpot(spotId)) // unsure this is the place
+  }
+  return answer
+}
 
-export const thunkUpdateReview = reviewObj => async dispatch => {
-  const { id, spotId, userId, review, stars } = reviewObj;
-  const response = await csrfFetch(`/api/reviews/${id}`, {
+export const thunkUpdateReview = review => async dispatch => {
+  const { id, spotId, userId, commentary, stars } = review;
+  const url = `/api/reviews/${id}`
+  const options = {
     method: "PUT",
-    body: JSON.stringify({ /* fill out */
+    body: JSON.stringify({
       id,
       spotId,
       userId,
-      review,
+      commentary,
       stars
-   }),
-  });
-  const data = await response.json();
-  dispatch(updateReview(data));
-  return response;
-};
+    })
+  }
+  const answer = await fetchData(url, options)
+  if (!answer.errors) dispatch(updateReview(answer))
+  return answer
+}
 
 const initialState = {
-    spot: {},
-    user: {},
+    id: {},
+    spotLatest: {},
 };
 
 const reviewsReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
-    case READ_REVIEWS: {
-        const reviews = action.payload;
+    case READ_SPOT_REVIEWS: { /* reviews, spotId */
+        let {reviews,spotId} = action.payload
+        const oldSpot = state.spots?.id[spotId]
+        if (!reviews.length && (oldSpot && oldSpot.reviews && !oldSpot.reviews?.length)) return state; /* nothing to update */
         const normalized = {};
-        reviews.forEach(r => normalized[r.id]=r)
+        reviews = [...reviews]
+        reviews.forEach(r => {
+          r.firstName = r.User.firstName
+          delete r.User
+          r.images=r.ReviewImages.map(i=>i.id)
+          normalized[r.id]=r
+        })
         newState = {...state};
-        newState.spot = normalized;
+        newState.id = {...state.id, ...normalized};
+        reviews = reviews.map(r => r.id)
+        newState.spotLatest = {...state.spotLatest, [spotId]: reviews}
         return newState;
     }
-    case READ_USER_REVIEWS: {
-        const reviews = action.payload;
+    case READ_USER_REVIEWS: { /* reviews */
+        const reviews = [...action.payload];
         const normalized = {};
-        reviews.forEach(r => normalized[r.id]=r)
+        reviews.forEach(r => {
+          r.firstName = r.User.firstName
+          delete r.User
+          r.images=r.ReviewImages.map(i=>i.id)
+          normalized[r.id]=r
+        })
+        /* should have deepCompare here */
         newState = {...state};
-        newState.user = normalized;
+        newState.id = {...state.id, ...normalized};
         return newState;
     }
-    case CREATE_REVIEW:
-    case READ_REVIEW:
-    case UPDATE_REVIEW:
+    case CREATE_REVIEW: {
       const review = action.payload
       const id = review.id;
+      const spotId = review.spotId;
       newState = {...state};
-      newState.spot = {...state.spot, [id]: review};
-      newState.user = {...state.user, [id]: review};
+      newState.id = {...state.id, [id]: review}
+      newState.spotLatest = {...review.spotLatest}
+      if (state.spotLatest[spotId])
+        newState.spotLatest[spotId] = {[id]: [review, ...state.spotLatest[spotId]]}
       return newState;
-    case DELETE_REVIEW:
+    }
+    case READ_REVIEW:
+    case UPDATE_REVIEW:{
+      const review = action.payload
+      const id = review.id;
+      const spotId = review.spotId;
       newState = {...state};
-      newState.spot = {...state.spot};
-      delete newState.spot[action.payload]
-      newState.user = {...state.user};
-      delete newState.user[action.payload];
+      newState.id = {...state.id, [id]: review}
+      if (state.spotLatest[spotId])
+          newState.spotLatest = {...review.spotLatest,
+          [spotId]: [review, ...review.spotLatest[spotId]]}
+      return newState;
+      }
+    case DELETE_REVIEW: {
+      const {reviewId, spotId} = action.payload
+      if (!state.id[reviewId]) return state;
+      newState = {...state}
+      newState.id={...state.id}
+      delete newState.id[reviewId]
+      if (state.spotLatest[spotId])
+      delete newState.spotLatest[spotId]
       return newState
+    }
     default:
       return state;
   }

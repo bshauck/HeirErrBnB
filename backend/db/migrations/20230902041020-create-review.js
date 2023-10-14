@@ -26,7 +26,7 @@ module.exports = {
         references: {model: 'Spots'},
         onDelete: 'CASCADE'
       },
-      review: {
+      commentary: {
         allowNull: false,
         type: Sequelize.STRING
       },

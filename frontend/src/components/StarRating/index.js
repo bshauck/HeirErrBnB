@@ -1,4 +1,5 @@
 function StarRating({avgRating, numReviews}) {
+console.log("🚀 invoking StarRating ~ avgRating, numReviews:", avgRating, numReviews)
 
     /* Return star icon followed by the average
      * rating printed to 2 decimal places rounded,

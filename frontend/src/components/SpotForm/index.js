@@ -31,7 +31,7 @@ function SpotForm ({spot, formType}) {
     const [errors, setErrors] = useState({});
     const isEdit = formType === "Update your Spot";
     let ownerId;
-    let title = useRef('abc')
+    let title = useRef('AAA')
 
     if (!sessionUser) return null
     else ownerId = sessionUser.id;
@@ -43,7 +43,7 @@ function SpotForm ({spot, formType}) {
       attemptedSubmission.current = true;
       const validations = {};
       spot = { ...spot, ownerId, address, city, state, country, name,
-        description, price };
+        description, price, previewUrl };
       const extensionError = "Image URLs must end in png, jpg, or jpeg"
       if (!address) validations.address = "Address is required"
       if (!city) validations.city = "City is required"
@@ -53,10 +53,10 @@ function SpotForm ({spot, formType}) {
       if (!description || description.length < 30)
         validations.description = "Description must have at least 30 characters"
       if (!price || price < 0) validations.price = "Price per night is required"
-      /* TODO For now; skip images on Update */
-      if (!isEdit) {
+
       if (!previewUrl) validations.previewUrl = "Preview image URL is required"
       else if (!validImageUrl(previewUrl)) validations.previewUrl = extensionError
+      if (!isEdit) { /* TODO For now; skip support images on Update */
       if (supportUrl1 && !validImageUrl(supportUrl1)) validations.supportUrl1 = extensionError
       if (supportUrl1 && !validImageUrl(supportUrl2)) validations.supportUrl2 = extensionError
       if (supportUrl1 && !validImageUrl(supportUrl3)) validations.supportUrl3 = extensionError
@@ -66,13 +66,17 @@ function SpotForm ({spot, formType}) {
       if (Object.keys(validations).length === 0) {
           const thunkFunc = isEdit ? thunkUpdateSpot : thunkCreateSpot;
           if (!isEdit) {
-          const urls = [previewUrl];
+          const urls = [];
           if (supportUrl1) urls.push(supportUrl1)
           if (supportUrl2) urls.push(supportUrl2)
           if (supportUrl3) urls.push(supportUrl3)
           if (supportUrl4) urls.push(supportUrl4)
+          spot.numReviews = 0; spot.avgRating = null; spot.reviews=[];
           spot = await dispatch(thunkFunc(spot, {urls}))
-          } else await dispatch(thunkFunc(spot));
+          } else {
+            if (!spot.avgRating) {spot.numReviews=0; spot.avgRating=null; spot.reviews=[];};
+            await dispatch(thunkFunc(spot));
+          }
           if (spot.errors) {
             setErrors({errors: spot.errors})
           } else if (spot.id) {
