@@ -179,8 +179,10 @@ export const thunkReadAllUserSpots = (args) => async dispatch => {
 }
 
 export const thunkReadSpot = id => async dispatch => {
+  console.log("thunkreadspot id", id)
   if (typeof id === 'object')
   console.log("🚀 ~ thunkReadSpot ~values of id:", Object.values(id) )
+  else if (typeof id === 'undefined') throw new Error('eek')
 
   const url = `/api/spots/${id}`
   const answer = await fetchData(url)
@@ -313,8 +315,10 @@ const spotsReducer = (state = initialState, action) => {
       delete newState.id[action.payload]
       newState.userQuery = {...state.userQuery};
       return newState;
+
     case READ_SPOT_REVIEWS: {
-      let {reviews,spotId} = action.payload
+      let {reviews, spotId} = action.payload
+      reviews = reviews.map(r=>r.id)
       newState = {...state}
       newState.id = {...state.id}
       newState.id[spotId] = {...state.id[spotId], reviews }

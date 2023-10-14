@@ -1,14 +1,25 @@
 /* Store shape for ReviewImages
-{
-  [imageId]:
+{ // spot/user reviews; CUD for Review
+  id:
     {
-      id,
-      reviewId,
-      url
+      [imageId]:
+        {
+          id,
+          revoewId,
+          url
+        }
     }
+  review:
+    {
+      [reviewId]; [imageIds,]
+    }
+  }
 }
 */
+
+
 import { fetchData } from "./csrf";
+import { READ_SPOT_REVIEWS, READ_USER_REVIEWS } from "./commonActionCreators";
 
 const READ_REVIEW_IMAGES = "reviewImages/READ_REVIEW_IMAGES";
 const READ_REVIEW_IMAGE = "spotImages/READ_REVIEW_IMAGE";
@@ -109,6 +120,8 @@ export const thunkUpdatedReviewImage = reviewImage => async dispatch => {
 }
 
 const initialState = {
+    id: {},
+  spot: {}
 };
 
 const reviewImagesReducer = (state = initialState, action) => {
@@ -127,10 +140,33 @@ const reviewImagesReducer = (state = initialState, action) => {
     case READ_REVIEW_IMAGE:
       newState = {...state, [action.payload.id]: action.payload};
       return newState;
-    case DELETED_REVIEW_IMAGE:
-      newState = {...state};
-      delete newState[action.payload]
+    case DELETED_REVIEW_IMAGE: {
+      const id = action.payload
+      if (!state.id[id]) return state
+      const reviewId = state.id[id].reviewId;
+      newState = {...state}
+      newState.id = {...state.id}
+      delete newState.id[id]
+      if (!state.spot[reviewId]) return newState
+      newState.spot = {...state.spot}
+      newState[reviewId] = [...state[reviewId]]
+      const delIndex = newState[reviewId].indexOf(id)
+      newState[reviewId].splice(delIndex, 1)
       return newState
+    }
+    case READ_SPOT_REVIEWS:
+      case READ_USER_REVIEWS:{
+      const newState = {...state}
+      const reviews = action.payload
+      const normalized = {}
+      newState.review = {...state.review}
+      reviews.forEach(r => {
+        r.ReviewImages.forEach(i => normalized[i.id] = i)
+        newState.review[r.id] = r.ReviewImages.map(ri => ri.id)
+      })
+      newState.id = {...state.id, ...normalized}
+      return newState
+    }
     default:
       return state;
   }

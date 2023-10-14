@@ -1,13 +1,30 @@
 // frontend/src/components/ReviewList/index.js
-import { useSelector } from 'react-redux';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ReviewTile from '../ReviewTile';
+import { thunkReadAllReviews } from '../../store/reviews';
 
 function ReviewList({ spot }) {
     let reviewIds = useSelector(state => state.reviews.spotLatest[spot.id]);
+    const ref = useRef({});
+    const dispatch = useDispatch()
+
+    useEffect(()=>{
+      if (!reviewIds) {
+          if (!ref.current[spot.id])
+            ref.current[spot.id] = dispatch(thunkReadAllReviews(spot.id))
+          return;
+      } else if (ref.current[spot.id]) delete ref.current[spot.id]
+    }, [reviewIds,dispatch, spot.id])
 
     // ok to have 0 reviews; may be new, etc.
-    if (spot.numReviews === 0) reviewIds = [];
+    if (spot.numReviews === 0) return null
+    if (!reviewIds) return null
+    if (reviewIds.includes(null) || reviewIds.includes(undefined)) {
+      console.log("baaad review id; ", reviewIds)
+      return null
+    }
 
     return (
       <>

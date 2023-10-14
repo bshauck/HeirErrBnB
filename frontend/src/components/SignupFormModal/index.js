@@ -28,19 +28,19 @@ function SignupFormModal() {
         })
       )
         .then((res, rej) => {
-          if (res.ok) closeModal()
-          else {console.log(res.errors)
+          if (res.ok) {
+            closeModal();
+            console.log("did close modal work this time?")
+          }
+          else {
+            console.log(res.errors) ;
             throw res
           }
     }     )
-        .catch(async (res) => {
-          const data = res;
+        .catch(data  => {
           if (data && data.errors) {
             setErrors(data.errors);
-          }
-        })
-        .finally(() => {
-          setTimeout(closeModal,500)
+          } else closeModal()
         })
       }
       return setErrors({

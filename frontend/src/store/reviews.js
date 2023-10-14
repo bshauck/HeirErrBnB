@@ -79,10 +79,10 @@ function readReview(review) {
     }
 }
 
-function deleteReview(id) {
+function deleteReview(reviewId, spotId) {
     return {
         type: DELETE_REVIEW,
-        payload: id
+        payload: {reviewId, spotId}
     };
 };
 
@@ -127,7 +127,7 @@ export const thunkReadReview = id => async dispatch => {
 export const thunkDeleteReview = (id, spotId) => async dispatch => {
   const answer = await fetchData(`/api/reviews/${id}`, {method: 'DELETE'})
   if (!answer.errors) {
-    dispatch(deleteReview(id)) // probably should pass spotId and let other reducer
+    dispatch(deleteReview(id, spotId)) // probably should pass spotId and let other reducer
     dispatch(thunkReadSpot(spotId))
   }
   return answer
@@ -182,14 +182,14 @@ const reviewsReducer = (state = initialState, action) => {
   switch (action.type) {
     case READ_SPOT_REVIEWS: { /* reviews, spotId */
         let {reviews,spotId} = action.payload
-        if (!reviews.length) return state; /* nothing to update */
+        const oldSpot = state.spots?.id[spotId]
+        if (!reviews.length && (oldSpot && oldSpot.reviews && !oldSpot.reviews?.length)) return state; /* nothing to update */
         const normalized = {};
         reviews = [...reviews]
         reviews.forEach(r => {
           r.firstName = r.User.firstName
           delete r.User
           r.images=r.ReviewImages.map(i=>i.id)
-          delete r.ReviewImages
           normalized[r.id]=r
         })
         newState = {...state};
@@ -205,7 +205,6 @@ const reviewsReducer = (state = initialState, action) => {
           r.firstName = r.User.firstName
           delete r.User
           r.images=r.ReviewImages.map(i=>i.id)
-          delete r.ReviewImages
           normalized[r.id]=r
         })
         /* should have deepCompare here */
@@ -213,22 +212,39 @@ const reviewsReducer = (state = initialState, action) => {
         newState.id = {...state.id, ...normalized};
         return newState;
     }
-    case CREATE_REVIEW:
-    case READ_REVIEW:
-    case UPDATE_REVIEW:
+    case CREATE_REVIEW: {
       const review = action.payload
       const id = review.id;
+      const spotId = review.spotId;
       newState = {...state};
-      newState.spot = {...state.spot, [id]: review};
-      newState.user = {...state.user, [id]: review};
+      newState.id = {...state.id, [id]: review}
+      newState.spotLatest = {...review.spotLatest}
+      if (state.spotLatest[spotId])
+        newState.spotLatest[spotId] = {[id]: [review, ...state.spotLatest[spotId]]}
       return newState;
-    case DELETE_REVIEW:
+    }
+    case READ_REVIEW:
+    case UPDATE_REVIEW:{
+      const review = action.payload
+      const id = review.id;
+      const spotId = review.spotId;
       newState = {...state};
-      newState.spot = {...state.spot};
-      delete newState.spot[action.payload]
-      newState.user = {...state.user};
-      delete newState.user[action.payload];
+      newState.id = {...state.id, [id]: review}
+      if (state.spotLatest[spotId])
+          newState.spotLatest = {...review.spotLatest,
+          [spotId]: [review, ...review.spotLatest[spotId]]}
+      return newState;
+      }
+    case DELETE_REVIEW: {
+      const {reviewId, spotId} = action.payload
+      if (!state.id[reviewId]) return state;
+      newState = {...state}
+      newState.id={...state.id}
+      delete newState.id[reviewId]
+      if (state.spotLatest[spotId])
+      delete newState.spotLatest[spotId]
       return newState
+    }
     default:
       return state;
   }

@@ -1,5 +1,5 @@
 // frontend/src/components/ManageSpots/index.js
-import { useEffect } from 'react';
+import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -8,24 +8,18 @@ import SpotTile from '../SpotTile';
 
 
 const ManageSpots = () => {
-    const sessionUser = useSelector(state => state.session.user);
-    const spots = useSelector(state => state.session.user.spots)
+    const user = useSelector(state => state.session.user);
+    const spotIds = useSelector(state => state.session.spots)
     const dispatch = useDispatch();
     const history = useHistory();
 
-    useEffect(() => {
-        async function getUserSpots() {
-            await dispatch(thunkReadAllUserSpots());
-        }
-        if (!sessionUser) return null;
-        if (!spots) getUserSpots();
-    }, [spots, sessionUser, dispatch]);
-
-    if (!sessionUser) return null;
-    if (!spots) {
-        (async() => await dispatch(thunkReadAllUserSpots()))();
+    const ref = useRef({});
+    if (!spotIds) { // have top level, check for inner need
+        if (!ref.current[user.id]) ref.current[user.id] = dispatch(thunkReadAllUserSpots())
         return null;
-    }
+    } else if (ref.current[user.id]) delete ref.current[user.id]
+
+
 
     function handleCreateClick() {
         history.push("/spots/new")
@@ -40,8 +34,8 @@ const ManageSpots = () => {
           </div>
         <div className="manageSpotsDiv">
           <div className="manageSpotTilesDiv">
-          {Object.values(spots).map(s => (
-                <SpotTile key={s.id} spot={s} isManaged={true} />
+          {spotIds.map(s => (
+                <SpotTile key={s} spotId={s}isManaged={true} />
             ))}
           </div>
         </div>

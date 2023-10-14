@@ -29,8 +29,8 @@ function LoginFormModal() {
         if (response.ok) return closeModal()
         else throw response
       })
-      .catch(async res => {
-        const data = await res.json();
+      .catch(data => {
+        // const data = await res.json();
         if (data && data.errors) {
           setErrors(data.errors);
         } else history.push("/")

@@ -15,15 +15,12 @@ new STORE layout (except since users cannot be deleted, and all
    },
    */
    /* session */ /*
-   { values: {
-              spots: {[spotId]: spot,}
-              reviews: {[reviewId}: review,}
-              bookings: {[bookingId]: booking,}
-              }
-     user: user || null
-
-                  }},
-     id: (really all the user stuff below goes here)
+   {
+    user: user || null
+    spots: {[spotId]: spot,},
+    reviews: {[reviewId}: review,},
+    bookings: {[bookingId]: booking,},
+    id: (really all the user stuff below goes here)
    }
    */
 
@@ -44,7 +41,7 @@ new STORE layout (except since users cannot be deleted, and all
          // additional detail w/ current spots/review/bookings
          spots: [spotIds,],
          reviews: [reviewIds,], // all reviews of user
-         // bookings: [bookingIds,], // TODO
+         bookings: [bookingIds,], // TODO
          // spotQuery: [landingPageQueryParamString], // TODO
          // currentPage: 3 // last displayed page of info // TODO
        }
@@ -125,28 +122,42 @@ new STORE layout (except since users cannot be deleted, and all
    }
    */
 
-   /* spotImages */ /*
-   {  // spotdetails only existing, CUD for Spot
-     [imageId]:
-       {
-         id,
-         spotId,
-         url
-       }
-   }
-   */
+/* spotImages */ /*
+{  // spotdetails only existing, CUD for Spot
+  id:
+    {
+      [imageId]:
+        {
+          id,
+          spotId,
+          url
+        }
+    }
+  spot:
+    {
+      [spotId]; [imageIds,]
+    }
+}
+*/
 
-   /* reviewImages */ /*
-   { // from all reviews for spot/user; CUD for Review
-     [imageId]:
-       {
-         id,
-         reviewId,
-         url
-       }
-   }
-
-   */
+/* reviewImages */ /*
+{ // spot/user reviews; CUD for Review
+  id:
+    {
+      [imageId]:
+        {
+          id,
+          revoewId,
+          url
+        }
+    }
+  review:
+    {
+      [reviewId]; [imageIds,]
+    }
+  }
+}
+*/
 
 
 

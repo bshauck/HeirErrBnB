@@ -114,13 +114,16 @@ export const thunkLogout = () => async dispatch => {
 }
 
 const initialState = {
-  values: {spots:{},reviews:{},bookings:{}},
   user: null,
-  id: {}
+  id: {},
+  spots:null,
+  reviews:null,
+  bookings:null,
  };
 
 const sessionReducer = (state = initialState, action) => {
   const newState = {...state};
+
   switch (action.type) {
     case SET_USER:
       const newUser = action.payload
@@ -128,28 +131,29 @@ const sessionReducer = (state = initialState, action) => {
       if (newUser && !state.id[newUser.id]?.username) /* didn't have full user info */
         newState.id[newUser.id] = newUser;
       return newState;
-    case READ_SPOT:
+
+    case READ_SPOT:{
       const partialUser = action.payload.Owner;
       if (state.id[partialUser.id]) return state; /* already have this */
+      newState.id = {...state.id}
       newState.id[partialUser.id] = partialUser;
       return newState;
+    }
     case REMOVE_USER: /* don't remove key; names still used in spot details */
-      newState.user = null;
+      newState.user = newState.reviews = newState.spots = newState.bookings = null;
       return newState;
-    case READ_USER_REVIEWS:
+
+    case READ_USER_REVIEWS:{
       const reviews = action.payload.map(r => r.id)
-      const updatedUser = {...state.user, reviews}
-      newState.user = updatedUser
-      newState.id[updatedUser.id] = updatedUser
+      newState.user = {...state.user}
+      newState.id = {...state.id}
+      newState.reviews = newState.user.reviews = newState.id[state.user.id] = reviews
       return newState
+    }
     case READ_USER_SPOTS: {
-      const spots = action.payload
-      const normalized = {}
-      spots.forEach(s => normalized[s.id]=s);
-      const newState = {...state,
-        "values": {...state.values,
-             "spots": {...state.values.spots, ...normalized}}}
-      newState.user.spots = Object.keys(normalized)
+      const spots = action.payload.map(s=>s.id)
+      newState.user = {...state.user}
+      newState.spots = newState.user.spots = spots;
       return newState;
     }
     default:

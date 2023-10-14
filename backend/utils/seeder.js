@@ -6,7 +6,7 @@ const seederUserNames = [
     'francoportin',
     'aleckeeler',
     'anthonylovern',
-    'joshgoldberg',
+    'joshgoldenberg',
     'adamtifrit',
     'elliotstarr',
     'haydengogan',
