@@ -1,4 +1,5 @@
 // frontend/src/components/SpotTile/index.js
+import { useRef } from 'react';
 import { useHistory } from 'react-router-dom/';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -14,7 +15,7 @@ function SpotTile ({spotId, spot, isManaged}) {
   const stateSpot = useSelector(state => state.spots.id[spotId])
   const history = useHistory();
   const dispatch = useDispatch();
-
+  const ref = useRef();
 
   function handleUpdateClick() {
     if (stateSpot !== true)
@@ -28,10 +29,15 @@ function SpotTile ({spotId, spot, isManaged}) {
     history.push(`/spots/${spotId}`)
   }
 
-  if (!spot) {
-    (async()=>await(dispatch(thunkReadSpot(spotId))))()
+  if (!spotId) throw new Error("bad id for Spot Tile")
+  if (!spot) spot = stateSpot;
+
+  if (!spot || Object.values(spot).length < 2) {
+    if (!ref.current[spotId]) ref.current[spotId] = dispatch(thunkReadSpot(spotId))
     return null;
-  }
+} else if (ref.current[spotId]) delete ref.current[spotId]
+
+if (!spot) return null;
 
 
   return (
