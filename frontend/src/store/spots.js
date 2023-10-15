@@ -112,12 +112,11 @@ in state.spots.id
 }
 */
 
-import { READ_SPOT, READ_SPOT_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
+import { DELETE_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
 
 import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
-const DELETE_SPOT = "spots/DELETE_SPOT";
 const CREATE_SPOT = "spots/CREATE_SPOT";
 const UPDATE_SPOT = "spots/UPDATE_SPOT";
 
@@ -171,7 +170,7 @@ export const thunkReadAllSpots = () => async dispatch => {
 }
 
 
-export const thunkReadAllUserSpots = (args) => async dispatch => {
+export const thunkReadAllUserSpots = () => async dispatch => {
   const url = '/api/spots/current'
   const answer = await fetchData(url)
   if (!answer.errors) dispatch(readAllUserSpots(answer.Spots))
@@ -313,7 +312,6 @@ const spotsReducer = (state = initialState, action) => {
       newState = {...state};
       newState.id = {...state.id};
       delete newState.id[action.payload]
-      newState.userQuery = {...state.userQuery};
       return newState;
 
     case READ_SPOT_REVIEWS: {

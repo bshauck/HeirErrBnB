@@ -45,7 +45,7 @@ and without logged-in user
  */
 
 import { csrfFetch, fetchData } from "./csrf";
-import { READ_SPOT, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
+import { DELETE_SPOT, READ_SPOT, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
@@ -147,7 +147,7 @@ const sessionReducer = (state = initialState, action) => {
       const reviews = action.payload.map(r => r.id)
       newState.user = {...state.user}
       newState.id = {...state.id}
-      newState.reviews = newState.user.reviews = newState.id[state.user.id] = reviews
+      newState.reviews = newState.user.reviews = reviews
       return newState
     }
     case READ_USER_SPOTS: {
@@ -155,6 +155,13 @@ const sessionReducer = (state = initialState, action) => {
       newState.user = {...state.user}
       newState.spots = newState.user.spots = spots;
       return newState;
+    }
+    case DELETE_SPOT: {
+      const newState = {...state}
+      const index = state.spots.indexOf(action.payload.id)
+      if (index !== -1)
+        newState.spots = newState.user.spots = [...state.spots].splice(index,1)
+      return newState
     }
     default:
       return state;

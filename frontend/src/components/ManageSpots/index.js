@@ -8,13 +8,14 @@ import SpotTile from '../SpotTile';
 
 
 const ManageSpots = () => {
+    console.log("manage spots render attempt")
     const user = useSelector(state => state.session.user);
     const spotIds = useSelector(state => state.session.spots)
     const dispatch = useDispatch();
     const history = useHistory();
 
     const ref = useRef({});
-    if (!spotIds) { // have top level, check for inner need
+    if (!spotIds || !Array.isArray(spotIds)) {
         if (!ref.current[user.id]) ref.current[user.id] = dispatch(thunkReadAllUserSpots())
         return null;
     } else if (ref.current[user.id]) delete ref.current[user.id]
@@ -35,7 +36,7 @@ const ManageSpots = () => {
         <div className="manageSpotsDiv">
           <div className="manageSpotTilesDiv">
           {spotIds.map(s => (
-                <SpotTile key={s} spotId={s}isManaged={true} />
+                <SpotTile key={s} spotId={s} isManaged={true} />
             ))}
           </div>
         </div>

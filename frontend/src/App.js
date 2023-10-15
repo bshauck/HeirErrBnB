@@ -10,10 +10,14 @@ import SpotCreate from "./components/SpotCreate";
 import SpotDetails from "./components/SpotDetails";
 import SpotEdit from "./components/SpotEdit";
 import SpotList from "./components/SpotList";
+import { restoreCSRF } from "./store/csrf";
 
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
+
+  restoreCSRF()
+
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);

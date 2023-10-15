@@ -2,11 +2,7 @@
 
 
 ISSUES
-Passing certain db errors like signup uniqueness for email/username back up.
 Figure out default image sizes and layout
-Adding Callout with price night, small review avg, Reserve button
-StarRatings add to SpotDetails' callout box
-Ensure spot delete updates landing pages/manage spot pages
 Use placeholders when users have not contributed enough images
 Have SpotForm show first 4 validation error messages to side of label
 Comma misplaced on Create Spot (city, state)

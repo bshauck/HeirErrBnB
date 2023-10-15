@@ -15,7 +15,8 @@ function SpotTile ({spotId, spot, isManaged}) {
   const stateSpot = useSelector(state => state.spots.id[spotId])
   const history = useHistory();
   const dispatch = useDispatch();
-  const ref = useRef();
+
+  if (isManaged) spot = stateSpot;
 
   function handleUpdateClick() {
     if (stateSpot !== true)
@@ -29,16 +30,13 @@ function SpotTile ({spotId, spot, isManaged}) {
     history.push(`/spots/${spotId}`)
   }
 
-  if (!spotId) throw new Error("bad id for Spot Tile")
-  if (!spot) spot = stateSpot;
 
+  const ref = useRef({});
   if (!spot || Object.values(spot).length < 2) {
-    if (!ref.current[spotId]) ref.current[spotId] = dispatch(thunkReadSpot(spotId))
+    if (!ref.current[spotId])
+      ref.current[spotId] = dispatch(thunkReadSpot(spotId))
     return null;
-} else if (ref.current[spotId]) delete ref.current[spotId]
-
-if (!spot) return null;
-
+  } else if (ref.current[spotId]) delete ref.current[spotId]
 
   return (
     <div className="tileDiv">
