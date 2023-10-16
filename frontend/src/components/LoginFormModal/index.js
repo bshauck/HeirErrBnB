@@ -18,7 +18,7 @@ function LoginFormModal() {
     setCredential("demo@user.io");
     setPassword("password");
     dispatch(thunkLogin({ "credential": "demo@user.io", "password": "password" }));
-    setTimeout(closeModal,500)
+    setTimeout(closeModal, 300)
   }
 
   const handleSubmit = (e) => {
@@ -33,7 +33,10 @@ function LoginFormModal() {
         // const data = await res.json();
         if (data && data.errors) {
           setErrors(data.errors);
-        } else history.push("/")
+        } else {
+          closeModal();
+          history.push("/")
+        }
       });
   };
 

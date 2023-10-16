@@ -8,7 +8,7 @@ import OpenModalButton from '../OpenModalButton';
 import SpotDeleteFormModal from '../SpotDeleteFormModal';
 import { thunkReadSpot } from '../../store/spots';
 
-const placeholderSrc = "https://placehold.co/100?text=Photo+needed&font=montserrat"
+const placeholderSrc = "https://placehold.co/200?text=Photo+needed&font=montserrat"
 
 function SpotTile ({spotId, spot, isManaged}) {
   console.log("🚀 rendering SpotTile ~ spotId, spot:", spotId, spot)

@@ -58,9 +58,9 @@ function SpotForm ({spot, formType}) {
       else if (!validImageUrl(previewUrl)) validations.previewUrl = extensionError
       if (!isEdit) { /* TODO For now; skip support images on Update */
       if (supportUrl1 && !validImageUrl(supportUrl1)) validations.supportUrl1 = extensionError
-      if (supportUrl1 && !validImageUrl(supportUrl2)) validations.supportUrl2 = extensionError
-      if (supportUrl1 && !validImageUrl(supportUrl3)) validations.supportUrl3 = extensionError
-      if (supportUrl1 && !validImageUrl(supportUrl4)) validations.supportUrl4 = extensionError
+      if (supportUrl2 && !validImageUrl(supportUrl2)) validations.supportUrl2 = extensionError
+      if (supportUrl3 && !validImageUrl(supportUrl3)) validations.supportUrl3 = extensionError
+      if (supportUrl4 && !validImageUrl(supportUrl4)) validations.supportUrl4 = extensionError
       }
       setErrors(validations);
       if (Object.keys(validations).length === 0) {
