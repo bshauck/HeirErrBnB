@@ -155,7 +155,7 @@ const reviewImagesReducer = (state = initialState, action) => {
       return newState
     }
     case READ_SPOT_REVIEWS:
-      case READ_USER_REVIEWS:{
+      case READ_USER_REVIEWS: {
       const newState = {...state}
       const reviews = action.payload
       const normalized = {}

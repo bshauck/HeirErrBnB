@@ -9,15 +9,14 @@ Added Callout with price night, small review avg, Reserve button
 StarRatings added to SpotDetails' callout box
 Ensured spot delete updates landing pages/manage spot pages
 Create and then edit/update new spot works
+deleting review updates reviews/session/spots slices correctly
+created/updated/deleted reviews calculate and return numReviews and avgRating as well as spotId
 
-
-check every App start page for doing browser refresh and handling no current state information
-deleting review updates review slice correctly, but not session slice (sill in user.reviews and reviews)
-have created/updated/deleted reviews calculate and return numReviews and avgRating as well as spotId
 remove redundant user session settings (just depend on
 user object setting: reviews, spots, bookings)
 test and check all interdependency reducers are correct
 
+check every App start page for doing browser refresh and handling no current state information
 
 
 create review causes error for empty list

@@ -167,25 +167,32 @@ const sessionReducer = (state = initialState, action) => {
     case DELETED_SPOT: {
       newState.user = {...state.user}
       const index = state.spots.indexOf(action.payload.id)
-      if (index !== -1)
-        newState.spots = newState.user.spots = [...state.spots].splice(index,1)
+      if (index === -1) return state
+      newState.spots = newState.user.spots = [...state.spots]
+      newState.spots.splice(index, 1)
       return newState
     }
     case DELETED_REVIEW: {
+      console.log("delReview action.payload", action.payload)
       newState.user = {...state.user}
       const index = state.reviews.indexOf(action.payload.reviewId)
-      if (index !== -1)
-        newState.reviews = newState.user.reviews = [...state.reviews].splice(index,1)
+      console.log("delReview index, reviews", index, state.reviews)
+      if (index === -1) return state;
+      newState.reviews = newState.user.reviews = [...state.reviews]
+      newState.reviews.splice(index, 1)
+      console.log("new reviews", newState.reviews)
       return newState
     }
     case CREATED_REVIEW: {
       newState.user = {...state.user}
-      newState.reviews = newState.user.reviews = [...state.reviews, action.payload.review.id]
+      const old = state.reviews ? state.reviews : []
+      newState.reviews = newState.user.reviews = [...old, action.payload.review.id]
       return newState
     }
     case CREATED_SPOT: {
       newState.user = {...state.user}
-      newState.spots = newState.user.spots = [...state.spots, action.payload.id]
+      const old = state.spots ? state.spots : []
+      newState.spots = newState.user.spots = [...old, action.payload.id]
       return newState
     }
     default:

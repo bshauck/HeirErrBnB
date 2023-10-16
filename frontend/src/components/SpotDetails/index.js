@@ -9,8 +9,10 @@ import SpotDetailReviewArea from "../SpotDetailReviewArea";
 
 function SpotDetails() {
     const { id } = useParams();
+    console.log("🚀 ~invoking SpotDetails ~ id:", id)
+    const ref = useRef({});
     const spot = useSelector(state => state.spots.id[id])
-    const imageIds = useSelector(state => state.spots.id[id].images)
+    const imageIds = useSelector(state => state.spots.id[id]?.images)
     const dispatch = useDispatch();
     const spotImages = useSelector(state => state.spotImages.id);
     let otherImages = []
@@ -18,13 +20,11 @@ function SpotDetails() {
     // const [rerender, setRerender] = useState({})
 
 
-  const ref = useRef({});
   if (!imageIds) {
-    // setTimeout(()=>setRerender({old: rerender}), 1000)
-    console.log("thunkReadSpot(id) going to invoke", id)
-    if (!ref.current[id]) {
-        ref.current[id] = true;
-    dispatch(thunkReadSpot(id))
+      if (!ref.current[id]) {
+          ref.current[id] = true;
+        console.log(`thunkReadSpot(${id}) going to invoked`)
+        dispatch(thunkReadSpot(id))
     }
     return null;
   } else if (ref.current[id]) delete ref.current[id]
@@ -38,6 +38,8 @@ function SpotDetails() {
   function handleReserveClick(){
       alert("Feature Coming Soon...")
   }
+
+  console.log("rendering SpotDetails")
 
   return (
     <div className="spotDetailsDiv">

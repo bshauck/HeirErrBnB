@@ -12,6 +12,7 @@ const placeholderSrc = "https://placehold.co/100?text=Photo+needed&font=montserr
 
 function SpotTile ({spotId, spot, isManaged}) {
   console.log("🚀 rendering SpotTile ~ spotId, spot:", spotId, spot)
+  const ref = useRef({});
   const stateSpot = useSelector(state => state.spots.id[spotId])
   const history = useHistory();
   const dispatch = useDispatch();
@@ -31,7 +32,6 @@ function SpotTile ({spotId, spot, isManaged}) {
   }
 
 
-  const ref = useRef({});
   if (!spot || Object.values(spot).length < 2) {
     if (!ref.current[spotId])
       ref.current[spotId] = dispatch(thunkReadSpot(spotId))
