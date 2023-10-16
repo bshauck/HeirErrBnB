@@ -45,7 +45,7 @@ and without logged-in user
  */
 
 import { csrfFetch, fetchData } from "./csrf";
-import { READ_SPOT, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
+import { CREATED_REVIEW, CREATED_SPOT, DELETED_REVIEW, DELETED_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
@@ -132,29 +132,68 @@ const sessionReducer = (state = initialState, action) => {
         newState.id[newUser.id] = newUser;
       return newState;
 
-    case READ_SPOT:{
+    case READ_SPOT: {
       const partialUser = action.payload.Owner;
       if (state.id[partialUser.id]) return state; /* already have this */
       newState.id = {...state.id}
       newState.id[partialUser.id] = partialUser;
       return newState;
     }
+    case READ_SPOT_REVIEWS: {
+      const {reviews} = action.payload
+      const partialUsers = reviews.map(pu => pu.User);
+      if (partialUsers.every(pu => state.id[pu.id])) return state;
+      newState.id = {...state.id}
+      partialUsers.forEach(pu => newState.id[pu.id]=pu)
+      return newState;
+    }
     case REMOVE_USER: /* don't remove key; names still used in spot details */
       newState.user = newState.reviews = newState.spots = newState.bookings = null;
       return newState;
 
-    case READ_USER_REVIEWS:{
-      const reviews = action.payload.map(r => r.id)
+    case READ_USER_REVIEWS: {
+      const reviewIds = action.payload.map(r => r.id)
       newState.user = {...state.user}
       newState.id = {...state.id}
-      newState.reviews = newState.user.reviews = newState.id[state.user.id] = reviews
+      newState.reviews = newState.user.reviews = reviewIds
       return newState
     }
     case READ_USER_SPOTS: {
-      const spots = action.payload.map(s=>s.id)
+      const spotIds = action.payload.map(s=>s.id)
       newState.user = {...state.user}
-      newState.spots = newState.user.spots = spots;
+      newState.spots = newState.user.spots = spotIds;
       return newState;
+    }
+    case DELETED_SPOT: {
+      newState.user = {...state.user}
+      const index = state.spots.indexOf(action.payload.id)
+      if (index === -1) return state
+      newState.spots = newState.user.spots = [...state.spots]
+      newState.spots.splice(index, 1)
+      return newState
+    }
+    case DELETED_REVIEW: {
+      console.log("delReview action.payload", action.payload)
+      newState.user = {...state.user}
+      const index = state.reviews.indexOf(action.payload.reviewId)
+      console.log("delReview index, reviews", index, state.reviews)
+      if (index === -1) return state;
+      newState.reviews = newState.user.reviews = [...state.reviews]
+      newState.reviews.splice(index, 1)
+      console.log("new reviews", newState.reviews)
+      return newState
+    }
+    case CREATED_REVIEW: {
+      newState.user = {...state.user}
+      const old = state.reviews ? state.reviews : []
+      newState.reviews = newState.user.reviews = [...old, action.payload.review.id]
+      return newState
+    }
+    case CREATED_SPOT: {
+      newState.user = {...state.user}
+      const old = state.spots ? state.spots : []
+      newState.spots = newState.user.spots = [...old, action.payload.id]
+      return newState
     }
     default:
       return state;

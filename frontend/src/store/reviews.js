@@ -48,14 +48,10 @@
 }
 */
 
-import { READ_SPOT_REVIEWS, READ_USER_REVIEWS } from "./commonActionCreators";
+import { CREATED_REVIEW, DELETED_REVIEW, READ_SPOT_REVIEWS, READ_USER_REVIEWS, UPDATED_REVIEW, UPDATED_SPOT_REVIEW_RATINGS } from "./commonActionCreators";
 import { fetchData } from "./csrf";
-import { thunkReadSpot } from "./spots";
 
 const READ_REVIEW = "reviews/READ_REVIEW";
-const DELETE_REVIEW = "reviews/DELETE_REVIEW";
-const CREATE_REVIEW = "reviews/CREATE_REVIEW";
-const UPDATE_REVIEW = "reviews/UPDATE_REVIEW";
 
 
 export function readAllSpotReviews(reviews, spotId) {
@@ -79,27 +75,35 @@ function readReview(review) {
     }
 }
 
-function deleteReview(reviewId, spotId) {
+function deletedReview(reviewId, spotId) {
     return {
-        type: DELETE_REVIEW,
+        type: DELETED_REVIEW,
         payload: {reviewId, spotId}
     };
 };
 
-function createReview(review) {
+function createdReview(review) {
     return {
-        type: CREATE_REVIEW,
-        payload: review
+        type: CREATED_REVIEW,
+        payload: {review}
     };
 };
 
-function updateReview(review) {
+function updatedReview(review) {
     return {
-        type: UPDATE_REVIEW,
+        type: UPDATED_REVIEW,
         payload: review
     }
 }
 
+/* cross-slice thunk helper */
+function updatedSpotReviewRatings(state, spotId) {
+  const [numReviews, avgRating] = calculateRatings(state, spotId)
+    return {
+        type: UPDATED_SPOT_REVIEW_RATINGS,
+        payload: {spotId, numReviews, avgRating}
+    }
+}
 
 export const thunkReadAllReviews = spotId => async dispatch => {
   const url = `/api/spots/${spotId}/reviews`
@@ -124,16 +128,32 @@ export const thunkReadReview = id => async dispatch => {
   return answer
 }
 
-export const thunkDeleteReview = (id, spotId) => async dispatch => {
+/* thunk helper */
+const calculateRatings = (state, spotId) => {
+  /* spotLatest is guaranteed to be in
+   * proper order, with any newly created
+   * reviewId inserted; or newly deleted
+   * reviewId removed
+   */
+  /* return value is array with [num, avg] */
+  const spotReviewIds = state.spotLatest[spotId];
+  const numReviews = spotReviewIds.length;
+  if (!numReviews) return [0, null];
+  const ratings = spotReviewIds.map(rId => state.id[rId].stars)
+  const sum = ratings.reduce((acc, next) => acc + next, 0)
+  return [numReviews, sum/numReviews]
+}
+
+export const thunkDeleteReview = (id, spotId) => async (dispatch, getState) => {
   const answer = await fetchData(`/api/reviews/${id}`, {method: 'DELETE'})
   if (!answer.errors) {
-    dispatch(deleteReview(id, spotId)) // probably should pass spotId and let other reducer
-    dispatch(thunkReadSpot(spotId))
+    dispatch(deletedReview(id, spotId))
+    dispatch(updatedSpotReviewRatings(getState().reviews, spotId))
   }
   return answer
 }
 
-export const thunkCreateReview = (review, firstName) => async dispatch => {
+export const thunkCreateReview = (review, firstName) => async (dispatch, getState) => {
   const { spotId, userId, commentary, stars } = review;
   const url = `/api/spots/${spotId}/reviews`
   const options = {
@@ -148,13 +168,14 @@ export const thunkCreateReview = (review, firstName) => async dispatch => {
   const answer = await fetchData(url, options)
   if (!answer.errors) {
     answer.firstName = firstName
-    dispatch(createReview(answer))  // recalculate spot info
-    dispatch(thunkReadSpot(spotId)) // unsure this is the place
+    console.log("attempted to create review: ", answer)
+    dispatch(createdReview(answer, answer.spotId))
+    dispatch(updatedSpotReviewRatings(getState().reviews, spotId))
   }
   return answer
 }
 
-export const thunkUpdateReview = review => async dispatch => {
+export const thunkUpdateReview = review => async (dispatch, getState) => {
   const { id, spotId, userId, commentary, stars } = review;
   const url = `/api/reviews/${id}`
   const options = {
@@ -168,7 +189,10 @@ export const thunkUpdateReview = review => async dispatch => {
     })
   }
   const answer = await fetchData(url, options)
-  if (!answer.errors) dispatch(updateReview(answer))
+  if (!answer.errors) {
+    dispatch(updatedReview(answer))
+    dispatch(updatedSpotReviewRatings(getState().reviews, spotId))
+  }
   return answer
 }
 
@@ -212,37 +236,50 @@ const reviewsReducer = (state = initialState, action) => {
         newState.id = {...state.id, ...normalized};
         return newState;
     }
-    case CREATE_REVIEW: {
-      const review = action.payload
-      const id = review.id;
+    case CREATED_REVIEW: {
+      const {review} = action.payload
+      const reviewId = review.id;
       const spotId = review.spotId;
+      if (!spotId || !reviewId) throw new Error("baaddd spotId/reviewId for Review", review)
       newState = {...state};
-      newState.id = {...state.id, [id]: review}
-      newState.spotLatest = {...review.spotLatest}
-      if (state.spotLatest[spotId])
-        newState.spotLatest[spotId] = {[id]: [review, ...state.spotLatest[spotId]]}
+      newState.id = {...state.id, [reviewId]: review}
+      if (state.spotLatest[spotId]) {
+        newState.spotLatest = {...state.spotLatest}
+        newState.spotLatest[spotId] = [reviewId, ...state.spotLatest[spotId]]
+      }
       return newState;
     }
-    case READ_REVIEW:
-    case UPDATE_REVIEW:{
+    case READ_REVIEW: {
       const review = action.payload
-      const id = review.id;
+      const reviewId = review.id;
+      newState = {...state};
+      newState.id = {...state.id, [reviewId]: review}
+      return newState
+    }
+    case UPDATED_REVIEW: {
+      const review = action.payload
+      const reviewId = review.id;
       const spotId = review.spotId;
       newState = {...state};
-      newState.id = {...state.id, [id]: review}
-      if (state.spotLatest[spotId])
-          newState.spotLatest = {...review.spotLatest,
-          [spotId]: [review, ...review.spotLatest[spotId]]}
-      return newState;
+      newState.id = {...state.id, [reviewId]: review}
+      if (state.spotLatest[spotId]) {
+          newState.spotLatest = {...state.spotLatest}
+          newState.spotLatest[spotId] = [reviewId, ...state.spotLatest[spotId]]
       }
-    case DELETE_REVIEW: {
+      return newState
+    }
+    case DELETED_REVIEW: {
       const {reviewId, spotId} = action.payload
       if (!state.id[reviewId]) return state;
       newState = {...state}
-      newState.id={...state.id}
+      newState.id = {...state.id}
       delete newState.id[reviewId]
-      if (state.spotLatest[spotId])
-      delete newState.spotLatest[spotId]
+      if (state.spotLatest[spotId]) {
+        const index = state.spotLatest[spotId].indexOf(reviewId)
+        newState.spotLatest = {...state.spotLatest}
+        newState.spotLatest[spotId] = [...state.spotLatest[spotId]]
+        newState.spotLatest[spotId].splice(index, 1)
+      }
       return newState
     }
     default:

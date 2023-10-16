@@ -4,21 +4,17 @@ Errors in API I corrected
     2 500s should be 400s
     1 500 should be 403
     Several (4?) 200s should be 201s (that create new table rows)
-    It IS OK for a startDate and different booking endDate to be the same.
-    People leave in the morning and come in the evening. (Similarly for
-    endDates)
-    Allow owner to make booking of own spot (implementation of unavailable)
-change all review things to look for commentary instead of review
-
-Errors in script:
-  line 12 of POST Signup needs ()s after keyword function
+    It IS OK for a startDate and different booking endDate to be the same. (endDates end before noon; startDates start in the evening)
+    Allow owner to make booking of own spot (easy implementation of making Spot unavailable for booking)
+    change all review test scripts to look for commentary instead of review
+    changed create image API to handle incoming array and return array
 
 
 
 Investigate if you can run something before test script run
 
 if cascade delete is set appropriately, only this one delete
-command needs to run to clean up after a rest:
+command needs to run to clean up after a script run:
 DELETE FROM Users WHERE lastName='AATester';
 Ensure no cookies, or perhaps run option don't use cookies
 

@@ -5,7 +5,7 @@ new STORE layout (except since users cannot be deleted, and all
     with session currently, they are never listed or ordered)
 
    {
-     session:
+     session: CD Spot user.spot, CD Review,
      users: // session signup creates
      spots:  // landing, details, CUD Spot
      reviews: // from all reviews for spot/user; CUD Review
@@ -15,28 +15,19 @@ new STORE layout (except since users cannot be deleted, and all
    },
    */
    /* session */ /*
-   {
+  {
     user: user || null
-    spots: {[spotId]: spot,},
-    reviews: {[reviewId}: review,},
-    bookings: {[bookingId]: booking,},
-    id: (really all the user stuff below goes here)
-   }
-   */
-
-   /* users */ /* interested in spot/booking/review delete */ /*
-   {
+    id: // normalized users
+    {
      [userId]:
-       {
+       { // partial from review reads
          id,
          firstName,
          lastName,
 
-         // additional detail on login
+         // additional detail on login (passwords only in db)
          email,
          username,
-         createdAt,  /// TODO?
-         updatedAt   /// TODO?
 
          // additional detail w/ current spots/review/bookings
          spots: [spotIds,],
@@ -45,7 +36,8 @@ new STORE layout (except since users cannot be deleted, and all
          // spotQuery: [landingPageQueryParamString], // TODO
          // currentPage: 3 // last displayed page of info // TODO
        }
-   }
+    }
+  }
    */
    /* spots */ /*
    {
@@ -72,7 +64,7 @@ new STORE layout (except since users cannot be deleted, and all
 
              // additional info; Details page gets images & reviews
              // reserve button gets bookings
-             images: [spotImageIds,], // spotDetails(singleSpot)
+             images: [spotImageIds,], // spotDetails
              reviews: [reviewIds,], // allSpotReviews
              // bookings: [bookingIds,], // perhaps only ids with future endDates
            },
@@ -83,7 +75,7 @@ new STORE layout (except since users cannot be deleted, and all
 
    /* reviews */ /* interested in spot delete */ /*
    {
-     id: // from all reviews for spot/user; CUD
+     id: // from all reviews for spot/user; CUD Review; D Spot
        {
          [reviewId]:
            {

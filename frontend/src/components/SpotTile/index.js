@@ -1,4 +1,5 @@
 // frontend/src/components/SpotTile/index.js
+import { useRef } from 'react';
 import { useHistory } from 'react-router-dom/';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,10 +12,12 @@ const placeholderSrc = "https://placehold.co/100?text=Photo+needed&font=montserr
 
 function SpotTile ({spotId, spot, isManaged}) {
   console.log("🚀 rendering SpotTile ~ spotId, spot:", spotId, spot)
+  const ref = useRef({});
   const stateSpot = useSelector(state => state.spots.id[spotId])
   const history = useHistory();
   const dispatch = useDispatch();
 
+  if (isManaged) spot = stateSpot;
 
   function handleUpdateClick() {
     if (stateSpot !== true)
@@ -28,11 +31,12 @@ function SpotTile ({spotId, spot, isManaged}) {
     history.push(`/spots/${spotId}`)
   }
 
-  if (!spot) {
-    (async()=>await(dispatch(thunkReadSpot(spotId))))()
-    return null;
-  }
 
+  if (!spot || Object.values(spot).length < 2) {
+    if (!ref.current[spotId])
+      ref.current[spotId] = dispatch(thunkReadSpot(spotId))
+    return null;
+  } else if (ref.current[spotId]) delete ref.current[spotId]
 
   return (
     <div className="tileDiv">
