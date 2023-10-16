@@ -112,13 +112,12 @@ in state.spots.id
 }
 */
 
-import { DELETE_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
+import { CREATED_REVIEW, CREATED_SPOT, DELETED_REVIEW, DELETED_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_SPOTS, UPDATED_SPOT_REVIEW_RATINGS } from "./commonActionCreators";
 
 import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
-const CREATE_SPOT = "spots/CREATE_SPOT";
-const UPDATE_SPOT = "spots/UPDATE_SPOT";
+const UPDATED_SPOT = "spots/UPDATED_SPOT";
 
 function readAllSpots(spots) {
     return {
@@ -141,23 +140,23 @@ function readSpot(spot) {
     }
 }
 
-function deleteSpot(id) {
+function deletedSpot(id) {
     return {
-        type: DELETE_SPOT,
+        type: DELETED_SPOT,
         payload: id
     };
 };
 
-function createSpot(spot) {
+function createdSpot(spot) {
     return {
-        type: CREATE_SPOT,
+        type: CREATED_SPOT,
         payload: spot
     };
 };
 
-function updateSpot(spot) {
+function updatedSpot(spot) {
     return {
-        type: UPDATE_SPOT,
+        type: UPDATED_SPOT,
         payload: spot
     }
 }
@@ -195,7 +194,7 @@ export const thunkDeleteSpot = id => async dispatch => {
     method: "DELETE",
   }
   const answer = await fetchData(url, options)
-  if (!answer.errors) dispatch(deleteSpot(id))
+  if (!answer.errors) dispatch(deletedSpot(id))
   return answer
 }
 
@@ -241,7 +240,7 @@ export const thunkCreateSpot = (spot, urls) => async dispatch => {
     options.body = JSON.stringify(urls)
     const answer2 = await csrfFetch(`/api/spots/${answer.id}/images`, options)
     if (!answer2.errors) {
-      dispatch(createSpot(answer))
+      dispatch(createdSpot(answer))
       /* TODO dispatch(createdImages()) */
     }
   }
@@ -264,7 +263,7 @@ export const thunkUpdateSpot = (spot /*, urls */) => async dispatch => {
   */
   const answer = await fetchData(url, options)
   if (!answer.errors) {
-    dispatch(updateSpot(answer))
+    dispatch(updatedSpot(answer))
   }
   return answer
 }
@@ -273,6 +272,7 @@ const initialState = { /* for {} at state.spots */
     id: {}, /* when filled, normalized by spotId: {spotData} */
     userQuery: {}, /* when filled, {[userId}: [spotIdsLandingOrderdBySomeUserQuery]} */
 };
+
 
 const spotsReducer = (state = initialState, action) => {
   let newState;
@@ -290,8 +290,8 @@ const spotsReducer = (state = initialState, action) => {
         newState = {...state, "id": {...state.id, ...normalized}};
         return newState;
     }
-    case CREATE_SPOT:
-    case UPDATE_SPOT: {
+    case CREATED_SPOT:
+    case UPDATED_SPOT: {
       const spot = action.payload
       const id = spot.id;
       newState = {...state};
@@ -308,7 +308,7 @@ const spotsReducer = (state = initialState, action) => {
       return newState
     }
 
-    case DELETE_SPOT: /* payload is spotId */
+    case DELETED_SPOT: /* payload is spotId */
       newState = {...state};
       newState.id = {...state.id};
       delete newState.id[action.payload]
@@ -320,6 +320,40 @@ const spotsReducer = (state = initialState, action) => {
       newState = {...state}
       newState.id = {...state.id}
       newState.id[spotId] = {...state.id[spotId], reviews }
+      return newState
+    }
+    case DELETED_REVIEW: {
+      const {reviewId, spotId} = action.payload
+      const reviews = [...state.id[spotId].reviews]
+      const index = reviews.indexOf(reviewId)
+      if (index === -1) {
+        console.log("FAILED to find review to deleete in spot; reviewId, spotId", reviewId, spotId);
+        return state
+      }
+      reviews.splice(index, 1)
+      newState = {...state}
+      newState.id = {...state.id}
+      newState.id[spotId] = {...state.id[spotId], reviews}
+      return newState
+    }
+    case CREATED_REVIEW: {
+      const {review} = action.payload
+      const spotId = review.spotId
+      const spot = state.id[spotId]
+      console.log("🚀 ~ spotsReducer ~ review, spotId, spot:", review, spotId, spot)
+      const reviews = [review.id, ...spot.reviews]
+      newState = {...state}
+      newState.id = {...state.id}
+      newState.id[spotId] = {...state.id[spotId], reviews}
+      return newState
+    }
+    case UPDATED_SPOT_REVIEW_RATINGS: {
+      const {spotId, numReviews, avgRating} = action.payload
+      const spot = state.id[spotId]
+      if (spot.numReviews === numReviews && spot.avgRating === avgRating) return state
+      newState = {...state}
+      newState.id = {...state.id}
+      newState.id[spotId] = {...state.id[spotId], numReviews, avgRating}
       return newState
     }
     default:

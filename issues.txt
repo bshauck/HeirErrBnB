@@ -52,3 +52,15 @@ Generate better, larger amount of data
 BUGS:
 Login on error (invalid password/credential) changes size,
 and a sliver of a modalDiv appears underneath main modal
+
+LONGTERM
+Figure out DB table constraints syntax for Sequelize for Sqlite3 & PostGreSQL (probably have to be literal SQL), and implementing
+appropriate table constraints which match application constraints where possible and put into migration files (better protection against bad seeding; although may make historical seeding hard; so may have to skip date checking)
+Put console logs at beginning of all component functions and just before
+return statements, and check that ACTUAL re-rendering is minimal.
+Use db transactions to rollback multi-table changes when errors occur after 1st table succeeds
+Switch to RTK and RTK Query
+Switch to Vite instead of CRA
+Change all READ items to GOT (past of GET)
+Make names more explicit (no "plain" ids)
+Figure out Render transfer approach

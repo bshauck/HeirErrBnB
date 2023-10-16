@@ -2,15 +2,35 @@
 Last branch notes
 
 SATURDAY/SUNDAY
-Manage spots doesn't load
+Manage spots now loads
 can update freshly created spot
 delete spot changes no longer impact userId info
 Added Callout with price night, small review avg, Reserve button
 StarRatings added to SpotDetails' callout box
 Ensured spot delete updates landing pages/manage spot pages
+Create and then edit/update new spot works
+
+
+check every App start page for doing browser refresh and handling no current state information
+deleting review updates review slice correctly, but not session slice (sill in user.reviews and reviews)
+have created/updated/deleted reviews calculate and return numReviews and avgRating as well as spotId
+remove redundant user session settings (just depend on
+user object setting: reviews, spots, bookings)
+test and check all interdependency reducers are correct
+
+
 
 create review causes error for empty list
 Login modal doesn't autoclose after successful login
 
+review slice correctly updated with delete/create; however:
+spot not updated with create (but was with delete)
+session.reviews still has deleted review key; does NOT have created review key
+lack of create for both possibly because of error
+read spot reviews didn't corrrectly update spotLatest
+
+deleting spot should cascade in store and delete all associated
+reviews, bookings, spotImages,
+deleting review should cascade in store and delete all review images
 
 Check out create and edit spots; after getting Manage Spots

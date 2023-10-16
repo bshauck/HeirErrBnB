@@ -19,8 +19,10 @@ function ReviewList({ spot }) {
     }, [reviewIds,dispatch, spot.id])
 
     // ok to have 0 reviews; may be new, etc.
-    if (spot.numReviews === 0) return null
-    if (!reviewIds) return null
+    if (!Array.isArray(reviewIds)) {
+      console.log("reviewIds should be an empty array if no reviews if not empty, then ordered by descending updatedAt timestamp or undefined if never determined from db; spot.numReviews, typeof reviewIds: ", spot.numReviews, typeof reviewIds);
+      return null
+    }
     if (reviewIds.includes(null) || reviewIds.includes(undefined)) {
       console.log("baaad review id; ", reviewIds)
       return null
