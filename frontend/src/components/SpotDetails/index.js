@@ -18,6 +18,7 @@ function SpotDetails() {
     let otherImages = []
     console.log("🚀 ~ file: index.js:15 ~ SpotDetails ~ id, spotImages, imageIds, spot:", id, spotImages, imageIds, spot);
     // const [rerender, setRerender] = useState({})
+    const placeholderSrc = "https://placehold.co/200?text=Photo+needed&font=montserrat"
 
 
   if (!imageIds) {
@@ -30,9 +31,11 @@ function SpotDetails() {
   } else if (ref.current[id]) delete ref.current[id]
 
   for (const imageId of imageIds)
-  otherImages.push(spotImages[imageId])
+    otherImages.push(spotImages[imageId])
   if (otherImages.length > 4)
     otherImages = otherImages.slice(0,4)
+  while (otherImages.length < 4)
+    otherImages.push({id: placeholderSrc, url:placeholderSrc})
 
   const owner = spot.Owner;
   function handleReserveClick(){
@@ -49,9 +52,8 @@ function SpotDetails() {
             <div className="spotDetailsPreviewDiv"><img className="spotDetailsPreviewImg" alt='preview' src={spot.previewUrl}></img></div>
             <div className="spotDetailsImagesDiv">
                 {otherImages && otherImages.length && otherImages.map(si => (
-                    <img key={si.id} className="spotDetailsSmallImg" alt='' src={si.url}></img>
-                ))
-                }
+                    <img key={si.id} className="spotDetailsSmallImg" alt='' src={si.url}></img>))}
+                {}
             </div>
         </div>
         <section className="spotDetailsSection">
