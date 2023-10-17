@@ -4,6 +4,8 @@ Last branch notes
 MONDAY
 added autoFocus to signup and login modal field
 tweaked seeders to have less repitition
+added more stack area to track 404 with favicon
+Most thunks in present tense; action creators in past
 
 test and check all interdependency reducers are correct
 
