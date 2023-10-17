@@ -285,9 +285,12 @@ const spotsReducer = (state = initialState, action) => {
         return newState;
     }
     case READ_USER_SPOTS: {
-        const normalized = {};
-        action.payload.forEach(s => normalized[s.id]=s)
-        newState = {...state, "id": {...state.id, ...normalized}};
+        newState = {...state}
+        newState.id = {...state.id}
+        if (Object.keys(state.id).length > action.payload.length) {
+        console.log("updating spots from user spots: spot#, userspot#", Object.keys(state.id).length, action.payload.length)
+          action.payload.forEach(s => newState.id[s.id] = {...state.id[s.id], ...s})
+        }
         return newState;
     }
     case CREATED_SPOT:

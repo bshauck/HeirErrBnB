@@ -128,15 +128,17 @@ const sessionReducer = (state = initialState, action) => {
     case SET_USER:
       const newUser = action.payload
       newState.user = newUser;
-      if (newUser && !state.id[newUser.id]?.username) /* didn't have full user info */
-        newState.id[newUser.id] = newUser;
+      if (newUser && !state.id[newUser.id]?.username)
+        newState.id[newUser.id] = {...state.id[newUser.id], ...newUser}
       return newState;
 
     case READ_SPOT: {
-      const partialUser = action.payload.Owner;
-      if (state.id[partialUser.id]) return state; /* already have this */
+      const partialUser = action.payload.User
+      let userId;
+      if (!partialUser || !(userId = partialUser.id) || state.id[userId])
+        return state; /* already have this */
       newState.id = {...state.id}
-      newState.id[partialUser.id] = partialUser;
+      newState.id[userId] = partialUser;
       return newState;
     }
     case READ_SPOT_REVIEWS: {
@@ -144,7 +146,7 @@ const sessionReducer = (state = initialState, action) => {
       const partialUsers = reviews.map(pu => pu.User);
       if (partialUsers.every(pu => state.id[pu.id])) return state;
       newState.id = {...state.id}
-      partialUsers.forEach(pu => newState.id[pu.id]=pu)
+      partialUsers.forEach(pu => newState.id[pu.id] = pu)
       return newState;
     }
     case REMOVE_USER: /* don't remove key; names still used in spot details */
@@ -185,13 +187,13 @@ const sessionReducer = (state = initialState, action) => {
     }
     case CREATED_REVIEW: {
       newState.user = {...state.user}
-      const old = state.reviews ? state.reviews : []
+      const old = state.reviews ?? []
       newState.reviews = newState.user.reviews = [...old, action.payload.review.id]
       return newState
     }
     case CREATED_SPOT: {
       newState.user = {...state.user}
-      const old = state.spots ? state.spots : []
+      const old = state.spots ?? []
       newState.spots = newState.user.spots = [...old, action.payload.id]
       return newState
     }

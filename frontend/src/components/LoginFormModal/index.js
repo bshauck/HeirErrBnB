@@ -53,6 +53,7 @@ function LoginFormModal() {
             placeholder="Username or Email"
             autoComplete="username"
             onChange={e => setCredential(e.target.value)}
+            autoFocus
             required
           />
           <input

@@ -9,13 +9,14 @@ import StarRatingInput from "../StarRatingInput";
 function ReviewFormModal({spot, userId}) {
     const dispatch = useDispatch();
     const [commentary, setCommentary] = useState("");
-    const [stars, setStars] = useState("");
+    const [stars, setStars] = useState(0);
     const { closeModal } = useModal();
     const spotId = spot.id;
     const user=useSelector(state => state.session.user)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("create review; stars/nStars origStars type/Numbered type", stars, Number(stars), typeof stars, typeof Number(stars))
     await dispatch(thunkCreateReview({
       spotId,
       userId,
@@ -25,12 +26,12 @@ function ReviewFormModal({spot, userId}) {
     closeModal();
   };
 
-  const handleChange = n => setStars(parseInt(n));
+  const handleChange = n => setStars(n);
 
   return (
       <form className="createReviewForm" onSubmit={handleSubmit}>
         <h1>How was your stay?</h1>
-        <textarea className="createReviewTextarea"
+        <textarea className="createReviewTextarea" autoFocus
         value={commentary} onChange={e => setCommentary(e.target.value)} placeholder="Leave your review here..." />
         <StarRatingInput
           disabled={false}

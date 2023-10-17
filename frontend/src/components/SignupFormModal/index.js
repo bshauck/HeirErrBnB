@@ -25,28 +25,24 @@ function SignupFormModal() {
           firstName,
           lastName,
           password,
-        })
-      )
-        .then((res, rej) => {
-          if (res.ok) {
-            closeModal();
-            console.log("did close modal work this time?")
-          }
-          else {
-            console.log(res.errors) ;
-            throw res
-          }
-    }     )
-        .catch(data  => {
-          if (data && data.errors) {
-            setErrors(data.errors);
-          } else closeModal()
-        })
-      }
-      return setErrors({
-        confirmPassword: "Confirm Password field must be the same as the Password field"
-      });
-    };
+      }))
+      .then(res => {
+        if (res.ok) {
+          closeModal();
+        }
+        else {
+          console.log(res.errors) ;
+          throw res
+        }
+      })
+      .catch(data  => data && data.errors
+        ? setErrors(data.errors)
+        : closeModal())
+    }
+    return setErrors({
+      confirmPassword: "Confirm Password field must be the same as the Password field"
+    });
+  };
 
     return (
       <>
@@ -59,6 +55,7 @@ function SignupFormModal() {
           value={firstName}
           autoComplete="given-name"
           placeholder="First Name"
+          autoFocus
           onChange={(e) => setFirstName(e.target.value)}
         />
         <input className="signupInput"

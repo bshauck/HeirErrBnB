@@ -17,8 +17,10 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Security
-if (!isProduction) // enable cors only in development
+if (!isProduction) {// enable cors only in development
     app.use(cors());
+    Error.stackTraceLimit = Infinity
+}
 app.use(helmet.crossOriginResourcePolicy({policy: "cross-origin"}));
 
 // Create middleware to check request url

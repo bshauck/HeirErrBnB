@@ -24,7 +24,7 @@ function ReviewDeleteFormModal({ id, spotId }) {
         <p className="errors">{errors.errors ? errors.errors : ""}</p>
         <div className="reviewDeleteFormButtonDiv">
             <button className="reviewDeleteButton" type="button" onClick={reviewYesDelete}>Yes (Delete Review)</button>
-            <button className="reviewNoDeleteButton" type="button" onClick={closeModal}>No (Keep Review)</button>
+            <button className="reviewNoDeleteButton" type="button" autoFocus onClick={closeModal}>No (Keep Review)</button>
         </div>
       </>
   );
