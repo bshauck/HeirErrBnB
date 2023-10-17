@@ -13,7 +13,7 @@ module.exports = {
     const generatedImages = [];
 
     for (const spotId of spotIds) {
-      getFullImages().forEach((url, i) =>
+      getFullImages().forEach(url =>
         generatedImages.push({
           spotId,
           url

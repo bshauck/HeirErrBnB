@@ -35,7 +35,7 @@ function SpotDetails() {
   if (otherImages.length > 4)
     otherImages = otherImages.slice(0,4)
   while (otherImages.length < 4)
-    otherImages.push({id: placeholderSrc, url:placeholderSrc})
+    otherImages.push({id: placeholderSrc+otherImages.length.toString(), url:placeholderSrc})
 
   const owner = spot.Owner;
   function handleReserveClick(){

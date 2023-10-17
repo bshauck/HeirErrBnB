@@ -98,6 +98,7 @@ function updatedReview(review) {
 
 /* cross-slice thunk helper */
 function updatedSpotReviewRatings(state, spotId) {
+  console.log("at updatedSpotReviewRatings", )
   const [numReviews, avgRating] = calculateRatings(state, spotId)
     return {
         type: UPDATED_SPOT_REVIEW_RATINGS,
@@ -141,6 +142,7 @@ const calculateRatings = (state, spotId) => {
   if (!numReviews) return [0, null];
   const ratings = spotReviewIds.map(rId => state.id[rId].stars)
   const sum = ratings.reduce((acc, next) => acc + next, 0)
+  console.log("calcRating; spotRevIds/numRviews/sum", spotReviewIds, numReviews, sum )
   return [numReviews, sum/numReviews]
 }
 
@@ -156,6 +158,8 @@ export const thunkDeleteReview = (id, spotId) => async (dispatch, getState) => {
 export const thunkCreateReview = (review, firstName) => async (dispatch, getState) => {
   const { spotId, userId, commentary, stars } = review;
   const url = `/api/spots/${spotId}/reviews`
+  console.log("thunk create review; stars/nStars origStars type/Numbered type", stars, Number(stars), typeof stars, typeof Number(stars))
+
   const options = {
     method: "POST",
     body: JSON.stringify({
@@ -168,7 +172,7 @@ export const thunkCreateReview = (review, firstName) => async (dispatch, getStat
   const answer = await fetchData(url, options)
   if (!answer.errors) {
     answer.firstName = firstName
-    console.log("attempted to create review: ", answer)
+    console.log("dispatching created review: ", answer)
     dispatch(createdReview(answer, answer.spotId))
     dispatch(updatedSpotReviewRatings(getState().reviews, spotId))
   }

@@ -140,7 +140,8 @@ router.route('/:spotId(\\d+)/reviews')
                     spotId: spot.id}
         });
         if (old) return res.status(403).json({message: "User already has a review for this spot"});
-        const {commentary, stars} = req.body;
+        let {commentary, stars} = req.body;
+        stars = Number(stars)
         const newReview = await Review.create({
             userId: req.user.id,
             spotId: spot.id,
