@@ -11,8 +11,8 @@ function ReviewFormModal({spot, userId}) {
     const [commentary, setCommentary] = useState("");
     const [stars, setStars] = useState(0);
     const { closeModal } = useModal();
+    const user = useSelector(state => state.session.user)
     const spotId = spot.id;
-    const user=useSelector(state => state.session.user)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,10 +30,12 @@ function ReviewFormModal({spot, userId}) {
 
   return (
       <form className="createReviewForm" onSubmit={handleSubmit}>
-        <h1>How was your stay?</h1>
+        <h2 className="createReviewH2">How was your stay?</h2>
         <textarea className="createReviewTextarea" autoFocus
+        cols="40"
+        rows="8"
         value={commentary} onChange={e => setCommentary(e.target.value)} placeholder="Leave your review here..." />
-        <StarRatingInput
+        <StarRatingInput className="createReviewStars"
           disabled={false}
           onChange={handleChange}
           rating={stars}

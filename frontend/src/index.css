@@ -213,9 +213,6 @@ li:has(.logoutButton) {
     margin: 10px ;
 }
 
-/* .loginCredentialInput,.loginPasswordInput,.loginButton {
-    width: 80% ;
-} */
 
 .loginTitle {
     text-align: center ;
@@ -330,17 +327,30 @@ label {
     gap: 20px;
 }
 
+/* BEGIN MODAL CSS */
 
-#modalContent {
-    background-color: transparent;
+/* not sure this is applicable to all, but
+   works well for Spot delete, post
+   Review */
+#modal-content {
+    border: 4px black solid;
+    border-radius: 10px;
+ }
+
+ .createReviewForm {
+    margin: 15px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: center;
 }
 
 .confirmSpotDeleteModalDiv {
     gap: 20px;
-    border: 4px black solid;
-    border-radius: 10px;
-    /* width: 85%; */
+    margin: 10px;
  }
+
 .spotDeleteFormButtonDiv{ gap: 5px; }
 .confirmSpotDeleteModalDiv,.spotDeleteFormButtonDiv {
     display: flex;
@@ -348,14 +358,25 @@ label {
     align-items: center;
 }
 
-.confirmSpotDeleteModalP,.spotNoDeleteButton,.spotDeleteButton {
-    width: 250px;
+.signupInput
+{
+    max-width: 100%;
+}
+/* END MODAL CSS */
 
+/* modal button colors/size */
+.confirmSpotDeleteModalP,.spotNoDeleteButton,.spotDeleteButton
+{
+    width: 250px;
 }
 
-.spotDeleteButton {
-    background-color: var(--aaRed);
-    color: white;
+.createReviewButton {
+    box-shadow: 2px 2px darkgray;
+    padding: 8px;
+    width: 329px;
+}
+.starsTextSpan {
+    margin-left: 4px;
 }
 
 .spotNoDeleteButton,
@@ -365,16 +386,14 @@ label {
     color: white;
 }
 
-.signupSubmit
-.manageSpotDeleteButton
+.signupSubmit,
+.manageSpotDeleteButton,
+.spotDeleteButton
 {
     background-color: var(--aaRed);
     color: white;
 }
-
-.signupInput {
-    max-width: 85%;
-}
+/* end modal buttons */
 
 i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
     cursor: pointer;
@@ -427,7 +446,7 @@ i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
 .managedTileButtonDiv {
     display: flex;
     justify-content: flex-start;
-    gap-row: 10px;
+    row-gap: 10px;
 }
 /*
 .spotDetailsPreviewImg {
