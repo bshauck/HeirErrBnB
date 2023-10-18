@@ -346,13 +346,13 @@ label {
     align-items: center;
 }
 
-.confirmSpotDeleteModalDiv {
+.confirmResourceDeleteModalDiv {
     gap: 20px;
     margin: 10px;
  }
 
-.spotDeleteFormButtonDiv{ gap: 5px; }
-.confirmSpotDeleteModalDiv,.spotDeleteFormButtonDiv {
+.resourceDeleteFormButtonDiv{ gap: 5px; }
+.confirmResourceDeleteModalDiv,.resourceDeleteFormButtonDiv {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -365,7 +365,7 @@ label {
 /* END MODAL CSS */
 
 /* modal button colors/size */
-.confirmSpotDeleteModalP,.spotNoDeleteButton,.spotDeleteButton
+.confirmResourceDeleteModalP,.resourceNoDeleteButton,.resourceDeleteButton
 {
     width: 250px;
 }
@@ -379,7 +379,7 @@ label {
     margin-left: 4px;
 }
 
-.spotNoDeleteButton,
+.resourceNoDeleteButton,
 .manageSpotUpdateButton
 {
     background-color: var(--aaDarkGray);
@@ -388,7 +388,7 @@ label {
 
 .signupSubmit,
 .manageSpotDeleteButton,
-.spotDeleteButton
+.resourceDeleteButton
 {
     background-color: var(--aaRed);
     color: white;

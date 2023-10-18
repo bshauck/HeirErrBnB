@@ -8,8 +8,7 @@ Some differences Dan has agreed to:
         (no "average" for 0 review spots, just "New")
 
 
-=== BEGIN BUGS =====
-
+=== BEGIN REPORTED BUGS =====
 Sign up button doesn't handle valid email validation
     (no email is sent out; assumption is @ present makes it valid)
 
@@ -38,7 +37,7 @@ When looking at a site with no reviews; number of requests goes up with no stop
 ---AUTHENTICATION----
 When clicking "Sign up" button on the new user account form with errors in the form, it must show all error messages returned from the backend (similar to the following): "The provided email is invalid" or "Username must be unique".
 
-The only errors you can see from the backend are
+The only errors you can see from the backend are these 4:
     Please provide a valid email
     Email must be unique
     Username must be unique
@@ -48,7 +47,6 @@ There are many others, but they are all hidden by frontend checks
 The only way to see 2 from the backend simultaneously is
     Please provide a valid email
     Username cannot be an email
-
 These are two different validation fields. You cannot get a
 validation error PLUS a db error, because no db access is made
 if validation fails. You cannot get TWO db errors, because the
