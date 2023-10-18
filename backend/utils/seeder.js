@@ -127,12 +127,18 @@ function getRandomInt(min, max) {
 
 const previewURLs = [
 
-
-  "https://live.staticflickr.com/65535/53215558252_7d145ef3d7.jpg",
-  "https://live.staticflickr.com/65535/53218309946_91eefa43ca_z.jpg",
+  "https://live.staticflickr.com/460/18471339885_eea2365a8e_m.jpg",
+  "https://live.staticflickr.com/3469/3384339084_be3ffc410d_m.jpg",
+  "https://live.staticflickr.com/1083/532832223_2571019797_m.jpg",
+  "https://live.staticflickr.com/8236/8462057491_8391ce81f8_n.jpg",
+  "https://live.staticflickr.com/5081/5312115145_fb93185cff_m.jpg",
+  "https://live.staticflickr.com/4084/5188606619_10f976e39e_w.jpg",
+  "https://live.staticflickr.com/490/18743206263_ef51308d29_n.jpg",
+  "https://live.staticflickr.com/396/31859661355_e939e04391_n.jpg",
+  "https://live.staticflickr.com/56/179152787_255b507898_m.jpg",
+  "https://live.staticflickr.com/1738/42372284351_a25e5ff35c_n.jpg",
+  "https://live.staticflickr.com/1162/1421093738_480bc2d331_m.jpg",
   "https://live.staticflickr.com/65535/53219517230_a3d4edb8c2.jpg",
-  "https://live.staticflickr.com/65535/53216589804_ba0a1686de.jpg",
-  "https://live.staticflickr.com/65535/53218438651_c8ed53dcc2_m.jpg",
   "https://live.staticflickr.com/65535/53216245851_4f5b6e4cfd.jpg",
   "https://live.staticflickr.com/65535/53219667304_c87645c7a9_w.jpg",
   "https://live.staticflickr.com/65535/52936031382_f476c5a215.jpg",
@@ -141,7 +147,6 @@ const previewURLs = [
   "https://live.staticflickr.com/7147/6844429643_26403a8484_n.jpg",
   "https://live.staticflickr.com/677/19957157014_bd94958eb2_m.jpg",
   "https://live.staticflickr.com/2242/2044299449_2d258252ba_n.jpg",
-  "https://live.staticflickr.com/29/63352203_a8c1931428_n.jpg",
   "https://live.staticflickr.com/6021/6017298800_539c6f5456_n.jpg",
   "https://live.staticflickr.com/7833/47532037102_3a3228062f_m.jpg",
   "https://live.staticflickr.com/4548/38445993762_9253c699fa_n.jpg",

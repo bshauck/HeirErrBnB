@@ -16,7 +16,7 @@ function ReviewList({ spot }) {
             ref.current[spot.id] = dispatch(thunkReadAllReviews(spot.id))
           return;
       } else if (ref.current[spot.id]) delete ref.current[spot.id]
-    }, [reviewIds,dispatch, spot.id])
+    }, [reviewIds, dispatch, spot.id])
 
     // ok to have 0 reviews; may be new, etc.
     if (!Array.isArray(reviewIds)) {

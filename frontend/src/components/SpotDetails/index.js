@@ -1,5 +1,5 @@
 // frontend/src/components/SpotDetails/index.js
-import { useRef } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -10,7 +10,7 @@ import SpotDetailReviewArea from "../SpotDetailReviewArea";
 function SpotDetails() {
     const { id } = useParams();
     console.log("🚀 ~invoking SpotDetails ~ id:", id)
-    const ref = useRef({});
+    const [ref] = useState({current:{}});
     const spot = useSelector(state => state.spots.id[id])
     const imageIds = useSelector(state => state.spots.id[id]?.images)
     const dispatch = useDispatch();

@@ -1,5 +1,5 @@
 // frontend/src/components/SpotForm/index.js
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,7 +15,7 @@ function SpotForm ({spot, formType}) {
     const sessionUser = useSelector(state => state.session.user);
     const dispatch = useDispatch();
     const history = useHistory();
-    const attemptedSubmission = useRef(false);
+    const [attemptedSubmission] = useState({current: false});
     const [address, setAddress] = useState(spot?.address || '');
     const [city, setCity] = useState(spot?.city || '');
     const [state, setState] = useState(spot?.state || '');
@@ -31,7 +31,7 @@ function SpotForm ({spot, formType}) {
     const [errors, setErrors] = useState({});
     const isEdit = formType === "Update your Spot";
     let ownerId;
-    let title = useRef('AAA')
+    const [title, setTitle] = useState('AAA')
 
     if (!sessionUser) return null
     else ownerId = sessionUser.id;
@@ -109,8 +109,8 @@ function SpotForm ({spot, formType}) {
       setCity('Denver');
       setState('Colorado');
       setCountry('United States');
-      setName(title.current);
-      title.current=title.current+"a"
+      setName(title);
+      setTitle(prev => prev + "z");
       setDescription('This is exactly 30 characters.');
       setPrice(getRandomInt(50,1000).toString());
       setSupportUrl1(urls[1])
@@ -219,15 +219,15 @@ function SpotForm ({spot, formType}) {
     <h2>Liven up your spot with photos</h2>
     <p>Submit a link to at least one photo to publish your spot.</p>
     <input type="text" value={previewUrl} autoComplete="photo" placeholder="Preview Image URL" onChange={e => setPreviewUrl(e.target.value)} />
-    <p> </p><p className="error">{attemptedSubmission && errors.previewUrl && errors.previewUrl}</p>
+    <p> </p><p className="error">{attemptedSubmission.current && errors.previewUrl && errors.previewUrl}</p>
     <input type="text" value={supportUrl1} onChange={e=>setSupportUrl1(e.target.value)} autoComplete="photo" placeholder="Image URL" disabled={previewUrl === ''} />
-    <p className="error">{attemptedSubmission && errors.supportUrl1 && errors.supportUrl1}</p>
+    <p className="error">{attemptedSubmission.current && errors.supportUrl1 && errors.supportUrl1}</p>
     <input type="text" value={supportUrl2} onChange={e=>setSupportUrl2(e.target.value)} autoComplete="photo" placeholder="Image URL" disabled={previewUrl === ''} />
-    <p className="error">{attemptedSubmission && errors.supportUrl2 && errors.supportUrl2}</p>
+    <p className="error">{attemptedSubmission.current && errors.supportUrl2 && errors.supportUrl2}</p>
     <input type="text" value={supportUrl3} onChange={e=>setSupportUrl3(e.target.value)} autoComplete="photo" placeholder="Image URL" disabled={previewUrl === ''} />
-    <p className="error">{attemptedSubmission && errors.supportUrl3 && errors.supportUrl3}</p>
+    <p className="error">{attemptedSubmission.current && errors.supportUrl3 && errors.supportUrl3}</p>
     <input type="text" value={supportUrl4} onChange={e=>setSupportUrl4(e.target.value)} autoComplete="photo" placeholder="Image URL" disabled={previewUrl === ''}/>
-    <p className="error">{attemptedSubmission && errors.supportUrl4 && errors.supportUrl4}</p>
+    <p className="error">{attemptedSubmission.current && errors.supportUrl4 && errors.supportUrl4}</p>
     <hr></hr>
     </section>}
     <button className="spotFormSubmitButton" type="submit">{isEdit ? formType : "Create Spot"}</button>

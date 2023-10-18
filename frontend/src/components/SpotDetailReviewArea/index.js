@@ -1,5 +1,5 @@
 // frontend/src/components/SpotDetailReviewArea/index.js
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 
 import { thunkReadAllReviews, thunkReadAllUserReviews } from "../../store/reviews";
@@ -35,8 +35,8 @@ function SpotDetailReviewArea({ spot }) {
     in so you can determine (1) if ANY reviews exist for
     the spot, and (2) if so, does the user have one */
 
-    const userRef = useRef({});
-    const reviewRef = useRef({});
+    const [userRef] = useState({current:{}});
+    const [reviewRef] = useState({current:{}});
 
     if (!orderedReviews || !spotReviews) {
       if (!reviewRef.current[spot.id])
