@@ -18,15 +18,15 @@ function ReviewDeleteFormModal({ id, spotId }) {
   };
 
   return (
-      <>
-        <h1>Confirm Delete</h1>
-        <p>Are you sure you want to remove this review?</p>
+    <div className="confirmResourceDeleteModalDiv" >
+    <h2>Confirm Delete</h2>
+        <p ckassName="confirmResourceDeleteModalP" >Are you sure you want to remove this review?</p>
         <p className="errors">{errors.errors ? errors.errors : ""}</p>
-        <div className="reviewDeleteFormButtonDiv">
-            <button className="reviewDeleteButton" type="button" onClick={reviewYesDelete}>Yes (Delete Review)</button>
-            <button className="reviewNoDeleteButton" type="button" autoFocus onClick={closeModal}>No (Keep Review)</button>
+        <div className="resourceDeleteFormButtonDiv">
+            <button className="resourceDeleteButton" type="button" onClick={reviewYesDelete}>Yes (Delete Review)</button>
+            <button className="resourceNoDeleteButton" type="button" autoFocus onClick={closeModal}>No (Keep Review)</button>
         </div>
-      </>
+      </div>
   );
 }
 

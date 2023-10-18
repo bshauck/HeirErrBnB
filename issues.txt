@@ -62,7 +62,8 @@ Switch to Vite instead of CRA
 Change all READ items to GOT (past of GET)
 Make names more explicit (no "plain" ids)
 Figure out Render transfer approach
-
+Coalesce spot delete and review delete modals
+ (probably can put futureBookingDelete in there too, and review/spot Images)
 
 
 

@@ -1,12 +1,59 @@
 
 Last branch notes
 
-TUESDAY
-error message on Spot create for missing urls
-useMemo for non-dynamic portions of site (in header)
-changed most useRefs to const [ref] = useState({current:{}})
-(because of restriction on when you can read/write refs)
-Removed delapidated house pictures
+WEDNESDAY
+eventually coalesce delete spot/review modals;
+for now have class names the same for same CSS
+
+
+Delete Review
+Spot Details
+Review list
+bold prices and rating numbers on landing page
+Round edges of TileLists
+
+confirmSpotDeleteModalDiv
+.spotDeleteFormButtonDiv{ gap: 5px; }
+.confirmSpotDeleteModalDiv,.spotDeleteFormButtonDiv {
+.confirmSpotDeleteModalP,.spotNoDeleteButton,.spotDeleteButton
+
+h1
+p
+<errors
+reviewDeleteFormButtonDiv
+  reviewDeleteButton
+  reviewNoDeleteButton
+
+
+      <form className="createReviewForm" onSubmit={handleSubmit}>
+
+
+There is just one #modal
+#modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #modal-background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  #modal-content {
+    position: absolute;
+    background-color: white;
+  }
+
 
 
 test and check all interdependency reducers are correct
