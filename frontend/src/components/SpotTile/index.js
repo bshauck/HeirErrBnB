@@ -1,5 +1,5 @@
 // frontend/src/components/SpotTile/index.js
-import { useRef } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom/';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -12,7 +12,7 @@ const placeholderSrc = "https://placehold.co/200?text=Photo+needed&font=montserr
 
 function SpotTile ({spotId, spot, isManaged}) {
   console.log("🚀 rendering SpotTile ~ spotId, spot:", spotId, spot)
-  const ref = useRef({});
+  const [ref] = useState({current:{}});
   const stateSpot = useSelector(state => state.spots.id[spotId])
   const history = useHistory();
   const dispatch = useDispatch();

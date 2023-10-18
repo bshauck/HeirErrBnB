@@ -51,6 +51,9 @@ export const fetchData = (url, options) => {
   return csrfFetch(url, options)
     .then(response => response.ok
         ? response.json()
-        : response.json().then(err => err)) /* get detailed error info  */
+        : response.json().then(err => err.errors ? err :
+           (err.message
+            ? ({...err, "errors": {"system": err.message}})
+            : err )))
     .catch(systemicError => ({"errors": {"system": systemicError.message}}))
 }

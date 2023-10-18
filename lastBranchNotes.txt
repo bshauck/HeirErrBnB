@@ -1,11 +1,13 @@
 
 Last branch notes
 
-MONDAY
-added autoFocus to signup and login modal field
-tweaked seeders to have less repitition
-added more stack area to track 404 with favicon
-Most thunks in present tense; action creators in past
+TUESDAY
+error message on Spot create for missing urls
+useMemo for non-dynamic portions of site (in header)
+changed most useRefs to const [ref] = useState({current:{}})
+(because of restriction on when you can read/write refs)
+Removed delapidated house pictures
+
 
 test and check all interdependency reducers are correct
 
@@ -20,5 +22,6 @@ review slice correctly updated with delete/create; however:
 deleting spot should cascade in store and delete all associated
 reviews, bookings, spotImages,
 deleting review should cascade in store and delete all review images
+(DB handles auto)
 
 Check out create and edit spots; after getting Manage Spots

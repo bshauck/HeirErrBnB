@@ -257,13 +257,39 @@ label {
     font-weight: bold;
 }
 
+#root,manageSpotsDiv {
+    display: grid;
+    width: 100vw;
+}
+
+.manageSpotsHeaderDiv {
+    margin-left: 22px;
+    margin-bottom: 20px;
+}
+
+.createManageSpotButton {
+    margin-top: 10px;
+}
+
+.manageSpotUpdateButton {
+    margin-right: 10px;
+}
+
 .spotListDiv {
-    display: flex ;
-    flex-wrap: wrap ;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 24px;
+    row-gap: 40px;
+    justify-self: center;
+    width: 90%;
+    margin-bottom: 30px;
 }
 
 .tileDiv {
+    row-gap: 0.6em;
+    display: flex;
     width: fit-content;
+    flex-direction: column;
 }
 
 
@@ -372,8 +398,13 @@ i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
 }
 
 .spotTileImg {
-    height: 240px;
-    width: 240px;
+    height: 60vh;
+    width: 80vw;
+    max-height: 290px;
+    max-width: 300px;
+    min-height: 180;
+    min-width: 200;
+
 }
 
 .tileLocationAndRatingDiv {

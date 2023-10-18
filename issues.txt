@@ -1,6 +1,4 @@
 
-
-
 ISSUES
 Figure out default image sizes and layout
 Use placeholders when users have not contributed enough images
@@ -64,3 +62,9 @@ Switch to Vite instead of CRA
 Change all READ items to GOT (past of GET)
 Make names more explicit (no "plain" ids)
 Figure out Render transfer approach
+
+
+
+
+
+It looks like the big issue for me is useRef()--other than top-level initialization--should only be read/written in effects and event handlers; the ref shouldn't be accessed--even read(!)--in the rest of top-level code. (Although it currently works; docs warn against relying on that.) So; I'll actually have to use useState() the "wrong" way, as a useRef, to be able to access a ref outside of those areas. But as I said, doing const [ref] = useState({current:{}}) and only doing ref.current[key] = value will avoid doing rerenders, but keep info across renders. When I have time for more API changes (I've done quite a few, as well as redoing my store shape hugely), then I will be able to do useEffect with useRef without feeling like everything will cause useless rerenders. (The main reason I'm doing this is to avoid unnecessary duplications of db calls; which more correctly should probably be done with the '...loading' notion strewn throughout the store; although perhaps a separate slice that is just about attempted db calls is cleaner.) The challenge when thinking of an approach scaling to huge numbers of data is that you cannot use, say, something that "looks at all spots"; so you really need things that just get a small set of ids and then be dependent on changes to a small number of spots; not on all of them. But to do that, you need to know the ids for that number to register the correct small interests.

@@ -1,5 +1,5 @@
 // frontend/src/components/Navigation/index.js
-import React from 'react';
+import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
@@ -9,13 +9,18 @@ import ProfileButton from './ProfileButton';
 
 function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
-
-  return (
-    <header>
+  const memoizedLogoDiv = useMemo(() => {
+    return (
       <div className="logoDiv">
         <NavLink className="logoLink2" exact to="/"><img width="32" height="32" src="https://img.icons8.com/color/32/mansion.png" alt="mansion"/></NavLink>
         <NavLink className="logoLink" exact to="/">HeirErrBnB</NavLink>
       </div>
+    )
+  }, []);
+
+  return (
+    <header>
+      {memoizedLogoDiv}
         {isLoaded && (
           <ProfileButton user={sessionUser} />
         )}

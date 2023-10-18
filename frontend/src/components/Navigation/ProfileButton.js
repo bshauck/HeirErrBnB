@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 
@@ -11,13 +11,10 @@ import SignupFormModal from '../SignupFormModal';
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
-  const ulRef = useRef();
+  const ulRef = useRef(null);
   const history = useHistory();
 
-  const openMenu = () => {
-    if (showMenu) return;
-    setShowMenu(true);
-  };
+
 
   useEffect(() => {
     if (!showMenu) return;
@@ -49,23 +46,19 @@ function ProfileButton({ user }) {
     history.push("/spots/current");
   };
 
-  function handleCreateClick() {
-         history.push("/spots/new")
-  }
+
 
   const createButtonClassName = "createSpotButton" + (user ? "" : " hidden");
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-
-        <div className="navMenuDiv">
-         <button type="button" className={createButtonClassName} onClick={handleCreateClick}>Create a New Spot</button>
-         <button className="profileButton" onClick={openMenu}>
-           <i className="fas fa-bars"></i>
-           <i className="fas fa-user-circle" />
-         </button>
-       </div>
-
-  return (
-    <>
+  const memoizedNavMenuDiv = useMemo(() => {
+    function handleCreateClick() {
+      history.push("/spots/new")
+    }
+    const openMenu = () => {
+      if (showMenu) return;
+      setShowMenu(true);
+    }
+    return (
       <div className="navMenuDiv">
         <button type="button" className={createButtonClassName} onClick={handleCreateClick}>Create a New Spot</button>
         <button className="profileButton" onClick={openMenu}>
@@ -73,6 +66,12 @@ function ProfileButton({ user }) {
           <i className="fas fa-user-circle" />
         </button>
       </div>
+      )
+  }, [createButtonClassName, history, showMenu]);
+
+  return (
+    <>
+      {memoizedNavMenuDiv}
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>

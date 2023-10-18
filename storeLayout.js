@@ -6,7 +6,6 @@ new STORE layout (except since users cannot be deleted, and all
 
    {
      session: CD Spot user.spot, CD Review,
-     users: // session signup creates
      spots:  // landing, details, CUD Spot
      reviews: // from all reviews for spot/user; CUD Review
    //  bookings: // TODO
@@ -16,8 +15,8 @@ new STORE layout (except since users cannot be deleted, and all
    */
    /* session */ /*
   {
-    user: user || null
-    id: // normalized users
+    user: current user || null
+    id: // normalized user info
     {
      [userId]:
        { // partial from review reads

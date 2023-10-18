@@ -1,22 +1,5 @@
 As you address things, update lastBranchNotes.text
 
-
-
-
-
-Current issue: display Spot detail.
-Reviews not set. Why?
-What sets reviews: only allreviews by spot/user. So for spot details, spot. But, also need them for user IF spot has more than 0, so can easily determine if a given spot has already had a review by this user. So, MAY need both run. How can we tell if we need it?
-    If state.spots[spot.id]?.numReviews undefined/null (0 ok) then haven't read spot reviews start that.
-    If state.session.user?.reviews is undefined then haven't looked for user reviews.
-
-
-Ensure app runs in dev mode with new store and Spot, Review and SpotImage changes with new migrations/seeds.
-
-Then focus on MVP issues.
-
-
-
 Wireframe:
 https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-16/AirBnB+MVP+Wireframes.pdf
 
@@ -34,8 +17,9 @@ LOW
 1. Sometimes going from the manage spots page to the home page results in a bug going_from_the_manage_spots_to_the_home_page_sometimes_results_in_a_bug
 
 SPECS NOT passing
-AUTHME
+AUTHENTICATION
 When clicking "Sign up" button on the new user account form with errors in the form, it must show all error messages returned from the backend (similar to the following): "The provided email is invalid" or "Username must be unique".
+
 APPLICATION
 NOT UP TO Wireframe
   Landing page --The css does not fully match what's expected from the wireframes. An example is the gap between each spot.

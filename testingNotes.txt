@@ -1,0 +1,112 @@
+Some differences Dan has agreed to:
+    Prices are whole integers
+    Avg Ratings are shown in fixed pt 1 if
+        2nd decimal is 0; else fixed pt 2
+    "Extra" create spot button on Manage Spots
+        page doesn't have to disappear/disable
+    Score card 19 doesn't make sense; 15 applies
+        (no "average" for 0 review spots, just "New")
+
+
+=== BEGIN BUGS =====
+
+Sign up button doesn't handle valid email validation
+    (no email is sent out; assumption is @ present makes it valid)
+
+Single Spot page seems to break on unsuccessful sign up
+    Spot Details page doesn't break now
+
+Avg rating on home/details page doesn't match manage spots
+    All review numbers/ratings are consistent
+
+Unable to create review on new spot
+    Can create reviews on new spots
+
+Unable to update spot
+    Can update a spot
+
+Going from Manage Spot to Home page sometimes has bug
+    No bugs going to home page
+
+When looking at a site with no reviews; number of requests goes up with no stop
+    Unsure what "requests" are, but no strangeness occurs now when looking a spots without reviews
+
+===== END BUGS =====
+
+==== BEGIN SCORE CARD ITEMS (CSS at END)===
+
+---AUTHENTICATION----
+When clicking "Sign up" button on the new user account form with errors in the form, it must show all error messages returned from the backend (similar to the following): "The provided email is invalid" or "Username must be unique".
+
+The only errors you can see from the backend are
+    Please provide a valid email
+    Email must be unique
+    Username must be unique
+    Username cannot be an email
+
+There are many others, but they are all hidden by frontend checks
+The only way to see 2 from the backend simultaneously is
+    Please provide a valid email
+    Username cannot be an email
+
+These are two different validation fields. You cannot get a
+validation error PLUS a db error, because no db access is made
+if validation fails. You cannot get TWO db errors, because the
+db only sends one back at a time.
+    to generate first, avoid @ in email;
+    to generate 2nd, put @ in username
+So, example of email is invalid plus unique username could
+never happen, as that combines validation with db error.
+---END AUTHENTICATION---
+
+---BEGIN APPLICATION (GOTO END FOR CSS/WIREFRAMES)----
+
+Callout box on right
+
+---
+
+Review list with 1 item uses "Review" not "Reviews"
+
+---
+
+"Be the first to post a review" comes up correctly
+
+---
+
+"Post Your Review" button comes up correctly
+
+---
+
+Manage Spots shows correct number of reviews and average
+
+---
+
+Updating Spot works
+
+---
+
+Updating Spot works, again
+
+-----------------------
+=========== CSS/Wireframe =============
+
+*Landing Page (gap mentioned specifically)
+
+-----
+
+Spot Details
+
+-----
+
+Post a Review
+
+-----
+
+*Manage Spots
+
+-----
+
+Delete a Review
+
+---BEGIN APPLICATION (GOTO END FOR CSS/WIREFRAMES)----
+====================================================
