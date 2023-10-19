@@ -7,6 +7,14 @@ Some differences Dan has agreed to:
     Score card 19 doesn't make sense; 15 applies
         (no "average" for 0 review spots, just "New")
 
+Some additional differences:
+    Progress cursor during DB access
+    Some tiles have curved corners instead of sharp
+    Spots have a requirement for a unique names
+    There are 12 pre-existing users besides Demo Lition.
+    Their usernames are firstlast all lowercase, same for password. E.g., anthonylovern/anthonylovern;jondiez/jondiez.
+    There are 30 generated spots, and a random number of reviews
+    on each spot.
 
 === BEGIN REPORTED BUGS =====
 Sign up button doesn't handle valid email validation
@@ -16,7 +24,7 @@ Single Spot page seems to break on unsuccessful sign up
     Spot Details page doesn't break now
 
 Avg rating on home/details page doesn't match manage spots
-    All review numbers/ratings are consistent
+    All review numbers/ratings should be consistent
 
 Unable to create review on new spot
     Can create reviews on new spots
@@ -88,7 +96,7 @@ Updating Spot works, again
 -----------------------
 =========== CSS/Wireframe =============
 
-*Landing Page (gap mentioned specifically)
+Landing Page (gap mentioned specifically)
 
 -----
 
@@ -100,11 +108,11 @@ Post a Review
 
 -----
 
-*Manage Spots
+Manage Spots
 
 -----
 
 Delete a Review
 
----BEGIN APPLICATION (GOTO END FOR CSS/WIREFRAMES)----
+---END APPLICATION (CSS/WIREFRAMES)----
 ====================================================
