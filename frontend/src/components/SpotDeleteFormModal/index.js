@@ -24,7 +24,7 @@ function SpotDeleteFormModal({ id }) {
         <p className="errors">{errors.errors ? errors.errors : ""}</p>
         <div className="resourceDeleteFormButtonDiv">
             <button className="resourceDeleteButton" type="button" onClick={spotYesDelete}>Yes (Delete Spot)</button>
-            <button className="spotNoDeleteButton" type="button" onClick={closeModal}>No (Keep Spot)</button>
+            <button className="resourceNoDeleteButton" type="button" onClick={closeModal}>No (Keep Spot)</button>
         </div>
       </div>
   );

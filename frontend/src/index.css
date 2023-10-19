@@ -472,7 +472,9 @@ label {
 /* END MODAL CSS */
 
 /* modal button colors/size */
-.confirmResourceDeleteModalP,.resourceNoDeleteButton,.resourceDeleteButton
+.confirmResourceDeleteModalP,
+.resourceNoDeleteButton,
+.resourceDeleteButton
 {
     width: 250px;
 }
