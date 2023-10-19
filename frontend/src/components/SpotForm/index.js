@@ -75,10 +75,10 @@ function SpotForm ({spot, formType}) {
           spot = await dispatch(thunkFunc(spot, {urls}))
           } else {
             if (!spot.avgRating) {spot.numReviews=0; spot.avgRating=null; spot.reviews=[];};
-            await dispatch(thunkFunc(spot));
+            spot = await dispatch(thunkFunc(spot));
           }
           if (spot.errors) {
-            setErrors({errors: spot.errors})
+            setErrors({...spot.errors})
           } else if (spot.id) {
             /*success case*/
             attemptedSubmission.current = false;
@@ -99,7 +99,7 @@ function SpotForm ({spot, formType}) {
       return false;
     }
 
-    // const isDevelopment = process.env.NODE_ENV !== 'production';
+    const isDevelopment = process.env.NODE_ENV !== 'production';
 
     function defaultFillSpot() { /* TODO to be removed before final */
       /* takes too long to fill out a form each time so in dev have a button */
@@ -123,7 +123,7 @@ function SpotForm ({spot, formType}) {
   <div className='spotFormDiv'>
   <form className="spotForm" onSubmit={handleSubmit} >
     <div className="innerSpotFormDiv">
-    <h1>{formType}</h1> <button type="button" onClick={defaultFillSpot}>DEFAULT</button>
+    <h1>{formType}</h1> {isDevelopment && <button type="button" onClick={defaultFillSpot}>DEFAULT</button>}
     <p className="error">{errors.errors?`Errors: ${errors.errors}`:""}</p>
     <section className="createSpotSection1">
     <h2>Where's your place located?</h2>
@@ -214,6 +214,7 @@ function SpotForm ({spot, formType}) {
     {attemptedSubmission && errors.price && <p className="error">{errors.price}</p>}
     <hr></hr>
     </section>
+    <div className='justToCenterSubmitButtonDiv'>
     {isEdit !== true &&
     <section className="createSpotSection5">
     <h2>Liven up your spot with photos</h2>
@@ -231,6 +232,7 @@ function SpotForm ({spot, formType}) {
     <hr></hr>
     </section>}
     <button className="spotFormSubmitButton" type="submit">{isEdit ? formType : "Create Spot"}</button>
+    </div>
     </div>
   </form>
   </div>

@@ -106,8 +106,6 @@ const spotImagesReducer = (state = initialState, action) => {
       const normalized = {}
       spotImages.forEach(i => normalized[i.id] = i)
       const keys = Object.keys(normalized)
-      console.log("🚀 ~ spotImagesReducer ~ keys:", keys)
-      console.log("🚀 ~ spotImagesReducer ~ normalized:", normalized)
       if (keys.every(k => k in state.id)) return state
       newState = {...state}
       newState.id = {...state.id, ...normalized}

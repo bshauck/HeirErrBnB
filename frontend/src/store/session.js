@@ -175,14 +175,11 @@ const sessionReducer = (state = initialState, action) => {
       return newState
     }
     case DELETED_REVIEW: {
-      console.log("delReview action.payload", action.payload)
       newState.user = {...state.user}
       const index = state.reviews.indexOf(action.payload.reviewId)
-      console.log("delReview index, reviews", index, state.reviews)
       if (index === -1) return state;
       newState.reviews = newState.user.reviews = [...state.reviews]
       newState.reviews.splice(index, 1)
-      console.log("new reviews", newState.reviews)
       return newState
     }
     case CREATED_REVIEW: {

@@ -8,7 +8,6 @@ import { thunkReadAllUserSpots } from '../../store/spots';
 import SpotTile from '../SpotTile';
 
 const ManageSpots = () => {
-    console.log("invoking ManageSpots ")
     const user = useSelector(state => state.session.user);
     const spotIds = useSelector(state => state.session.spots)
     const dispatch = useDispatch();
@@ -23,8 +22,6 @@ const ManageSpots = () => {
     function handleCreateClick() {
         history.push("/spots/new")
     }
-
-    console.log("rendering ManageSpots ")
 
     return (
         <>

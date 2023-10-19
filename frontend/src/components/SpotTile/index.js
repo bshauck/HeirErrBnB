@@ -11,7 +11,6 @@ import { thunkReadSpot } from '../../store/spots';
 const placeholderSrc = "https://placehold.co/200?text=Photo+needed&font=montserrat"
 
 function SpotTile ({spotId, spot, isManaged}) {
-  console.log("🚀 rendering SpotTile ~ spotId, spot:", spotId, spot)
   const [ref] = useState({current:{}});
   const stateSpot = useSelector(state => state.spots.id[spotId])
   const history = useHistory();

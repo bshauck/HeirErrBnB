@@ -168,7 +168,6 @@ export const thunkReadAllSpots = () => async dispatch => {
   return answer.Spots
 }
 
-
 export const thunkReadAllUserSpots = () => async dispatch => {
   const url = '/api/spots/current'
   const answer = await fetchData(url)
@@ -177,11 +176,6 @@ export const thunkReadAllUserSpots = () => async dispatch => {
 }
 
 export const thunkReadSpot = id => async dispatch => {
-  console.log("thunkreadspot id", id)
-  if (typeof id === 'object')
-  console.log("🚀 ~ thunkReadSpot ~values of id:", Object.values(id) )
-  else if (typeof id === 'undefined') throw new Error('eek')
-
   const url = `/api/spots/${id}`
   const answer = await fetchData(url)
   if (!answer.errors) dispatch(readSpot(answer))
@@ -223,15 +217,10 @@ export const thunkDeleteSpot = id => async dispatch => {
 /* TODO eventually it should be wrapped in a transaction and
 rolled back if errors in either spot or image creations */
 export const thunkCreateSpot = (spot, urls) => async dispatch => {
-  const { ownerId, address, city, state, country, lat, lng, name, description, price, previewUrl } = spot;
   const url = `/api/spots`
   const options = {
     method: "POST",
-    headers: jsonHeaderContent,
-    body: JSON.stringify({
-      ownerId, address, city, state, country, lat, lng,
-      name, description, price, previewUrl
-  })
+    body: JSON.stringify(spot)
   }
   const answer = await fetchData(url, options)
   if (!answer.errors) {
@@ -288,7 +277,6 @@ const spotsReducer = (state = initialState, action) => {
         newState = {...state}
         newState.id = {...state.id}
         if (Object.keys(state.id).length > action.payload.length) {
-        console.log("updating spots from user spots: spot#, userspot#", Object.keys(state.id).length, action.payload.length)
           action.payload.forEach(s => newState.id[s.id] = {...state.id[s.id], ...s})
         }
         return newState;
@@ -329,10 +317,7 @@ const spotsReducer = (state = initialState, action) => {
       const {reviewId, spotId} = action.payload
       const reviews = [...state.id[spotId].reviews]
       const index = reviews.indexOf(reviewId)
-      if (index === -1) {
-        console.log("FAILED to find review to deleete in spot; reviewId, spotId", reviewId, spotId);
-        return state
-      }
+      if (index === -1) return state
       reviews.splice(index, 1)
       newState = {...state}
       newState.id = {...state.id}
@@ -343,7 +328,6 @@ const spotsReducer = (state = initialState, action) => {
       const {review} = action.payload
       const spotId = review.spotId
       const spot = state.id[spotId]
-      console.log("🚀 ~ spotsReducer ~ review, spotId, spot:", review, spotId, spot)
       const reviews = [review.id, ...spot.reviews]
       newState = {...state}
       newState.id = {...state.id}

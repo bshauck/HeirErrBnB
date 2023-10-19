@@ -2,65 +2,35 @@
 Last branch notes
 
 WEDNESDAY
-eventually coalesce delete spot/review modals;
-for now have class names the same for same CSS
-
-
-Delete Review
-Spot Details
-Review list
+adjusted header sizing
+tweaked fetches
+many adjustments on spot details and review list
 bold prices and rating numbers on landing page
+sizing of star rating in review list header
+Post Review button color
+All Managed Spot button colors
+centered create/updateSpot button and colorized
+remove defaultButton on create/updateSpot in production
+checked css values for spotTileImage
+Submit Review button color
+larger font size in logo header
+Removed frontend console.logs
+Bug with displaying new error (require unique Spot titles)
 Round edges of TileLists
-
-confirmSpotDeleteModalDiv
-.spotDeleteFormButtonDiv{ gap: 5px; }
-.confirmSpotDeleteModalDiv,.spotDeleteFormButtonDiv {
-.confirmSpotDeleteModalP,.spotNoDeleteButton,.spotDeleteButton
-
-h1
-p
-<errors
-reviewDeleteFormButtonDiv
-  reviewDeleteButton
-  reviewNoDeleteButton
+check created Spots with less than 4 support images use
+  placeholders
+Some round edges of spot details
 
 
-      <form className="createReviewForm" onSubmit={handleSubmit}>
 
+better spacing for signup/login
+more console.logs to remove
 
-There is just one #modal
-#modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #modal-background {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-  }
-
-  #modal-content {
-    position: absolute;
-    background-color: white;
-  }
-
+Left edge of Manage Spots not same as Landing page
 
 
 test and check all interdependency reducers are correct
 
-spot not updated with create (but was with delete)
-session.reviews still has deleted review key; does NOT have created review key
-read spot reviews didn't corrrectly update spotLatest
 check every App start page for doing browser refresh and handling no current state information
 
 remove redundant user session settings (just depend on user object setting: reviews, spots, bookings)
@@ -70,5 +40,3 @@ deleting spot should cascade in store and delete all associated
 reviews, bookings, spotImages,
 deleting review should cascade in store and delete all review images
 (DB handles auto)
-
-Check out create and edit spots; after getting Manage Spots
