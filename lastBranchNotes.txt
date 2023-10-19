@@ -2,24 +2,6 @@
 Last branch notes
 
 WEDNESDAY
-adjusted header sizing
-tweaked fetches
-many adjustments on spot details and review list
-bold prices and rating numbers on landing page
-sizing of star rating in review list header
-Post Review button color
-All Managed Spot button colors
-centered create/updateSpot button and colorized
-remove defaultButton on create/updateSpot in production
-checked css values for spotTileImage
-Submit Review button color
-larger font size in logo header
-Removed frontend console.logs
-Bug with displaying new error (require unique Spot titles)
-Round edges of TileLists
-check created Spots with less than 4 support images use
-  placeholders
-Some round edges of spot details
 
 
 
