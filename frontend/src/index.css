@@ -65,6 +65,12 @@ table {
 
 /* end of Eric Meyer's reset */
 
+body {
+    margin-left: 2vw;
+    margin-right: 5 vw;
+}
+
+header {margin-right:10 vw; margin-left: 0}
 /* add progress cursor during db access */
 body.waiting * {
     cursor: progress !important;
@@ -77,8 +83,8 @@ header { /* all from css guidelines AA open */
     border-bottom: 2px solid lightgrey ;
     width: 100% ;
     height: 60px ;
-    padding-left: 20px ;
-    padding-right: 20px ;
+    /* padding-left: 20px ;
+    padding-right: 20px ; */
 }
 
 .logoDiv {
@@ -624,6 +630,7 @@ i,button,.spotTileImg,.profileMenuItem.littleProfileMenuItem {
 }
 
 .tileReviewTextDiv {
+    width: 90%;
     margin-bottom: 6vh;
 }
 
