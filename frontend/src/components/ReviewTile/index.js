@@ -9,7 +9,6 @@ function ReviewTile({ reviewId }) {
   const user = useSelector(state => state.session.user)
 
   if (!review) return null;
-  else console.log("🚀 ~ ReviewTile ~ review:", review)
 
 function handleDeleteClick() {}
 
@@ -26,7 +25,6 @@ return (
     <div className="tileReviewTextDiv" >{review.commentary}</div>
     {user && review.userId === user.id && <OpenModalButton
       buttonText="Delete"
-      className="deleteReviewButton"
       onButtonClick={handleDeleteClick}
       // onModalClose={??}
       modalComponent={<ReviewDeleteFormModal id={review.id} spotId={review.spotId}/>}

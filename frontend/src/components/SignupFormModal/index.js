@@ -31,7 +31,6 @@ function SignupFormModal() {
           closeModal();
         }
         else {
-          console.log(res.errors) ;
           throw res
         }
       })

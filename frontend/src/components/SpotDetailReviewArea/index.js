@@ -13,13 +13,11 @@ import StarRating from "../StarRating";
 * button; so have to get reviewsBySpot
 */
 function SpotDetailReviewArea({ spot }) {
-  console.log("Starting render for review area on spot: ", spot.id)
     const user = useSelector(state => state.session.user);
     const userReviews = useSelector(state => state.session.reviews);
     const spotReviews = useSelector(state => state.spots.id[spot.id].reviews);
     const orderedReviews = useSelector(state => state.reviews.spotLatest[spot.id])
     const dispatch = useDispatch();
-    console.log("userRevlen,spotRevlen,orderedLen; ", userReviews?.length, spotReviews?.length, orderedReviews?.length);
     let mayPost = false;
     let mayPostNoReviews = false;
 
@@ -54,30 +52,23 @@ function SpotDetailReviewArea({ spot }) {
       } else if (Array.isArray(user.reviews))
         if (userRef.current[user.id]) delete userRef.current[user.id]
 
-      console.log("🚀 ~ SpotDetailReviewArea ~ user:", user)
-      console.log("🚀 ~ SpotDetailReviewArea ~ spot:", spot)
-      console.log("reviews: user, spot", userReviews, spotReviews)
 
-
-        console.log("userrevs", userReviews)
-        console.log("spotrevs", spotReviews)
         mayPost = !spotReviews.length || !userReviews || !userReviews.length || userReviews.every(urev => !spotReviews.includes(urev));
         mayPostNoReviews = mayPost && !spotReviews.length;
     }}
-    console.log("🚀 ~  mayPost, noReviews:", mayPost, mayPostNoReviews)
 
     return (
       <div className="spotDetailReviewAreaDiv">
-        <div className="reviewListStarRatingHeaderDiv"><StarRating avgRating={spot.avgRating} numReviews={spot.numReviews} /></div>
+        <div className="reviewListStarRatingHeaderDiv"><StarRating className="reviewListStarRating" avgRating={spot.avgRating} numReviews={spot.numReviews} /></div>
         {mayPost &&
           <OpenModalButton
             buttonText="Post Your Review"
             onButtonClick={handlePostClick}
             modalComponent={<ReviewFormModal spot={spot} userId={user.id} />}
           />}
-        {mayPostNoReviews &&
-            <div className="beTheFirstDiv">Be the first to post a review!</div>}
-        <ReviewList reviews={orderedReviews} spot={spot}  />
+        {(mayPostNoReviews &&
+            <div className="beTheFirstDiv">Be the first to post a review!</div>) ||
+        <ReviewList reviews={orderedReviews} spot={spot}  />}
       </div>
     )
 }

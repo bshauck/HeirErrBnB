@@ -37,15 +37,12 @@ function SpotList () {
     const refKey = "firstSpotRead"
     const pageSize = 25;
 
-    console.log("🚀 invoking SpotList ~ spots:", spots)
-
     /* always have a full page of spots (can lose on browser refresh) */
     if (!spots || Object.values(spots).length < pageSize) {
         if (!ref.current[refKey]) ref.current[refKey] = dispatch(thunkReadAllSpots())
         return null;
     } else if (ref.current[refKey]) delete ref.current[refKey]
 
-    console.log("rendering SpotList")
     return (
         <div className="spotListDiv">
           {Object.values(spots).map(s => (

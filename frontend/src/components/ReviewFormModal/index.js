@@ -16,7 +16,6 @@ function ReviewFormModal({spot, userId}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("create review; stars/nStars origStars type/Numbered type", stars, Number(stars), typeof stars, typeof Number(stars))
     await dispatch(thunkCreateReview({
       spotId,
       userId,
