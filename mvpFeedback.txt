@@ -1,4 +1,4 @@
-As you address things, update lastBranchNotes.text
+As you address things, update lastBranchNotes.text  qa
 
 Wireframe:
 https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-16/AirBnB+MVP+Wireframes.pdf
