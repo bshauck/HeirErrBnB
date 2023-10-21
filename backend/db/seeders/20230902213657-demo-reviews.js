@@ -22,7 +22,7 @@ module.exports = {
     // generate 1-10 reviews by non-owners;
     const generatedReviews = [];
     for (const spot of spots) {
-      const numReviews = getRandomInt(1,3); /* TODO change back to 10 */
+      const numReviews = getRandomInt(1,10);
       const filteredIds = userIds.filter(id => id !== spot.ownerId);
       const startIndex = getRandomInt(0, filteredIds.length-(numReviews+1));
       const spotId = spot.id;

@@ -2,14 +2,31 @@
 Last branch notes
 
 WEDNESDAY
-
+Similar page layout for all main pages (ManageSpots, SpotList,
+SpotDetails)
+header line goes ALL the way across
+changed css approach for closer wireframe emulation
+handle spot details click on entire tile, wtihout interfering
+  with Manage Spots update/delete buttons (before just img)
 
 
 better spacing for signup/login
 more console.logs to remove
+drop shadow for login on modal
+change color for disabled login to white back black fore, then
+  to red back, white fore when active
+  (probably true for all red buttons is disabled)
+  drop shadow also changes to grey from black
+color seems bluish for many text items
+better line up on Spot Details page
+better spacing on create form
 
-Left edge of Manage Spots not same as Landing page
 
+
+colors for default Airbnb page
+(247,247,247) main background
+border color (221,221,221)
+input color rgb(84, 84, 84)
 
 test and check all interdependency reducers are correct
 
