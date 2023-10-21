@@ -44,10 +44,12 @@ function SpotList () {
     } else if (ref.current[refKey]) delete ref.current[refKey]
 
     return (
-        <div className="spotListDiv">
-          {Object.values(spots).map(s => (
-              <SpotTile key={s.id} spotId={s.id} spot={s} isManaged={false} />
-          ))}
+        <div className="outerSpotListDiv">
+            <div className="spotListDiv">
+                {Object.values(spots).map(s => (
+                    <SpotTile key={s.id} spotId={s.id} spot={s} isManaged={false} />
+                ))}
+            </div>
         </div>
     );
 }

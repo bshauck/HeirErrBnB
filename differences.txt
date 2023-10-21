@@ -1,0 +1,87 @@
+Target site is airbnb.com
+
+There's some significant differences between T (target) and AA (wireframce/csss style guidelines/score card), and as much as possible I'd like to err on the side of T, because future reviewers / recruiters are going to know nothing of AA, but will know T. (I recognize that for the project grading, some things have to remain despite this.) This file will list differences, and note any thing I have had approved that is different from AA and who approved it, and what things are still different but will require change post project evaluation, and what things I haven't gotten to (or won't ever get to). Things that are like the target site are marked (T); things that aren't (T) but need to be a certain way because of the project are (AA); thinga that are changed from AA not because of T but just logic/reasonableness/lack of ability to have 3rd-party wireframe updates or in-house curriculum changes are marked (R). Some things are just to aid testing/development, like current amount of seeding entitites (S).
+
+Some differences Dan has agreed to:
+    There were several "wrong" status codes in the API for Mod 4 which weren't allowed to be changed for the offical testing, but now have been. The wrong code was 500 (internal server error; for situations detected and reported!), which have been changed to what they "should" be: two were from db constraint violations: uniqueness of email and username, which now have a status code of 400; and one was for when a user has a review for a site and attempts to create a second one, which now has a code of 403. There were 7 POSTs in the original API, and only 2 of those (of the 6 which created new rows in tables) returned a status code of 201; all the rest were 200. The other 4 which create new rows now return 201. (R)
+    Prices are whole integers (T)
+    No comma between Firstname and Lastname on Spot Details page (score card application #8) (R)
+    Just "Demo User" instead of "Log in as Demo User" (R)
+    Avg Ratings are shown in fixed pt 1 if 2nd decimal is 0; else fixed pt 2 (T)
+    "Extra" create spot button on Manage Spots page doesn't have to disappear/disable (R)
+    I removed mod 4 API restriction of disallowing owners booking their own spots; that is the perfect way to implement host ability to restrict booking dates for guests; just the app would recognize it and not bill the owner for staying at their own place, nor allow reviews based on this "booking."
+    Score card 19 doesn't make sense; 15 applies
+        (no "average" for 0 review spots, just "New") (R) [BUT don't forget to actually go change score card 19 text please]
+    Clarified scorecard application #47: "button is disabled when fewer than 10 characters in the comment text area AND when the star rating input has no stars selected" and is ambiguous in printed English, so this should either be broken into two items, or use OR (or AND ALSO WHEN) instead of AND which clarifies. (In spoken English, we use other words, or EMPHASIZE "and" so that listeners know we mean AND ALSO WHEN; as printed, if both conditions are not met, it would not be disabled.) (R)
+    Typos noted for Airbnb scorecard items which Dan agreed to, but so they don't get lost and actually happen sometime:
+    (authentication; the rest are application) #10: "... disabled ANYTIME the username..." turn "anytime" into "any time" (R)
+    #1: "...there are no review for..." change to either "there are no reviews for" or "there is no review for"
+    #27: ...a caption of "Guests will only get your exact address once they BOOKED a reservation."... ==> EITHER "once they have booked" OR "once they book"
+    #52: "...shows the THE list..." remove 2nd "the"
+    Airbnb project scorecard authentication items #18, #29; application item #1: for all three items, change ALL of "I should [be able to] see a" to just "have a" [only places using first person in document]
+
+Some additional differences:
+    Review review column renamed "commentary" (R)
+    Spot description / Review commentary column datatype text [unlimited], not varchar(255) (T)
+    Spot price column datatype integer, not decimal(6,2) (T)
+    Progress cursor during DB access (R)
+    Some tiles have curved corners instead of sharp (all landing page tiles; 3 of the spot detail images) (T)
+    Spots have a requirement for unique names (R)
+    There are 12 pre-existing users besides Demo Lition. (S)
+     [Their usernames are firstlast all lowercase, same for password. E.g., anthonylovern/anthonylovern;jondiez/jondiez.]
+    There are 30 generated spots, and a random number of reviews on each spot. (S) [Dan suggested 100-1000 generated items for seed values, which I have for reviews and bookings, but not for Spots/Images/Users yet.]
+
+Items for approval:
+    CSS style guidelines say default font-size is 10pt, but T uses 14px. Especially noticeable on login/signup.
+
+Questions: why does fixed position with no settings cause item to come up in initial containing box, but adding settings (top, right, etc) cause it to change to the root containing box instead?
+
+I memoized both the logo area, and the profile button araa; but the logo area shows redrawing on every page change, while the other doesn't. Neither of these change visually (although the profile button does have a drop-down-menu-contained-UL whose LIs will change on login/out). This happens even on browser button forward/back.
+
+
+Post-evaluation immediate changes [all (T)}
+    No Review Images (so won't waste time with any implementation for them)
+    Image types not limited to 2 (or 3 filename extensions: png, jpg, jpeg)
+    City, State are bolded under spot tiles
+    Only show first names, so remove Host last name from Spot details
+    Do not use the word "Spot" anywhere
+    No "Hello, " in menu
+    No "Be the first to post a review!" (hugely different approach to reviews: you have to have a booking, and have started it, before you can place a review. Only one review PER BOOKING, so if you book again, you can place another review; NOT only 1 review per guest/location combo. Hosts place a review of the guest staying, and the two reviews are released together, AND CAN NEVER BE EDITED; although hosts have a chance to respond to each review, which is also placed with the review AND NEVER EDITED.)
+    Change all "Create a New Spot" to "HeirErrBnB your Home"
+    No picture limit (at least 60, or greater) and various ways to show the additional photos: "Show all photos" floating button on details, arrow buttons on tiles, better create/updates that handle variable number of photos
+    Browser tab text never application name (they use different texts for different things, and bring up additional tabs, do not keep it all within one tab), but favicon is always logo
+    No review "New" or average or star when less than 3 reviews
+    Let demo user (only) enter 3+ reviews on any location
+    (Auto cleanup to remove demo user, which due to db cascade removes all things they put in; then reconstitute demo user)
+    Let demo user (only) enter booking dates in the past.
+
+    Bonus
+    Update Review
+    DB transaction rollback for multi-table CUD (spot, spotimages)
+    Remove Review Images?
+    Bookings
+    Spots search
+    Google Maps on Search
+    Favorites
+    Messaging
+    User/Host/Admin profiles
+    AWS/S3 Image Upload
+    For state/country, T always has full name; Maps filling out?
+    Maps vetting entered addresses
+    Google Maps API to generate internal long/lat coords, and eventually to allow viewing of various world areas with spots on them.
+    "Share" this place: send out a location in various ways
+    Add axes of rating location bookings: Cleanliness, Accuracy, Check-in, Communication, Location, Value (all 1-5)
+    Add rating of hosts
+    Add rating of booked guests
+    Add avatar for users, and show in profile menu, and by reviews
+    Limit reviews on details page to 6, and adding "Show all <xxx> reviews" button
+    Tracking users by IP/browser/something, and having a "welcome back, xxx" and prompting to login if they attempt something that requires a logged-in status
+    Sticky callout "reserve" box that slides after a bit
+    Long page jump header that appears as callout slides off
+
+Things probably too complex/time-consuming to do:
+    Support different languages
+    Support different currencies
+    Support so many (68+) different amenities and 70 types of locations
+    Vet email by sending out a click-link email that expires after x time
+    Vet cc info

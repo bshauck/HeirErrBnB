@@ -18,7 +18,7 @@ function SpotTile ({spotId, spot, isManaged}) {
 
   if (isManaged) spot = stateSpot;
 
-  function handleUpdateClick() {
+  function handleUpdateClick(e) {
     if (stateSpot !== true)
     history.push(`/spots/${spotId}/edit`)
   }
@@ -38,14 +38,16 @@ function SpotTile ({spotId, spot, isManaged}) {
   } else if (ref.current[spotId]) delete ref.current[spotId]
 
   return (
-    <div className="tileDiv">
-    <img className="spotTileImg" alt="preview" title={spot.name} src={spot.previewUrl || placeholderSrc} onClick={handleTileClick}>
+    <>
+    <div className="tileDiv"> <div className="tileNoButtonsDiv" onClick={handleTileClick} >
+    <img className="spotTileImg" alt="preview" title={spot.name} src={spot.previewUrl || placeholderSrc} >
     </img>
     <div className="tileLocationAndRatingDiv">
         <span className="tileLocation">{`${spot.city}, ${spot.state}`}</span>
         <StarRating avgRating={spot.avgRating}/>
     </div>
-    <div className="tilePriceDiv">${spot.price} night</div>
+    <div className="tilePriceDiv"><span className="tilePriceSpan">${spot.price}</span> night</div></div>
+
     {isManaged &&
     <div className="managedTileButtonDiv">
         <button className="manageSpotUpdateButton" type="button" onClick={handleUpdateClick}>Update</button>
@@ -55,10 +57,10 @@ function SpotTile ({spotId, spot, isManaged}) {
               onButtonClick={handleDeleteClick}
               // onModalClose={??}
               modalComponent={<SpotDeleteFormModal id={spotId}/>}
-              />
-    </div>
+              />    </div>
     }
-    </div>
+  </div>
+    </>
   );
 }
 

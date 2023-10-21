@@ -1,16 +1,12 @@
 
 /*
-new STORE layout (except since users cannot be deleted, and all
-    creation happens in signin of session, we are combining users
-    with session currently, they are never listed or ordered)
-
    {
      session: CD Spot user.spot, CD Review,
      spots:  // landing, details, CUD Spot
      reviews: // from all reviews for spot/user; CUD Review
    //  bookings: // TODO
      spotImages: // spotdetails only existing, CUD for Spot
-     reviewImages: // from all reviews for spot/user; CUD for Review
+   //  reviewImages: // TODO reviews spot/user; CUD for Review
    },
    */
    /* session */ /*
@@ -68,7 +64,7 @@ new STORE layout (except since users cannot be deleted, and all
              // bookings: [bookingIds,], // perhaps only ids with future endDates
            },
        }
-     // userQuery: { [userId]: [orderedSpotIdsBySomeInterestingCriteriaFromQuery], }
+     // userQuery: { [userId]:[orderedSpotIdsBySomeInterestingCriteriaFromQuery], }
    }
    */
 

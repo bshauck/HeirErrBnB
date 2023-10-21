@@ -20,10 +20,12 @@ function Navigation({ isLoaded }){
 
   return (
     <header>
-      {memoizedLogoDiv}
-        {isLoaded && (
-          <ProfileButton user={sessionUser} />
-        )}
+      <nav>
+        {memoizedLogoDiv}
+          {isLoaded && (
+            <ProfileButton user={sessionUser} />
+          )}
+        </nav>
     </header>
   );
 }

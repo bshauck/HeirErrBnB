@@ -14,8 +14,6 @@ function ProfileButton({ user }) {
   const ulRef = useRef(null);
   const history = useHistory();
 
-
-
   useEffect(() => {
     if (!showMenu) return;
 
@@ -26,32 +24,32 @@ function ProfileButton({ user }) {
     };
 
     document.addEventListener('click', closeMenu);
+    document.addEventListener('scroll', closeMenu);
 
-    return () => document.removeEventListener("click", closeMenu);
+    return () => {
+      document.removeEventListener("click", closeMenu)
+      document.removeEventListener("scroll", closeMenu)
+  };
   }, [showMenu]);
 
   const closeMenu = () => setShowMenu(false);
 
-  const logout = (e) => {
-    e.preventDefault();
-    dispatch(thunkLogout());
-    closeMenu();
-    history.push("/");
-  };
-
-  const manageSpots = (e) => {
-    e.preventDefault();
-    dispatch(thunkReadAllUserSpots());
-    closeMenu();
-    history.push("/spots/current");
-  };
-
-
-
   const createButtonClassName = "createSpotButton" + (user ? "" : " hidden");
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
   const memoizedNavMenuDiv = useMemo(() => {
-    function handleCreateClick() {
+    const logout = (e) => {
+      e.preventDefault();
+      dispatch(thunkLogout());
+      closeMenu();
+      history.push("/");
+    };
+    const manageSpots = (e) => {
+      e.preventDefault();
+      dispatch(thunkReadAllUserSpots());
+      closeMenu();
+      history.push("/spots/current");
+    };
+      function handleCreateClick() {
       history.push("/spots/new")
     }
     const openMenu = () => {
@@ -65,14 +63,7 @@ function ProfileButton({ user }) {
           <i className="fas fa-bars"></i>
           <i className="fas fa-user-circle" />
         </button>
-      </div>
-      )
-  }, [createButtonClassName, history, showMenu]);
-
-  return (
-    <>
-      {memoizedNavMenuDiv}
-      <ul className={ulClassName} ref={ulRef}>
+        <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
             <li className="loggedInMenuTextItem">Hello, {user.firstName}</li>
@@ -89,22 +80,29 @@ function ProfileButton({ user }) {
         ) : (
           <>
             <OpenModalMenuItem
-              id="signupMenuItem"
-              className="profileMenuItem"
-              itemText="Sign Up"
-              onItemClick={closeMenu}
-              modalComponent={<SignupFormModal />}
-            />
-            <OpenModalMenuItem
               id="loginMenuItem"
               className="profileMenuItem"
               itemText="Log In"
               onItemClick={closeMenu}
               modalComponent={<LoginFormModal />}
             />
+            <OpenModalMenuItem
+              id="signupMenuItem"
+              className="profileMenuItem"
+              itemText="Sign Up"
+              onItemClick={closeMenu}
+              modalComponent={<SignupFormModal />}
+            />
           </>
         )}
       </ul>
+      </div>
+      )
+  }, [createButtonClassName, history, showMenu, dispatch, ulClassName, user]);
+
+  return (
+    <>
+      {memoizedNavMenuDiv}
     </>
   );
 }

@@ -54,33 +54,20 @@ function SpotDetails() {
         <section className="spotDetailsSection">
             <div className="spotDetailsHostInfoDiv">
             <h2>{`Hosted by ${owner?.firstName} ${owner?.lastName}`}</h2>
-            <p className="hostP" >Oh, no; I just COULDN"T talk about myself. Here's a review from one of my many dear guests! "The moment I crossed the threshold of their enchanting abode, a symphony of warmth and welcome orchestrated by the extraordinary host enveloped me, making each corner gleam with the essence of unparalleled hospitality and kindness.
-
-            Wonderful description of the unbelievably glowing qualities of our beneficent host.
+            <p className="hostP" >Welcome to {spot.name}! {spot.description}</p><br></br>
+            {/* <p className="hostP" >HOST INFO: Oh, no; I just COULDN"T talk about myself. Here's a review from one of my many dear guests! "The moment I crossed the threshold of their enchanting abode, a symphony of warmth and welcome orchestrated by the extraordinary host enveloped me, making each corner gleam with the essence of unparalleled hospitality and kindness.
 
 "Navigating through rooms, each space seemed to echo the meticulous attention and thoughtful precision with which our gracious host had prepared for my visit, every detail, from the scents wafting through the air to the softness of the linens, woven with the fabric of genuine care.
 
-Wonderful description of the unbelievably glowing qualities of our beneficent host.
-
 "In their presence, an opulent garden of conversations blossomed, where each word they uttered seemed to flow like honey, rich with the nectar of interest and engagement, illuminating the atmosphere with the luminescence of connection and understanding.
-
-Wonderful description of the unbelievably glowing qualities of our beneficent host.
 
 "The culinary symphony they conducted in their kitchen was nothing short of magical; every dish a masterpiece that danced on the palate with the elegance of exquisite flavors, each meal a celebration of their immense talent and generosity.
 
-Wonderful description of the unbelievably glowing qualities of our beneficent host.
-
 "Their impeccable sense of timing, the rhythmic flow with which they managed every aspect of the visit, transformed ordinary moments into timeless memories, each gesture shimmering with the brilliance of their exceptional organizational prowess.
-
-Wonderful description of the unbelievably glowing qualities of our beneficent host.
 
 "The generosity of their spirit manifested in countless delightful surprises, turning every interaction into a treasure trove of shared laughter, thoughtful discussions, and the weaving of beautiful memories that will be cherished in the tapestry of time.
 
-Wonderful description of the unbelievably glowing qualities of our beneficent host.
-
-
-</p><br></br>
-            <p className="hostP" >"As I bade farewell to this magnificent host, a cascade of gratitude flooded my heart, leaving me in awe of the profound and transformative experience they curated with such love, creativity, and mastery, turning their home into a haven of joy, comfort, and unforgettable moments." Wonderful description of the unbelievably glowing qualities of our beneficent host. Wonderful description of the unbelievably glowing qualities of our beneficent host. Wonderful description of the unbelievably glowing qualities of our beneficent host. Wonderful description of the unbelievably glowing qualities of our beneficent host. Wonderful description of the unbelievably glowing qualities of our beneficent host. Wonderful description of the unbelievably glowing qualities of our beneficent host. Wonderful description of the unbelievably glowing qualities of our beneficent host. Wonderful description of the unbelievably glowing qualities of our beneficent host. Wonderful description of the unbelievably glowing qualities of our beneficent host. </p>
+"As I bade farewell to this magnificent host, a cascade of gratitude flooded my heart, leaving me in awe of the profound and transformative experience they curated with such love, creativity, and mastery, turning their home into a haven of joy, comfort, and unforgettable moments." </p> */}
             </div>
             <div className="spotDetailsCalloutDiv">
                 <div className="spotDetailsPriceNightAndStarsDiv">

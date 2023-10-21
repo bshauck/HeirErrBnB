@@ -9,12 +9,11 @@ import spotImagesReducer from "./spotImages";
 /* New store shape (see each slice for details)
 {
   session:
-  users:
   spots:
   reviews:
 //  bookings: // TODO
   spotImages:
-  reviewImages:
+//  reviewImages: // TODO
 },
 */
 
