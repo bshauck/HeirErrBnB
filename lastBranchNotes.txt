@@ -1,15 +1,9 @@
 
 Last branch notes
 
-WEDNESDAY
-Similar page layout for all main pages (ManageSpots, SpotList,
-SpotDetails)
-header line goes ALL the way across
-changed css approach for closer wireframe emulation
-handle spot details click on entire tile, wtihout interfering
-  with Manage Spots update/delete buttons (before just img)
+SATURDAY
 
-
+redo seeding on production
 better spacing for signup/login
 more console.logs to remove
 drop shadow for login on modal
@@ -17,9 +11,11 @@ change color for disabled login to white back black fore, then
   to red back, white fore when active
   (probably true for all red buttons is disabled)
   drop shadow also changes to grey from black
+change color/border on hover for various things
 color seems bluish for many text items
 better line up on Spot Details page
 better spacing on create form
+create logging table for login's and attempts
 
 
 

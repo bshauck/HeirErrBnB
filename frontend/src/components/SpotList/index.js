@@ -46,7 +46,7 @@ function SpotList () {
     return (
         <div className="outerSpotListDiv">
             <div className="spotListDiv">
-                {Object.values(spots).map(s => (
+                {Object.values(spots).map((s,i) => (
                     <SpotTile key={s.id} spotId={s.id} spot={s} isManaged={false} />
                 ))}
             </div>

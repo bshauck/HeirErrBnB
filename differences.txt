@@ -30,6 +30,7 @@ Some additional differences:
     There are 12 pre-existing users besides Demo Lition. (S)
      [Their usernames are firstlast all lowercase, same for password. E.g., anthonylovern/anthonylovern;jondiez/jondiez.]
     There are 30 generated spots, and a random number of reviews on each spot. (S) [Dan suggested 100-1000 generated items for seed values, which I have for reviews and bookings, but not for Spots/Images/Users yet.]
+    Removed "preview" column from spot images; instead, Spot has a previewUrl column.
 
 Items for approval:
     CSS style guidelines say default font-size is 10pt, but T uses 14px. Especially noticeable on login/signup.
@@ -40,13 +41,13 @@ I memoized both the logo area, and the profile button araa; but the logo area sh
 
 
 Post-evaluation immediate changes [all (T)}
-    No Review Images (so won't waste time with any implementation for them)
+    No Review Images (so won't waste time with any implementation for them); can remove table/model/associations/update schema/API
     Image types not limited to 2 (or 3 filename extensions: png, jpg, jpeg)
     City, State are bolded under spot tiles
     Only show first names, so remove Host last name from Spot details
     Do not use the word "Spot" anywhere
     No "Hello, " in menu
-    No "Be the first to post a review!" (hugely different approach to reviews: you have to have a booking, and have started it, before you can place a review. Only one review PER BOOKING, so if you book again, you can place another review; NOT only 1 review per guest/location combo. Hosts place a review of the guest staying, and the two reviews are released together, AND CAN NEVER BE EDITED; although hosts have a chance to respond to each review, which is also placed with the review AND NEVER EDITED.)
+    No "Be the first to post a review!" (hugely different approach to reviews: you have to have a booking, and have started it, before you can place a review. Only one review PER BOOKING, so if you book again, you can place another review; NOT only 1 review per guest/location combo. Hosts place a review of the guest staying, and the two reviews are released together several days after the booking ends, AND CAN NEVER BE EDITED by any party; although hosts have a chance to respond to each review, which is also placed with the review AND NEVER EDITED.)
     Change all "Create a New Spot" to "HeirErrBnB your Home"
     No picture limit (at least 60, or greater) and various ways to show the additional photos: "Show all photos" floating button on details, arrow buttons on tiles, better create/updates that handle variable number of photos
     Browser tab text never application name (they use different texts for different things, and bring up additional tabs, do not keep it all within one tab), but favicon is always logo
@@ -54,12 +55,26 @@ Post-evaluation immediate changes [all (T)}
     Let demo user (only) enter 3+ reviews on any location
     (Auto cleanup to remove demo user, which due to db cascade removes all things they put in; then reconstitute demo user)
     Let demo user (only) enter booking dates in the past.
+    Include opacity change for disabled buttons; not just color change
 
     Bonus
-    Update Review
-    DB transaction rollback for multi-table CUD (spot, spotimages)
-    Remove Review Images?
-    Bookings
+    Vet photos (placeholder til approved; no porn on site!)
+    Table changes: User add: phone:phone, avatar:url; Bookings add ppn:int; Spots add table SpotRules set by Owner (see below; has id:pk, spotId:fk, minimumStay:int, cancelHours:int, checkInTime:0-23, checkoutTime:0-23, maxGuests:int, pets:bool, parties:bool, commercialPhoto:bool, smoking:bool)
+    Bookings (different API that supports frontend: want to show calendar per Spot that knows bookings for that Spot) (T) calendar interface shows 2 months at a time, doesn't show historical, and only goes X months out. So api would give spotId and want to know existing booking dates for 2-X months including current month. Probably easiest to return array of startDate/endDate tuples for that period. Calendar starts with first month with open date. Host decides on how far out in future it is possible to schedule, and their interface shows things further out (infinite?) for host to schedule spot as unavailable. Eventually, HOSTS set
+        availability
+        number of nights minimun
+        number of hours before check-in to freely cancel (reported as a day if far in the future)
+        base price plus discount or bump up? (only see discounts so far)
+        booking needs to keep ppn per booking, as it varies and you report "Good price" when less than some previous period
+        check-in time
+        check-out time
+        max number of guests
+        pets allowed
+        parties/events allowed
+        commercial photography allowed
+        smoking allowed
+    First good calendar click is start date; clicks that are last of range say "checkout only"; otherwise, if cannot reach minimum stay then "X-night minimum"; otherwise make selection and update start date.
+
     Spots search
     Google Maps on Search
     Favorites
@@ -78,6 +93,10 @@ Post-evaluation immediate changes [all (T)}
     Tracking users by IP/browser/something, and having a "welcome back, xxx" and prompting to login if they attempt something that requires a logged-in status
     Sticky callout "reserve" box that slides after a bit
     Long page jump header that appears as callout slides off
+    Update Review (if done, would need Admin account because original posters MAY NOT EDIT REVIEWS)
+    DB transaction rollback for multi-table CUD (spot, spotimages); but probably more advisable is different interface for updating images and not forcing the two to happen simultaneously
+    Remove Review Images
+    Add gender to users for seeding purposes to generate avatars that seem appropriate
 
 Things probably too complex/time-consuming to do:
     Support different languages

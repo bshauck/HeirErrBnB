@@ -8,8 +8,8 @@ if (process.env.NODE_ENV === 'production')
   options.schema = process.env.SCHEMA;
 
 const seederSpotNames = [
-    'Cheap Denton House',
-    'Boulder Shack',
+    'Denton Chateau',
+    'Boulder Home',
     'Ski Out',
     'Warmth in Winter',
     'Summer Passion',
@@ -23,7 +23,7 @@ const seederSpotNames = [
     'Courage',
     'Wisdom',
     'Peace',
-    'Cheap Berlin House',
+    'Cozy Berlin House',
     'Strange Lobster Shack',
     'Ski Up, down and all around',
     'Warmth in My Heart',

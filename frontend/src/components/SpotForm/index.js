@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { thunkCreateSpot, thunkUpdateSpot } from "../../store/spots"
-import { getFullImages, getRandomInt } from '../../utils/imageUrl';
+import { getFullImages, getRandomInt, invalidImageURL, getRandomLocationDescription } from '../../utils/imageUrl';
 
 /* TODO
 eventually set lat lng via GoogleMaps api
@@ -54,13 +54,14 @@ function SpotForm ({spot, formType}) {
         validations.description = "Description must have at least 30 characters"
       if (!price || price < 0) validations.price = "Price per night is required"
 
+      console.log("🚀 ~ handleSubmit ~ previewUrl:", previewUrl)
       if (!previewUrl) validations.previewUrl = "Preview image URL is required"
       else if (!validImageUrl(previewUrl)) validations.previewUrl = extensionError
       if (!isEdit) { /* TODO For now; skip support images on Update */
-      if (supportUrl1 && !validImageUrl(supportUrl1)) validations.supportUrl1 = extensionError
-      if (supportUrl2 && !validImageUrl(supportUrl2)) validations.supportUrl2 = extensionError
-      if (supportUrl3 && !validImageUrl(supportUrl3)) validations.supportUrl3 = extensionError
-      if (supportUrl4 && !validImageUrl(supportUrl4)) validations.supportUrl4 = extensionError
+        if (supportUrl1 && !validImageUrl(supportUrl1)) validations.supportUrl1 = extensionError
+        if (supportUrl2 && !validImageUrl(supportUrl2)) validations.supportUrl2 = extensionError
+        if (supportUrl3 && !validImageUrl(supportUrl3)) validations.supportUrl3 = extensionError
+        if (supportUrl4 && !validImageUrl(supportUrl4)) validations.supportUrl4 = extensionError
       }
       setErrors(validations);
       if (Object.keys(validations).length === 0) {
@@ -92,6 +93,8 @@ function SpotForm ({spot, formType}) {
     };
 
     function validImageUrl(str) {
+      console.log("🚀 ~ validImageUrl ~ str:", str)
+      if (!invalidImageURL(str)) return true
       if (str && (str = str.trim()).length > 5) {
         str = str.toLowerCase();
         return (str.endsWith(".png") || str.endsWith(".jpg") || str.endsWith(".jpeg"))
@@ -111,7 +114,7 @@ function SpotForm ({spot, formType}) {
       setCountry('United States');
       setName(title);
       setTitle(prev => prev + "z");
-      setDescription('This is exactly 30 characters.');
+      setDescription(getRandomLocationDescription());
       setPrice(getRandomInt(50,1000).toString());
       setSupportUrl1(urls[1])
       setSupportUrl2(urls[2])

@@ -85,7 +85,7 @@ button { /* buttons sneakily ignore inheriting */
     font-family: var(--fontFamily) ;
     font-size: var(--defaultFontSize) ;
 }
-div,header,a,button,input {
+html,body,div,header,a,button,input {
     background: var(--defaultInputBackground) ;
 }
 input,textarea {
