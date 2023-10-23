@@ -18,6 +18,73 @@ better spacing on create form
 create logging table for login's and attempts
 
 
+go through divs and add background as necessary
+ change other tags to class and use background-color
+  when you can instead of background
+
+
+To see all modals:
+Logout
+  Choose Sign Up
+  Choose Log In
+Login as franco
+Manage Spots
+  Choose Create Spot
+  Choose Update
+  Choose Delete
+Scroll to last Spot, and
+ Click on Spot: Spot Details
+  Choose Post Your Review
+  (post a review)
+  Choose Delete
+  (click yes delete)
+
+modal aspects
+Log In .loginForm
+  white background rounded corners
+  positioned 20px below header line
+  input fields and button same width: 90% ish
+  input fields have light pink background
+  login button disabled: white background, grey text/shadow box
+  login button is red with white text black shadow box when active
+  errors in red below Log In title
+
+Sign Up .signupForm
+  Like Log In, just more fields
+
+Create Review modal
+  white background rounded corners
+    black thick border
+  textarea has pink background
+  Submit button disabled like Login
+
+Confirm Delete spot modal
+  Yes delete button like login button
+  No keep button dark grey background, otherwise like login
+Confirm Delete review modal
+  just like Confirm Delete spot
+
+
+
+Post Your Review button
+  grey with white text
+Delete Review button as above
+Create a New Spot (on Manage Spots) as above
+Update Spot/Delete (on Manage Spots) as above
+
+Reserve button red with white text and black shadow box
+  (like Login button, but no disabling)
+Create Spot as above
+Update Your Spot as above
+
+Signup is rounded, but has thick border.
+  Width and color and positioning need adjustment
+
+Only things with thick black border are detail spot callout box and Create Review Modal; but all have rounded corners
+All input fields and textareas have thicker black inset box border and pink backgrounds
+
+
+
 
 colors for default Airbnb page
 (247,247,247) main background

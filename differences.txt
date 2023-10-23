@@ -39,6 +39,8 @@ Questions: why does fixed position with no settings cause item to come up in ini
 
 I memoized both the logo area, and the profile button araa; but the logo area shows redrawing on every page change, while the other doesn't. Neither of these change visually (although the profile button does have a drop-down-menu-contained-UL whose LIs will change on login/out). This happens even on browser button forward/back.
 
+On Create/Update Spot, .priceFormSpotInput is supposed to be between a $ sign and the right edge of the inset of the form, but I'm failing to understand how to accomplish this.
+
 
 Post-evaluation immediate changes [all (T)}
     No Review Images (so won't waste time with any implementation for them); can remove table/model/associations/update schema/API

@@ -68,7 +68,7 @@ table {
 body.waiting * {
     cursor: progress !important;
 }
-i,button,.tileNoButtonsDiv,.profileMenuItem,#loginMenuItem,#signupMenuItem {
+i,button,.tileNoButtonsDiv,#loginMenuItem,#signupMenuItem {
     cursor: pointer;
 }
 .fa-star,.profile-dropdown > li {
@@ -85,7 +85,8 @@ button { /* buttons sneakily ignore inheriting */
     font-family: var(--fontFamily) ;
     font-size: var(--defaultFontSize) ;
 }
-html,body,div,header,a,button,input {
+/* cannot put div here, messes modals */
+body,header,a,button,input,textarea {
     background: var(--defaultInputBackground) ;
 }
 input,textarea {
@@ -395,9 +396,9 @@ img.spotDetailsSmallImg:nth-of-type(4) {
 }
 
 .loginForm {
-    width: 130%;
-    margin-top: -280px ;
+    min-width: 30vw;
     background-color: rgba(255, 255, 255, 1) ;
+    border-radius: 10px;
 }
 
 .loginDiv {
@@ -424,7 +425,9 @@ img.spotDetailsSmallImg:nth-of-type(4) {
 
 /* spotForm (create/edit) */
 .spotForm {
+    padding: 20px;
     width: 37%;
+    background-color: white;
 }
 
 .spotFormDiv {
@@ -433,12 +436,22 @@ img.spotDetailsSmallImg:nth-of-type(4) {
 }
 
 .innerSpotFormDiv {
-    width: 95% ;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
 }
 
-.createSpotSection5 {
+.createSpotSection1,.createSpotSection2,.createSpotSection3,.createSpotSection4,.createSpotSection5 {
     display: flex ;
     flex-direction: column ;
+    row-gap: 10px;
+    border-bottom: 1px solid darkgrey;
+}
+.priceSpotFormDiv {
+    display: flex;
+}
+.spotFormPriceInput {
+    width: fit-content;
 }
 
 
@@ -493,26 +506,59 @@ img.spotDetailsSmallImg:nth-of-type(4) {
     color: burlywood;
   }
 
-.signupForm {
-    min-width: 300px;
-    min-height: 200px;
+
+/* BEGIN MODAL CSS */
+#modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modal-background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#modal-content {
+    position: absolute;
+    margin-top: -280px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+
+.signupForm,.loginForm {
+    min-width: 30vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    padding: 20px 0;
 }
 
-/* BEGIN MODAL CSS */
 
-/* not sure this is applicable to all, but
-   works well for Spot delete, post
-   Review */
-#modal-content {
-    border: 4px black solid;
-    border-radius: 10px;
- }
+.signupInput,.loginCredentialInput,.loginPasswordInput
+{
+    width: 90%;
+}
 
- .createReviewForm {
+.signupSubmit,.loginButton {
+    width: 93%;
+    box-shadow: 2px 2px;
+}
+
+
+
+.createReviewForm {
     margin: 15px;
     width: fit-content;
     display: flex;
@@ -533,10 +579,6 @@ img.spotDetailsSmallImg:nth-of-type(4) {
     align-items: center;
 }
 
-.signupInput
-{
-    max-width: 100%;
-}
 /* END MODAL CSS */
 
 /* modal button colors/size */
@@ -576,13 +618,14 @@ img.spotDetailsSmallImg:nth-of-type(4) {
 .createReviewButton,
 .loginButton
 {
+    margin-top: 10px;
     background-color: var(--aaRed);
     color: white;
 }
 button[disabled] {
     /* opacity: 0.5 ; */
     background-color: var(--defaultInputBackground) ;
-    color: black;
+    color: var(--aaDarkgrey) ;
 }
 
 .reserveButton {
@@ -601,6 +644,10 @@ button[disabled] {
 .createSpotButton,.manageSpotsButton,.demoUserButton {
     border: none ;
     background-color: rgb(247,247,247) ;
+}
+.demoUserButton {
+    text-decoration: underline ;
+    font-weight: bold;
 }
 .manageSpotsButton {
     border: none ;

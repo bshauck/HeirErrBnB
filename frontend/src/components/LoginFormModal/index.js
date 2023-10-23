@@ -43,7 +43,6 @@ function LoginFormModal() {
   return (
     <>
       <form className="loginForm" onSubmit={handleSubmit}>
-        <div className="loginDiv">
           <h2 className="loginTitle">Log In</h2>
           <p className="loginError error">{errors.credential ? errors.credential: "                                                "}</p>
           <input
@@ -67,7 +66,6 @@ function LoginFormModal() {
           />
         <button disabled={credential.length < 4 || password.length < 6} className="loginButton" type="submit">Log In</button>
         <button className="demoUserButton" type="button" onClick={(e) => demoUserActivated(e)}>Demo User</button>
-        </div>
       </form>
     </>
   );
