@@ -136,7 +136,6 @@ export function getRandomInt(min, max) {
   }
 
 export const invalidImageURL = async url => {
-  console.log("🚀 ~ invalidImageURL ~ url:", url)
   let result = {}
   const urlPattern = /^(https:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?\.(jpg|jpeg|png|webp)$/;
   const suspiciousCharactersPattern = /[<>'"()]/;
@@ -145,14 +144,11 @@ export const invalidImageURL = async url => {
   if (suspiciousCharactersPattern.test(url)) result.characters = "Please choose a different URL";
   if (url.length > 200) result.length = "Path too long";
 
-  console.log("🚀 ~ 1invalidImageURL ~ url:", url)
   try {
     const response = await fetch(url, { method: 'HEAD' });
     if (response.ok) {
       const body = await response.headers();
-      console.log("🚀 ~ invalidImageURL ~ body:", body)
 
-      console.log("🚀 ~ 2invalidImageURL ~ response:", response)
       const contentType = response.headers.get('Content-Type');
       if (!contentType || !contentType.startsWith('image/'))
       result.type = "Unknown image type"
@@ -161,11 +157,10 @@ export const invalidImageURL = async url => {
         if (contentLength > 2000000) result.size = "Image too large"
         else if (contentLength < 2000) result.size = "Image too small"
       } else result.size = "Image size indeterminate"
-    } console.log("🚀 ~ 3invalidImageURL ~ response:", response)
+    }
   } catch(e) { result.fetch = "Problem retrieving image" }
   finally {
     if (!Object.keys(result).length) result = false
-    console.log("🚀 ~ 4invalidImageURL ~ result:", result)
   }
   /* return false if valid-ish; otherwise, errors object */
   return result;

@@ -1,7 +1,13 @@
 
 Last branch notes
 
-SATURDAY
+MONDAY
+Lots of changes in modal buttons and menu items
+
+relatevie parent
+
+  absolute
+
 
 redo seeding on production
 better spacing for signup/login
