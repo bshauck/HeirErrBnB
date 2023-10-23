@@ -286,17 +286,18 @@ li:has(.logoutButton) {
     border-radius: 10px;
 }
 
-  .spotDetailsPriceAndNightDiv {
+.spotDetailsPriceAndNightDiv {
     display: flex;
     justify-content: flex-start;
-  }
+}
 
-  .spotDetailsPriceNightAndStarsDiv {
-      width: 85%;
-      display: flex;
-      font-size: 22pt;
-      justify-content: space-between;
-  }
+.spotDetailsPriceNightAndStarsDiv {
+    margin-top: 1vh;
+    width: 85%;
+    display: flex;
+    font-size: 22pt;
+    justify-content: space-between;
+}
 
 .spotDetailsReviewAreaDiv {
     margin-top: 3vh;
@@ -630,6 +631,7 @@ button[disabled] {
 
 .reserveButton {
     width: 85%;
+    margin-bottom: 1vh;
 }
 /* end modal buttons */
 

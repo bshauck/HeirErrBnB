@@ -54,7 +54,6 @@ function SpotForm ({spot, formType}) {
         validations.description = "Description must have at least 30 characters"
       if (!price || price < 0) validations.price = "Price per night is required"
 
-      console.log("🚀 ~ handleSubmit ~ previewUrl:", previewUrl)
       if (!previewUrl) validations.previewUrl = "Preview image URL is required"
       else if (!validImageUrl(previewUrl)) validations.previewUrl = extensionError
       if (!isEdit) { /* TODO For now; skip support images on Update */
@@ -93,7 +92,6 @@ function SpotForm ({spot, formType}) {
     };
 
     function validImageUrl(str) {
-      console.log("🚀 ~ validImageUrl ~ str:", str)
       if (!invalidImageURL(str)) return true
       if (str && (str = str.trim()).length > 5) {
         str = str.toLowerCase();
