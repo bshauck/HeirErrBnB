@@ -1,7 +1,7 @@
 // frontend/src/components/SpotDetails/index.js
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { thunkReadSpot } from "../../store/spots";
 import StarRating from "../StarRating";
@@ -14,6 +14,8 @@ function SpotDetails() {
     const imageIds = useSelector(state => state.spots.id[id]?.images)
     const dispatch = useDispatch();
     const spotImages = useSelector(state => state.spotImages.id);
+    const user = useSelector(state => state.session.user)
+    const history = useHistory();
     let otherImages = []
     // const [rerender, setRerender] = useState({})
     const placeholderSrc = "https://placehold.co/200?text=Photo+needed&font=montserrat"
@@ -36,7 +38,8 @@ function SpotDetails() {
 
   const owner = spot.Owner;
   function handleReserveClick(){
-      alert("Feature Coming Soon...")
+      // alert("Feature Coming Soon...")
+      history.push(`/spots/${spot.id}/bookings/new`)
   }
 
   return (
@@ -75,7 +78,7 @@ function SpotDetails() {
                   <span className="spotDetailsPriceSpan">{`$${spot.price}  `} </span><span className="spotDetailsNightSpan" >night</span></div><span className="spotDetailsStarRatingSpan">
                 <StarRating className="spotDetailsCalloutRating" avgRating={spot.avgRating} numReviews={spot.numReviews} /></span>
                 </div>
-                <button className="reserveButton" onClick={handleReserveClick}>Reserve</button>
+                <button className="reserveButton" disabled={!user} onClick={handleReserveClick}>Reserve</button>
             </div>
             <div className="spotDetailssHR"></div>
         </section>

@@ -1,6 +1,9 @@
 commit fe2988f35e0defe1ea51a5fce12d522ff3fd0252
 above is Mod4 API passing version
 
-branch spotForm
-further implementation and testing for SpotForm via Create/Edit
-also testing of the new backend API for bulkCreate of images
+commit 18f1fdd0ba4d962daa26ab0accfe6a2a219bd3a3
+shows as ff32b5 on Render
+believe it is Mod5 passing version
+
+
+bookings branch has current work towards Bookings feature

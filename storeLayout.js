@@ -4,7 +4,7 @@
      session: CD Spot user.spot, CD Review,
      spots:  // landing, details, CUD Spot
      reviews: // from all reviews for spot/user; CUD Review
-   //  bookings: // TODO
+     bookings:
      spotImages: // spotdetails only existing, CUD for Spot
    //  reviewImages: // TODO reviews spot/user; CUD for Review
    },
@@ -54,8 +54,8 @@
              previewUrl: "image.jpg",
              createdAt: "2021-11-19 20:39:36",
              updatedAt: "2021-11-19 20:39:36",
-             numReviews: 4, // filled in with detailspot
-             avgRating: 4.5, // filled in with detailspot
+             numReviews: 4,
+             avgRating: 4.5,
 
              // additional info; Details page gets images & reviews
              // reserve button gets bookings
@@ -279,43 +279,4 @@ res =
       (could easily be added to API getAll/UserSpots)
 
       add numReviews and avgRating to all
-*/
-
-/* extra info frontend will hold and when to get it
-  partial user with       spotDetails / allSpotReviews
-  full with                 // login/signup
-  extra is
-    spots: [spotIds,],      // allUserSpots; CD Spot
-    reviews: [reviewIds,],  // allUserReviews, CD Review
-So, listen for spotDetails / allSpotReviews and ensure
-partial users are there (if so, just return state)
-listen for allUserSpots & CD Spot and update spots
-listen for allUserReviews and CD Review and update reviewIds
-
-  Spot
-    avgRating: 4.5,           // getAll/UserSpots, CUD Review
-    numReviews: 4,            // spotDetails, CD Review
-    images: [spotImageIds,],  // spotDetails, CD SpotImage
-    reviews: [reviewIds,],    // allSpotReviews, CD Review
-  add userId to allUserSpots
-
-  Review
-    firstName // sllUser/SpotReviews
-    images: [reviewImageIds,] // allSpot/UserReviews CD RevImage
-  spotLatest: { [spotId]: [idsOrderedByDescUpdatedDate], } // allSpotReviews, CD Spot
-
-  bookings TBD
-  reviewImages TBD
-*/
-
-
-
-/* steps for user spots (Manage spots)
-
-    1. See if you have user.spots (spotIds)
-    2a. If so, see if missing any of in store
-    3a1. If missing any, delete User.spots and goto 1.
-
-    2b. If not, get user.spots by hitting db, once and rerender
-
 */

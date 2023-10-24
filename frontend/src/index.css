@@ -299,6 +299,8 @@ li:has(.logoutButton) {
     justify-content: space-between;
 }
 
+
+
 .spotDetailsReviewAreaDiv {
     margin-top: 3vh;
     padding-top: 3vh;
@@ -643,7 +645,7 @@ button[disabled] {
     margin: 4px 10px;
 }
 /* make some buttons look like text */
-.createSpotButton,.manageSpotsButton,.demoUserButton {
+.createSpotButton,.demoUserButton {
     border: none ;
     background-color: rgb(247,247,247) ;
 }
@@ -651,11 +653,11 @@ button[disabled] {
     text-decoration: underline ;
     font-weight: bold;
 }
-.manageSpotsButton {
+.manageSpotsButton,.manageBookingsButton {
     border: none ;
     background-color: white ;
+    margin-left: 10px ;
 }
-.manageSpotsButton {margin-left: 10px;}
 /* end other buttons */
 
 .spotTileImg {

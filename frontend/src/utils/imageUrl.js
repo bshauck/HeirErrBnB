@@ -147,8 +147,6 @@ export const invalidImageURL = async url => {
   try {
     const response = await fetch(url, { method: 'HEAD' });
     if (response.ok) {
-      const body = await response.headers();
-
       const contentType = response.headers.get('Content-Type');
       if (!contentType || !contentType.startsWith('image/'))
       result.type = "Unknown image type"

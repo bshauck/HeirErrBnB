@@ -19,38 +19,41 @@ and without logged-in user
 */
 
 /* I'll leave the above, but this will really be the user
- * entry point, and besides the "user" key for the current
- * user, I will have user id keys and user data per user
- * mainly to have owner info for spots, but will fill other
- * stuff as gathered. So:
- * userId: {user data} for each user encountered
- * So other user data will exist in two possible states
- *
+   /* session */ /*
+  {
+    user: current user || null
+    spots: same as user>spots [spotIds,]
+    reviews: same as user>reviews [reviewIds,]
+    bookings: same as user>bookings [bookingIds,]
+    id: // normalized user info
+    {
+     [userId]:
+       { // partial from review reads
+         id,
+         firstName,
+         lastName,
 
- * userId: { // obtained from singleSpot
-    id,
-    firstName,
-    lastName,
+         // additional detail on login (passwords only in db)
+         email,
+         username,
+
+         // additional detail w/ current spots/review/bookings
+         spots: [spotIds,],
+         reviews: [reviewIds,], // all reviews of user
+         bookings: [bookingIds,],
+         // spotQuery: [landingPageQueryParamString], // TODO
+         // currentPage: 3 // last displayed page of info // TODO
+       }
+    }
   }
- * userId: { // obtained from valid login
-    id,
-    email,
-    username,
-    firstName,
-    lastName,
-    createdAt,  /// TODO?
-    updatedAt   /// TODO?
-  }
- *
  */
 
-import { csrfFetch, fetchData } from "./csrf";
-import { CREATED_REVIEW, CREATED_SPOT, DELETED_REVIEW, DELETED_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
+import { fetchData } from "./csrf";
+import { CREATED_BOOKING, CREATED_REVIEW, CREATED_SPOT, DELETED_BOOKING, DELETED_REVIEW, DELETED_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_BOOKINGS, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
 const SET_SPOT_OWNER = "session/SET_SPOT_OWNER"
-
 
 export const setSpotOwner = (partialUser) => {
   return {
@@ -71,7 +74,6 @@ const removeUser = () => {
     type: REMOVE_USER,
   };
 };
-
 
 export const thunkLogin = user => async dispatch => {
   const { credential, password } = user;
@@ -113,23 +115,46 @@ export const thunkLogout = () => async dispatch => {
   return answer
 }
 
+function deleteIdFromUserArrays(newState, state, key, deleted) {
+  /* caller must RETURN what this returns */
+  newState.user = {...state.user}
+  const index = state[key].indexOf(deleted)
+  if (index === -1) return state
+  newState.id[state.user.id][key] = newState[key] = newState.user[key] = [...state[key]]
+  newState[key].splice(index, 1)
+  return newState
+}
+function addIdToUserArrays(newState, state, key, createdId) {
+  newState.user = {...state.user}
+  const old = state[key] ?? []
+  newState.id[state.user.id][key] = newState[key] = newState.user[key] = [...old, createdId]
+  return newState
+}
+function setIdsIntoUserArrays(newState, state, key, array) {
+  if (!array) return state;
+  newState.user = {...state.user}
+  const ids = array.map(elt => elt.id)
+  newState.id[state.user.id][key] = newState[key] = newState.user[key] = ids
+  return newState
+}
+
 const initialState = {
   user: null,
   id: {},
-  spots:null,
-  reviews:null,
-  bookings:null,
+  spots: null,
+  reviews: null,
+  bookings: null,
  };
 
 const sessionReducer = (state = initialState, action) => {
-  const newState = {...state};
+  const newState = {...state, "id": {...state.id}};
 
   switch (action.type) {
     case SET_USER:
       const newUser = action.payload
       newState.user = newUser;
-      if (newUser && !state.id[newUser.id]?.username)
-        newState.id[newUser.id] = {...state.id[newUser.id], ...newUser}
+      if (newUser)
+        newState.id[newUser.id] = {...(state.id[newUser.id] ? {...state.id[newUser.id]}: {}), ...newUser}
       return newState;
 
     case READ_SPOT: {
@@ -137,15 +162,13 @@ const sessionReducer = (state = initialState, action) => {
       let userId;
       if (!partialUser || !(userId = partialUser.id) || state.id[userId])
         return state; /* already have this */
-      newState.id = {...state.id}
       newState.id[userId] = partialUser;
       return newState;
     }
     case READ_SPOT_REVIEWS: {
-      const {reviews} = action.payload
+      const { reviews } = action.payload
       const partialUsers = reviews.map(pu => pu.User);
       if (partialUsers.every(pu => state.id[pu.id])) return state;
-      newState.id = {...state.id}
       partialUsers.forEach(pu => newState.id[pu.id] = pu)
       return newState;
     }
@@ -153,57 +176,36 @@ const sessionReducer = (state = initialState, action) => {
       newState.user = newState.reviews = newState.spots = newState.bookings = null;
       return newState;
 
-    case READ_USER_REVIEWS: {
-      const reviewIds = action.payload.map(r => r.id)
-      newState.user = {...state.user}
-      newState.id = {...state.id}
-      newState.reviews = newState.user.reviews = reviewIds
-      return newState
-    }
-    case READ_USER_SPOTS: {
-      const spotIds = action.payload.map(s=>s.id)
-      newState.user = {...state.user}
-      newState.spots = newState.user.spots = spotIds;
-      return newState;
-    }
-    case DELETED_SPOT: {
-      newState.user = {...state.user}
-      const index = state.spots.indexOf(action.payload.id)
-      if (index === -1) return state
-      newState.spots = newState.user.spots = [...state.spots]
-      newState.spots.splice(index, 1)
-      return newState
-    }
-    case DELETED_REVIEW: {
-      newState.user = {...state.user}
-      const index = state.reviews.indexOf(action.payload.reviewId)
-      if (index === -1) return state;
-      newState.reviews = newState.user.reviews = [...state.reviews]
-      newState.reviews.splice(index, 1)
-      return newState
-    }
-    case CREATED_REVIEW: {
-      newState.user = {...state.user}
-      const old = state.reviews ?? []
-      newState.reviews = newState.user.reviews = [...old, action.payload.review.id]
-      return newState
-    }
-    case CREATED_SPOT: {
-      newState.user = {...state.user}
-      const old = state.spots ?? []
-      newState.spots = newState.user.spots = [...old, action.payload.id]
-      return newState
-    }
+    case READ_USER_BOOKINGS:
+      console.log("session reducer READ U BOOKINGS")
+      return setIdsIntoUserArrays(newState, state, "bookings", action.payload)
+    case READ_USER_REVIEWS:
+      return setIdsIntoUserArrays(newState, state, "reviews", action.payload)
+    case READ_USER_SPOTS:
+      return setIdsIntoUserArrays(newState, state, "spots", action.payload)
+    case DELETED_BOOKING:
+      console.log("session reducer DELTE U BOOKING", action.payload)
+      return deleteIdFromUserArrays(newState, state, "bookings", action.payload)
+    case DELETED_SPOT:
+      return deleteIdFromUserArrays(newState, state, "spots", action.payload)
+    case DELETED_REVIEW:
+      return deleteIdFromUserArrays(newState, state, "reviews", action.payload.reviewId)
+      case CREATED_BOOKING:
+        console.log("session reducer CREATED U BOOKING", action.payload)
+        return addIdToUserArrays(newState, state, "bookings", action.payload.id)
+    case CREATED_REVIEW:
+      return addIdToUserArrays(newState, state, "reviews", action.payload.review.id)
+    case CREATED_SPOT:
+      return addIdToUserArrays(newState, state, "spots", action.payload.id)
     default:
       return state;
   }
 };
 
-export const restoreUser = () => async (dispatch) => {
-  const response = await csrfFetch("/api/session");
-  const data = await response.json();
-  dispatch(setUser(data.user));
-  return response;
+export const restoreUser = () => async dispatch => {
+  const answer = await fetchData("/api/session");
+  if (answer.ok) dispatch(setUser(answer.user));
+  return answer;
 };
 
 export default sessionReducer;
