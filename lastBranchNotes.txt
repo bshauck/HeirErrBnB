@@ -1,20 +1,7 @@
 
 Last branch notes
 
-MONDAY
-removed other console.logs
-added console.logs to areas being written/updated
-added bookings.js to store
-adjusted store/index.js adding bookingsReducer
-adjust App.js to invoke landings page for now when Reserve button clicked, instead of alert
-disabled Spot details Reserve button when not logged-in
-Adjust SpotTile to have optional prop bookingId to determine showing booking info (start date - end date below spot info, but above update/delete buttons)
-Updated store documentation for session
-Changed SpotTile to dispatch thunk to read booking information if not in store
-Adjust SpotTile to take any one of spot, spotId, bookingId and read what is necessary
-Bookings listed are only current and future ones; and are listed in endDate order.
-Changed backend to better store dates for Bookings
-Changed ordering of Bookings returned
+
 TUESDAY
 Redid Spot/Review deleteFormModal for reuse, so all 3 resources (adding booking) use same component with different props
 Retest all 3 resource deletions

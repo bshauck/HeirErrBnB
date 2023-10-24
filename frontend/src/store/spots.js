@@ -1,85 +1,5 @@
 /* spots slice of state
 {
-  "allSpots": {
-    [spotId]:
-      {
-        "id": 1,
-        "ownerId": 1,
-        "address": "123 Disney Lane",
-        "city": "San Francisco",
-        "state": "California",
-        "country": "United States",
-        "lat": 37.7645358,
-        "lng": -122.4730327,
-        "name": "App Academy",
-        "description": "Place where web developers are created",
-        "price": 123,
-        "createdAt": "2021-11-19 20:39:36",
-        "updatedAt": "2021-11-19 20:39:36",
-        "avgRating": 4.5,
-        "previewUrl": "image url"
-      }
-    optionalOrderedList: [],
-    }
-  singleSpot: { // spot details
-      "id": 1,
-      "ownerId": 1,
-      "address": "123 Disney Lane",
-      "city": "San Francisco",
-      "state": "California",
-      "country": "United States",
-      "lat": 37.7645358,
-      "lng": -122.4730327,
-      "name": "App Academy",
-      "description": "Place where web developers are created",
-      "price": 123,
-      "createdAt": "2021-11-19 20:39:36",
-      "updatedAt": "2021-11-19 20:39:36" ,
-      "numReviews": 5,
-      "avgRating": 4.5,
-      "SpotImages": [ // put into
-        {
-          "id": 1,
-          "url": "image url",
-        },
-        {
-          "id": 2,
-          "url": "image url",
-        }
-      ],
-      "Owner": { // put into session as partialUser
-        "id": 1,
-        "firstName": "John",
-        "lastName": "Smith"
-      }
-    }
-  userSpots: { // all owner ids are the same
-    [spotId]:
-      {
-        "id": 1,
-        "ownerId": 1,
-        "address": "123 Disney Lane",
-        "city": "San Francisco",
-        "state": "California",
-        "country": "United States",
-        "lat": 37.7645358,
-        "lng": -122.4730327,
-        "name": "App Academy",
-        "description": "Place where web developers are created",
-        "price": 123,
-        "createdAt": "2021-11-19 20:39:36",
-        "updatedAt": "2021-11-19 20:39:36",
-        "avgRating": 4.5,
-        "previewImage": "image url"
-      }
-    }
-}
-*/
-
-/* New store shape for spots
-old userSpots now are keys in state.users.spots, and the spot info is
-in state.spots.id
-{
   id:
     {
       [spotId]:
@@ -95,17 +15,18 @@ in state.spots.id
           name: "App Academy",
           description: "Place where web developers are created",
           price: 123,
-          createdAt: "2021-11-19 20:39:36",
-          updatedAt: "2021-11-19 20:39:36",
-          numReviews: 4,
-          avgRating: 4.5,
           previewUrl: "image url",
 
+
           // additional info; Details page gets images & reviews
-          // reserve button gets bookings
+          createdAt: "2021-11-19 20:39:36",
+          updatedAt: "2021-11-19 20:39:36",
+          numReviews: 4, // not kept in table
+          avgRating: 4.5, // not kept in table
+
           images: [spotImageIds,],
           reviews: [reviewIds,],
-          // bookings: [bookingIds,], // perhaps only ids with future endDates
+          bookings: [bookingIds,], // only ids with future endDates
         },
     }
   userQuery: { [userId]: [orderedSpotIdsBySomeInterestingCriteriaFromQuery], }
@@ -114,7 +35,7 @@ in state.spots.id
 
 import { CREATED_REVIEW, CREATED_SPOT, DELETED_REVIEW, DELETED_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_SPOTS, UPDATED_SPOT_REVIEW_RATINGS } from "./commonActionCreators";
 
-import { csrfFetch, fetchData, jsonHeaderContent } from "./csrf";
+import { fetchData, jsonHeaderContent } from "./csrf";
 
 const READ_SPOTS = "spots/READ_SPOTS";
 const UPDATED_SPOT = "spots/UPDATED_SPOT";
@@ -227,7 +148,7 @@ export const thunkCreateSpot = (spot, urls) => async dispatch => {
     answer.numReviews = 0; /* ponder in db */
     answer.avgRating = null; /* ponder in db */
     options.body = JSON.stringify(urls)
-    const answer2 = await csrfFetch(`/api/spots/${answer.id}/images`, options)
+    const answer2 = await fetchData(`/api/spots/${answer.id}/images`, options)
     if (!answer2.errors) {
       dispatch(createdSpot(answer))
       /* TODO dispatch(createdImages()) */

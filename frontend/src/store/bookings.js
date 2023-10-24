@@ -18,7 +18,7 @@
 }
 */
 import { fetchData } from "./csrf";
-import { CREATED_BOOKING, DELETED_BOOKING, READ_USER_BOOKINGS } from "./commonActionCreators";
+import { CREATED_BOOKING, DELETED_BOOKING, READ_SPOT_BOOKINGS, READ_USER_BOOKINGS } from "./commonActionCreators";
 
 /*
 GetCurrentUser:
@@ -36,7 +36,6 @@ DeleteBooking
 
 */
 
-const READ_SPOT_BOOKINGS = "bookings/READ_SPOT_BOOKINGS";
 // const READ_BOOKING = "bookings/READ_BOOKING";
 const UPDATED_BOOKING = "bookings/UPDATED_BOOKING";
 
