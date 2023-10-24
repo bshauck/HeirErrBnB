@@ -3,7 +3,7 @@ const { validateBooking, validateEditSpot, validateQuery, validateReview, valida
 const { sequelize, Booking, Review, ReviewImage, Spot, SpotImage, User } = require('../../db/models');
 const { Op } = require('sequelize');
 const { adjustPojo } = require('../../utils/pojo')
-const {dayDate, ymd} = require('../../utils/normalizeDate');
+const {dayDate, ymd, ymdt } = require('../../utils/normalizeDate');
 
 const router = require('express').Router();
 
@@ -67,6 +67,7 @@ router.route('/:spotId(\\d+)/bookings')
             Bookings = Bookings.map(b=>b.toJSON());
             Bookings = Bookings.map(b=>adjustPojo(b, ['User', 'id', 'spotId', 'userId', 'startDate', 'endDate', 'createdAt', 'updatedAt']));
         }
+        Bookings.forEach(b => {b.startDate = ymdt(b.startDate); b.endDate = ymdt(b.endDate)})
         return res.json({Bookings});
     })
     .post(requireAuth, validateBooking, async (req, res, next) => {
@@ -80,8 +81,8 @@ router.route('/:spotId(\\d+)/bookings')
                 booking = await Booking.create({
                     spotId: spot.id,
                     userId: req.user.id,
-                    startDate,
-                    endDate
+                    startDate: ymdt(startDate),
+                    endDate: ymdt(endDate)
           })} else return;
           if (booking) return res.status(201).json(booking);
           else return res.status(500).json({message: 'Booking creation failed'});

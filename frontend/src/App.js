@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 
 import * as sessionActions from "./store/session";
 
+import ManageBookings from "./components/ManageBookings";
 import ManageSpots from "./components/ManageSpots";
 import Navigation from "./components/Navigation";
 import SpotCreate from "./components/SpotCreate";
@@ -27,7 +28,9 @@ function App() {
       <Navigation isLoaded={isLoaded} />
       {isLoaded &&
       <Switch>
+        <Route exact path="/spots/:id/bookings/new" component={SpotBookingCreate} />
         <Route exact path="/spots/:id/edit" component={SpotEdit} />
+        <Route exact path="/bookings/current" component={ManageBookings} />
         <Route exact path="/spots/current" component={ManageSpots} />
         <Route exact path="/spots/new" component={SpotCreate} />
         <Route exact path="/spots/:id" component={SpotDetails} />

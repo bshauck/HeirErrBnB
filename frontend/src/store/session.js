@@ -19,38 +19,41 @@ and without logged-in user
 */
 
 /* I'll leave the above, but this will really be the user
- * entry point, and besides the "user" key for the current
- * user, I will have user id keys and user data per user
- * mainly to have owner info for spots, but will fill other
- * stuff as gathered. So:
- * userId: {user data} for each user encountered
- * So other user data will exist in two possible states
- *
+   /* session */ /*
+  {
+    user: current user || null
+    spots: same as user>spots [spotIds,]
+    reviews: same as user>reviews [reviewIds,]
+    bookings: same as user>bookings [bookingIds,]
+    id: // normalized user info
+    {
+     [userId]:
+       { // partial from review reads
+         id,
+         firstName,
+         lastName,
 
- * userId: { // obtained from singleSpot
-    id,
-    firstName,
-    lastName,
+         // additional detail on login (passwords only in db)
+         email,
+         username,
+
+         // additional detail w/ current spots/review/bookings
+         spots: [spotIds,],
+         reviews: [reviewIds,], // all reviews of user
+         bookings: [bookingIds,],
+         // spotQuery: [landingPageQueryParamString], // TODO
+         // currentPage: 3 // last displayed page of info // TODO
+       }
+    }
   }
- * userId: { // obtained from valid login
-    id,
-    email,
-    username,
-    firstName,
-    lastName,
-    createdAt,  /// TODO?
-    updatedAt   /// TODO?
-  }
- *
  */
 
 import { csrfFetch, fetchData } from "./csrf";
-import { CREATED_REVIEW, CREATED_SPOT, DELETED_REVIEW, DELETED_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
+import { CREATED_REVIEW, CREATED_SPOT, DELETED_REVIEW, DELETED_SPOT, READ_SPOT, READ_SPOT_REVIEWS, READ_USER_BOOKINGS, READ_USER_REVIEWS, READ_USER_SPOTS } from "./commonActionCreators";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
 const SET_SPOT_OWNER = "session/SET_SPOT_OWNER"
-
 
 export const setSpotOwner = (partialUser) => {
   return {
@@ -71,7 +74,6 @@ const removeUser = () => {
     type: REMOVE_USER,
   };
 };
-
 
 export const thunkLogin = user => async dispatch => {
   const { credential, password } = user;
@@ -128,8 +130,8 @@ const sessionReducer = (state = initialState, action) => {
     case SET_USER:
       const newUser = action.payload
       newState.user = newUser;
-      if (newUser && !state.id[newUser.id]?.username)
-        newState.id[newUser.id] = {...state.id[newUser.id], ...newUser}
+      if (newUser)
+        newState.id[newUser.id] = {...(state.id[newUser.id] ? {...state.id[newUser.id]}: {}), ...newUser}
       return newState;
 
     case READ_SPOT: {
@@ -153,17 +155,26 @@ const sessionReducer = (state = initialState, action) => {
       newState.user = newState.reviews = newState.spots = newState.bookings = null;
       return newState;
 
+    case READ_USER_BOOKINGS: {
+      if (!action.payload) return state;
+      const bookingIds = action.payload.map(b => b.id)
+      newState.user = {...state.user}
+      newState.id = {...state.id}
+      newState.id[state.user.id].bookings = newState.bookings = newState.user.bookings = bookingIds
+      return newState
+    }
     case READ_USER_REVIEWS: {
       const reviewIds = action.payload.map(r => r.id)
       newState.user = {...state.user}
       newState.id = {...state.id}
-      newState.reviews = newState.user.reviews = reviewIds
+      newState.id[state.user.id].reviews = newState.reviews = newState.user.reviews = reviewIds
       return newState
     }
     case READ_USER_SPOTS: {
       const spotIds = action.payload.map(s=>s.id)
       newState.user = {...state.user}
-      newState.spots = newState.user.spots = spotIds;
+      newState.id = {...state.id}
+      newState.id[state.user.id].spots = newState.spots = newState.user.spots = spotIds;
       return newState;
     }
     case DELETED_SPOT: {

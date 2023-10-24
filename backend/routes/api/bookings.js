@@ -1,6 +1,6 @@
 const { validateEditBooking } = require('../../utils/validation');
 const { fitsAuthor, requireAuth, unauthor } = require('../../utils/auth');
-const { dayDate, ymd } = require('../../utils/normalizeDate')
+const { dayDate, ymd, ymdt } = require('../../utils/normalizeDate')
 const { Booking, Spot, SpotImage } = require('../../db/models');
 const { Op } = require('sequelize');
 const { adjustPojo } = require('../../utils/pojo')
@@ -53,6 +53,7 @@ router.get('/current', requireAuth, async (req, res) => {
         where: {userId: req.user.id}
     });
     Bookings = Bookings.map(e=>adjustPojo(e.toJSON(),['id', 'spotId', 'Spot','userId', 'startDate', 'endDate', 'createdAt', 'updatedAt']));
+    Bookings.forEach(b => {b.startDate = ymdt (b.startDate); b.endDate = ymdt(b.endDate)})
     return res.json({Bookings});
 });
 
@@ -63,12 +64,14 @@ router.route('/:bookingId(\\d+)')
         if (booking) {
             if (fitsAuthor(req, next, booking.userId)) {
                 const {startDate, endDate} = req.body;
-                if (startDate) booking.startDate = dayDate(startDate);
-                if (endDate) booking.endDate = dayDate(endDate);
+                if (startDate) booking.startDate = ymdt(startDate);
+                if (endDate) booking.endDate = ymdt(endDate);
                 if (booking.endDate.getTime() <= dayDate(new Date()).getTime()) {
                     return unauthor(next, Error("Past bookings can't be modified"));
                 }
-                if (await bookingOk(booking.startDate, booking.endDate, next, booking.bookingId)) {
+                if (await bookingOk(booking.startDate, booking.endDate, next, booking.id)) {
+                    // booking.startDate = ymdt(booking.startDate)
+                    // booking.endDate = ymdt(booking.endDate)
                     await booking.save();
                     return res.json(booking);
                 } else return;

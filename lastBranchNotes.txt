@@ -2,11 +2,22 @@
 Last branch notes
 
 MONDAY
-Lots of changes in modal buttons and menu items
+removed other console.logs
+added console.logs to areas being written/updated
+added bookings.js to store
+adjusted store/index.js adding bookingsReducer
+adjust App.js to invoke landings page for now when Reserve button clicked, instead of alert
+disabled Spot details Reserve button when not logged-in
+Adjust SpotTile to have optional prop bookingId to determine showing booking info (start date - end date below spot info, but above update/delete buttons)
+Updated store documentation for session
+Changed SpotTile to dispatch thunk to read booking information if not in store
+Adjust SpotTile to take any one of spot, spotId, bookingId and read what is necessary
 
-relatevie parent
 
-  absolute
+
+FOR profile dropdown:
+  relative parent
+    absolute with coords for dropdown menu
 
 
 redo seeding on production

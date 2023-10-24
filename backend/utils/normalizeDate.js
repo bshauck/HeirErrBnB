@@ -91,4 +91,4 @@ some existing range, then you need the original
 query as well.
 */
 
-module.exports = { addDays, dayDate, dayGTE, dayLTE, ymd }
+module.exports = { addDays, dayDate, dayGTE, dayLTE, ymd, ymdt }

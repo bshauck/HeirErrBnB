@@ -7,20 +7,27 @@ import StarRating from '../StarRating';
 import OpenModalButton from '../OpenModalButton';
 import SpotDeleteFormModal from '../SpotDeleteFormModal';
 import { thunkReadSpot } from '../../store/spots';
+import { thunkReadAllUserBookings } from '../../store/bookings';
+
+
 
 const placeholderSrc = "https://placehold.co/200?text=Photo+needed&font=montserrat"
 
-function SpotTile ({spotId, spot, isManaged}) {
-  const [ref] = useState({current:{}});
+function SpotTile ({spotId, spot, isManaged, bookingId}) {
+  console.log("🚀 ~ starting SpotTile ~ spotId, spot, isManaged, bookingId:", spotId, spot, isManaged, bookingId)
+  const [ref] = useState({current:{spot:null,booking:null}});
   const stateSpot = useSelector(state => state.spots.id[spotId])
   const history = useHistory();
   const dispatch = useDispatch();
+  const booking = useSelector(state => state.bookings.id[bookingId])
+  // const user = useSelector(state => state.session.user)
 
-  if (isManaged) spot = stateSpot;
+  if (bookingId) isManaged=true;
+  if (isManaged) spot = stateSpot; // undefined if only bookingId
 
   function handleUpdateClick(e) {
-    if (stateSpot !== true)
-    history.push(`/spots/${spotId}/edit`)
+    if (!bookingId) // TODO
+      history.push(`/spots/${spotId}/edit`)
   }
 
   function handleDeleteClick() {
@@ -30,12 +37,25 @@ function SpotTile ({spotId, spot, isManaged}) {
     history.push(`/spots/${spotId}`)
   }
 
+  console.log("TEMP: ref, ref.current, ref.current.booking, ref.current.spot]", ref, ref.current, ref.current.booking, ref.current.spot)
+
+  // console.log("TEMP: ref.current?.booking[bookingId]", ref.current?.booking)
+  /* only hit db for bookingInfo if passed a bookingId */
+  if (bookingId && (!booking || Object.values(booking).length < 2)) {
+      if (!ref.current.booking || !ref.current.booking[bookingId])
+        ref.current.booking[bookingId] = dispatch(thunkReadAllUserBookings())
+      return null;
+  } else if (bookingId && ref.current.booking[bookingId]) delete ref.current.booking[bookingId]
+
+  if (!spot && !spotId) spotId = booking.spotId;
 
   if (!spot || Object.values(spot).length < 2) {
-    if (!ref.current[spotId])
-      ref.current[spotId] = dispatch(thunkReadSpot(spotId))
+    if (!ref.current.spot[spotId])
+      ref.current.spot[spotId] = dispatch(thunkReadSpot(spotId))
     return null;
-  } else if (ref.current[spotId]) delete ref.current[spotId]
+  } else if (spotId && ref.current.spot && ref.current.spot[spotId]) delete ref.current.spot[spotId]
+
+  console.log("🚀 ~ RENDERING SpotTile ~ spotId, spot, isManaged, bookingId:", spotId, spot, isManaged, bookingId)
 
   return (
     <>

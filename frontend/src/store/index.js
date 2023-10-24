@@ -4,27 +4,26 @@ import sessionReducer from "./session";
 import spotsReducer from "./spots";
 import reviewsReducer from "./reviews";
 import spotImagesReducer from "./spotImages";
-// import bookingsReducer from "./bookings";
+import bookingsReducer from "./bookings";
 
 /* New store shape (see each slice for details)
 {
   session:
   spots:
   reviews:
-//  bookings: // TODO
+  bookings:
   spotImages:
-//  reviewImages: // TODO
+//  reviewImages: // TODO remove
 },
 */
 
 const rootReducer = combineReducers({
   session: sessionReducer,
-  // users: [], // apparently handled by session
   spots: spotsReducer,
   reviews: reviewsReducer,
-  // bookings: bookingsReducer
-  spotImages: spotImagesReducer,
-  // reviewImages: []
+  bookings: bookingsReducer,
+  spotImages: spotImagesReducer
+  // reviewImages: [] // TODO: remove
 });
 
 let enhancer;

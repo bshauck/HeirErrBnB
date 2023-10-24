@@ -59,8 +59,8 @@ module.exports = {
         generatedBookings.push({
           spotId: nextBookingSpotId,
           userId: nextUserId,
-          startDate: ymd(startDate),
-          endDate: ymd(endDate)
+          startDate: startDate.toISOString().split('.')[0].replace('T',' '),
+          endDate: endDate.toISOString().split('.')[0].replace('T',' ')
         });
   }}
     // await Booking.bulkCreate([  // we are doing bulkInsert to avoid validations
@@ -68,14 +68,14 @@ module.exports = {
       {
         spotId: spotIds[2],
         userId: userIds[0],
-        startDate: '2023-09-20',
-        endDate: '2023-09-22',
+        startDate: '2023-09-20 12:00:00',
+        endDate: '2023-09-22 12:00:00',
       },
       {
         spotId: spotIds[2],
         userId: userIds[0],
-        startDate: '2023-09-20',
-        endDate: '2023-10-31',
+        startDate: '2023-10-20 12:00:00',
+        endDate: '2023-11-31 12:00:00',
       },
       ...generatedBookings
     ], { /* validate: true */ }); // we turn off validation to allow

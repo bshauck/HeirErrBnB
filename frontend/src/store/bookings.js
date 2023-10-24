@@ -17,38 +17,35 @@
   user: { [userId]: [idsOrderedByUserAndAscFutureEndDatePerhaps], }
 }
 */
+import { fetchData } from "./csrf";
+import { READ_USER_BOOKINGS } from "./commonActionCreators";
 
-/* New store shape
-{
-  [bookingId]:
-    {
-      id,
-      userId,
-      spotId,
-      startDate,
-      endDate,
-      createdAt,
-      updatedAt
-    },
-    "list": [idsOrderedByEndDatePerhaps]
-}
+/*
+GetCurrentUser:
+  GET /api/bookings/current
+GetAllSpotBookings
+  GET /api/spots/:id/bookings
+CreateSpotBooking
+  POST /api/spots/:id/bookings (start/end)
+EditBooking
+  PUT /api/bookings/:id (start/end)
+DeleteBooking
+  DEL /api/bookings/:id
+    toISOString().split('T')[0];
+
+
 */
 
-/* TODO: copy in state above, and update all api urls, etc */
+const READ_SPOT_BOOKINGS = "bookings/READ_SPOT_BOOKINGS";
+// const READ_BOOKING = "bookings/READ_BOOKING";
+const DELETED_BOOKING = "bookings/DELETED_BOOKING";
+const CREATED_BOOKING = "bookings/CREATED_BOOKING";
+const UPDATED_BOOKING = "bookings/UPDATED_BOOKING";
 
-import { csrfFetch } from "./csrf";
-
-const READ_BOOKINGS = "bookings/READ_BOOKINGS";
-const READ_USER_BOOKINGS = "bookings/READ_USER_BOOKINGS";
-const READ_BOOKING = "bookings/READ_BOOKING";
-const DELETE_BOOKING = "bookings/DELETE_BOOKING";
-const CREATE_BOOKING = "bookings/CREATE_BOOKING";
-const UPDATE_BOOKING = "bookings/UPDATE_BOOKING";
-
-function readAllBookings(bookings) {
+function readAllSpotBookings(bookings, spotId) {
     return {
-        type: READ_BOOKINGS,
-        payload: bookings
+        type: READ_SPOT_BOOKINGS,
+        payload: {bookings, spotId}
     }
 }
 
@@ -59,67 +56,70 @@ function readAllUserBookings(bookings) {
     }
 }
 
-function readBooking(booking) {
-    return {
-        type: READ_BOOKING,
-        payload: booking
-    }
-}
+// function readBooking(booking) {
+//     return {
+//         type: READ_BOOKING,
+//         payload: booking
+//     }
+// }
 
-function deleteBooking(id) {
+function deletedBooking(id) {
     return {
-        type: DELETE_BOOKING,
+        type: DELETED_BOOKING,
         payload: id
     };
 };
 
-function createBooking(booking) {
+function createdBooking(booking) {
     return {
-        type: CREATE_BOOKING,
+        type: CREATED_BOOKING,
         payload: booking
     };
 };
 
-function updateBooking(booking) {
+function updatedBooking(booking) {
     return {
-        type: UPDATE_BOOKING,
+        type: UPDATED_BOOKING,
         payload: booking
     }
 }
 
-export const thunkReadAllBookings = () => async (dispatch) => {
-  const response = await csrfFetch("/api/bookings");
+export const thunkReadAllSpotBookings = () => async (dispatch) => {
+  const response = await fetchData("/api/bookings");
   const data = await response.json();
-  dispatch(readAllBookings(data.Bookings));
+  dispatch(readAllSpotBookings(data.Bookings));
   return response;
 };
 
 export const thunkReadAllUserBookings = () => async (dispatch) => {
-  const response = await csrfFetch("/api/bookings/current");
-  const data = await response.json();
-  dispatch(readAllUserBookings(data.Bookings));
-  return response;
+  console.log("🚀 ~ entering thunkReadAllUserBookings ~");
+  const answer = await fetchData("/api/bookings/current");
+  console.log("🚀 ~ thunkReadAllUserBookings ~ answer:", answer)
+  if (answer && !answer.errors && answer.Bookings) {
+    console.log("DISPATCHING user bookings: answer", answer)
+    dispatch(readAllUserBookings(answer.Bookings));
+  } else console.log("NOT dispatching user bookings: answer", answer)
+  return answer;
 };
 
-export const thunkReadBooking = id => async dispatch => {
-    const response = await csrfFetch(`/api/bookings/${id}`);
-    await response.json();
-    dispatch(readBooking(id));
-    return response;
-};
+// export const thunkReadBooking = id => async dispatch => {
+//     const answer = await fetchData(`/api/bookings/${id}`);
+//     if (!answer.errors) dispatch(readBooking(id));
+//     return answer;
+// };
 
 export const thunkDeleteBooking = id => async dispatch => {
-    const response = await csrfFetch(`/api/bookings/${id}`, {
+    const response = await fetchData(`/api/bookings/${id}`, {
         method: 'DELETE',
     });
     await response.json();
-    dispatch(deleteBooking(id));
+    dispatch(deletedBooking(id));
     return response;
 };
 
 export const thunkCreateBooking = booking => async dispatch => {
   const { startDate, endDate } = booking;
-  const response = await csrfFetch("/api/bookings", {
+  const response = await fetchData("/api/bookings", {
     method: "POST",
     body: JSON.stringify({ /* TODO fill out */
       startDate,
@@ -127,13 +127,13 @@ export const thunkCreateBooking = booking => async dispatch => {
     }),
   });
   const data = await response.json();
-  dispatch(createBooking(data.booking));
+  dispatch(createdBooking(data.booking));
   return response;
 };
 
 export const thunkUpdateBooking = booking => async dispatch => {
   const { startDate, endDate } = booking;
-  const response = await csrfFetch(`/api/bookings/${booking.id}`, {
+  const response = await fetchData(`/api/bookings/${booking.id}`, {
     method: "PUT",
     body: JSON.stringify({ /* TODO fill out */
       startDate,
@@ -141,46 +141,74 @@ export const thunkUpdateBooking = booking => async dispatch => {
     }),
   });
   const data = await response.json();
-  dispatch(updateBooking(data.booking));
+  dispatch(updatedBooking(data.booking));
   return response;
 };
 
 const initialState = {
-    user: {},
-    booking: {},
+  id: {},
+  spot: null, // or array
+  user: null // or array
 };
 
 const bookingsReducer = (state = initialState, action) => {
+  console.log("🚀 ~ bookingsReducer ~ type, payload:", action.type, action.payload)
   let newState;
   switch (action.type) {
-    case READ_BOOKINGS: {
+    case READ_SPOT_BOOKINGS: {
         const bookings = action.payload;
+        if (!bookings || !bookings.length) return state;
         const normalized = {};
         bookings.forEach(s => normalized[s.id]=s)
         newState = {...state};
-        newState.allBookings = bookings;
+        newState.spot = {...state.spot}
+        newState.spot[bookings[0].spotId] = Object.keys(normalized);
         return newState;
     }
     case READ_USER_BOOKINGS: {
-        const bookings = action.payload;
+        const bookings = [...action.payload];
+        if (!bookings || !bookings.length) return state;
         const normalized = {};
-        bookings.forEach(s => normalized[s.id]=s)
+        bookings.forEach(b => normalized[b.id]=b)
         newState = {...state};
-        newState.userBookings = bookings;
+        newState.id = {...state.id, ...normalized};
+        newState.user = {...state.user}
+        newState.user[bookings[0].userId] = Object.keys(normalized);
         return newState;
     }
-    case CREATE_BOOKING:
-    case READ_BOOKING:
-    case UPDATE_BOOKING:
+    // case READ_BOOKING:
+    case CREATED_BOOKING: //eslint ignore
+    case UPDATED_BOOKING:{
+      const id = action.payload.id;
+      const userId = action.payload.userId;
+      const spotId = action.payload.spotId;
       newState = {...state};
-      newState.singleBooking = action.payload;
+      newState.id = {...state.id}
+      newState.id[id] = {...state.id[id], ...action.payload}
+      newState.user = {...state.user}
+      newState.user[userId] = [...state.user[userId]]
+      newState.user[userId].splice(newState.user[userId].indexOf(id),1)
+      newState.spot = {...state.spot}
+      newState.spot[spotId] = [...state.spot[spotId]]
+      newState.user[spotId].splice(newState.user[spotId].indexOf(id),1)
       return newState;
-    case DELETE_BOOKING:
-      const newAllBookings = state.allBookings.filter(e => e.id !== action.payload);
+    }
+    case DELETED_BOOKING: {
+      const oldBookingId = action.payload
+      if (!Object.keys(state.id).includes(oldBookingId)) return state;
+      const oldSpotId = state.id[oldBookingId].spotId;
+      const oldUserId = state.id[oldBookingId].userId;
       newState = {...state};
-      newState.allBookings = newAllBookings;
-      if (newState.singleBooking?.id === action.payload) newState.singleBooking = {};
+      newState.id = {...state.id};
+      delete newState.id[oldBookingId]
+      newState.spot = {...state.spot}
+      newState.spot[oldSpotId] = [...state.spot[oldSpotId]]
+      newState.spot[oldSpotId].splice(newState.spot[oldSpotId].indexOf(oldBookingId),1)
+      newState.user = {...state.user}
+      newState.user[oldUserId] = [...state.user[oldUserId]]
+      newState.user[oldUserId].splice(newState.user[oldUserId].indexOf(oldBookingId), 1)
       return newState;
+    }
     default:
       return state;
   }
