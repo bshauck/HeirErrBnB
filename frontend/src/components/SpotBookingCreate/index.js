@@ -4,4 +4,4 @@ function SpotBookingCreate() {
     return null;
 }
 
-export default SpotBookingCreate;
+export default SpotBookingCreate ;

@@ -75,12 +75,10 @@ function ProfileButton({ user }) {
           <>
             <li className="loggedInMenuTextItem">Hello, {user.firstName}</li>
             <li className="loggedInMenuTextItem">{user.email}</li>
-            <li>
-            <hr></hr>
-              <button type="button" className="manageBookingsButton" onClick={manageBookings}>Trips</button>
-              <button type="button" className="manageSpotsButton" onClick={manageSpots}>Manage Spots</button>
-            <hr></hr>
-            </li>
+            <li> <hr></hr> </li>
+            <li><button type="button" className="manageBookingsButton" onClick={manageBookings}>Trips</button></li>
+            <li><button type="button" className="manageSpotsButton" onClick={manageSpots}>Manage Spots</button></li>
+            <li><hr></hr></li>
             <li>
               <button className="logoutButton" onClick={logout}>Log Out</button>
             </li>

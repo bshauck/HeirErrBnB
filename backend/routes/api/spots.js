@@ -61,8 +61,10 @@ router.route('/:spotId(\\d+)/bookings')
         let Bookings = await Booking.findAll({
             ...clause,
             ...attrClause,
-            where: {spotId: req.params.spotId},
-        });
+            where: {spotId: {[Op.eq]: req.params.spotId},
+                    endDate: {[Op.gt]: ymd(Date.now())}},
+            order: [['endDate','ASC']]
+            });
         if (isOwner) {
             Bookings = Bookings.map(b=>b.toJSON());
             Bookings = Bookings.map(b=>adjustPojo(b, ['User', 'id', 'spotId', 'userId', 'startDate', 'endDate', 'createdAt', 'updatedAt']));

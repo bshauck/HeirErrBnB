@@ -50,7 +50,9 @@ router.get('/current', requireAuth, async (req, res) => {
     let Bookings = await Booking.findAll({
         include: {model: Spot, attributes: {exclude: ['description', 'createdAt', 'updatedAt']},
          },
-        where: {userId: req.user.id}
+        where: {userId: {[Op.eq]: req.user.id},
+                endDate: {[Op.gt]: ymd(Date.now())}},
+        order: [['endDate','ASC']]
     });
     Bookings = Bookings.map(e=>adjustPojo(e.toJSON(),['id', 'spotId', 'Spot','userId', 'startDate', 'endDate', 'createdAt', 'updatedAt']));
     Bookings.forEach(b => {b.startDate = ymdt (b.startDate); b.endDate = ymdt(b.endDate)})

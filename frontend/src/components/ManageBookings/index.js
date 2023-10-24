@@ -13,7 +13,7 @@ const ManageBookings = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    function handleClick() {
+    function handleClick() { /* search goes to landing */
       history.push("/")
     }
 
@@ -31,12 +31,11 @@ const ManageBookings = () => {
       <div className="ManageBookingsDiv">
         <div className="ManageBookingsHeaderDiv">
           <h1>Trips</h1>
-         </div>
-        ({bookingIds.length ?
-        <div className="spotListDiv">
+        </div>
+        {bookingIds.length ?
+          <div className="spotListDiv">
           {bookingIds.map(bId => (
-                <SpotTile key={bId} isManaged={true} bookingId={bId} />
-            ))}
+            <SpotTile key={bId} isManaged={true} bookingId={bId} />))}
         </div>
         :
         <div className="emptyBookingsDiv">
@@ -44,7 +43,7 @@ const ManageBookings = () => {
           <p>Time to dust off your bags and start planning your next adventure</p>
           <button className="emptyBookingButton" type="button" onClick={handleClick} >Start searching</button>
         </div>
-          })
+        }
       </div>
     );
 }

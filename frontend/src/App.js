@@ -7,11 +7,13 @@ import * as sessionActions from "./store/session";
 import ManageBookings from "./components/ManageBookings";
 import ManageSpots from "./components/ManageSpots";
 import Navigation from "./components/Navigation";
+import SpotBookingCreate from "./components/SpotBookingCreate"
 import SpotCreate from "./components/SpotCreate";
 import SpotDetails from "./components/SpotDetails";
 import SpotEdit from "./components/SpotEdit";
 import SpotList from "./components/SpotList";
 import { restoreCSRF } from "./store/csrf";
+
 
 function App() {
   const dispatch = useDispatch();

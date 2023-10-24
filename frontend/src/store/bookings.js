@@ -147,8 +147,8 @@ export const thunkUpdateBooking = booking => async dispatch => {
 
 const initialState = {
   id: {},
-  spot: null, // or array
-  user: null // or array
+  spot: {}, // or spotId=>bookingIdsArray
+  user: {} // or userId=>bookingIdsArray
 };
 
 const bookingsReducer = (state = initialState, action) => {

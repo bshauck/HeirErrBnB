@@ -653,7 +653,7 @@ button[disabled] {
     text-decoration: underline ;
     font-weight: bold;
 }
-.manageSpotsButton,manageBookingsButton {
+.manageSpotsButton,.manageBookingsButton {
     border: none ;
     background-color: white ;
     margin-left: 10px ;
