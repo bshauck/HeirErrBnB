@@ -13,15 +13,37 @@ Updated store documentation for session
 Changed SpotTile to dispatch thunk to read booking information if not in store
 Adjust SpotTile to take any one of spot, spotId, bookingId and read what is necessary
 Bookings listed are only current and future ones; and are listed in endDate order.
-
+Changed backend to better store dates for Bookings
+Changed ordering of Bookings returned
 TUESDAY
+Redid Spot/Review deleteFormModal for reuse, so all 3 resources (adding booking) use same component with different props
+Retest all 3 resource deletions
+Improved error-handling and display on modal
+Delete functionality in place.
+DRYed readOfMultiple/Delete/Create of spots/reviews/bookings in session reducer
+Connected Delete for Bookings and tested
+TUESDAY AFTERNOON
+Initial default CreateBookingsPage
+Added route in App
+Connected Reserve button
 
-Need to connect Delete
-Need to create CreateBookingPage
-Connect Update to version of Create
-Need to create modal Calendar
+
+Need to create initial default CreateBookingPage
+REVIEW NPM Calendar frameworks
+Need to make modal Calendar to create Bookings
+Connect Update to version of calendar
 Need to CSS everything
 Perhaps colorize Booking dates which conflict with others. (we allow creating conflicting reservations; as we don't know which may be cancelled; users will be liable for fees at a certain point)
+Need to redo checks; not correctly ignoring id of updated booking with date checks
+Still need to DRY duplicated bookingOk check code
+
+MAP API
+First, create vetting and error reporting on Create/Update Spot form;
+fill in long lat for vetted addresses.
+Add read-only fields for long/lat display.
+
+Put floating map button on landing page, and show map
+
 
 
 FOR profile dropdown:

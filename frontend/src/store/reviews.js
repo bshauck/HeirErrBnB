@@ -144,7 +144,8 @@ const calculateRatings = (state, spotId) => {
   return [numReviews, sum/numReviews]
 }
 
-export const thunkDeleteReview = (id, spotId) => async (dispatch, getState) => {
+export const thunkDeleteReview = payload => async (dispatch, getState) => {
+  const {id, spotId} = payload
   const answer = await fetchData(`/api/reviews/${id}`, {method: 'DELETE'})
   if (!answer.errors) {
     dispatch(deletedReview(id, spotId))

@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom/';
 import { useDispatch, useSelector } from 'react-redux';
 
-import StarRating from '../StarRating';
 import OpenModalButton from '../OpenModalButton';
-import SpotDeleteFormModal from '../SpotDeleteFormModal';
-import { thunkReadSpot } from '../../store/spots';
-import { thunkReadAllUserBookings } from '../../store/bookings';
+import StarRating from '../StarRating';
+import { thunkDeleteSpot, thunkReadSpot } from '../../store/spots';
+import { thunkDeleteBooking, thunkReadAllUserBookings } from '../../store/bookings';
 import { ymd } from '../../utils/normalizeDate'
+import ResourceDeleteFormModal from '../ResourceDeleteFormModal';
 
 
 const placeholderSrc = "https://placehold.co/200?text=Photo+needed&font=montserrat"
@@ -20,7 +20,6 @@ function SpotTile ({spotId, spot, isManaged, bookingId}) {
   const history = useHistory();
   const dispatch = useDispatch();
   const booking = useSelector(state => state.bookings.id[bookingId])
-  // const user = useSelector(state => state.session.user)
 
   if (booking) {
     spotId = booking.spotId;
@@ -56,6 +55,10 @@ function SpotTile ({spotId, spot, isManaged, bookingId}) {
 
   console.log("🚀 ~ RENDERING SpotTile ~ spotId, spot, isManaged, bookingId, booking:", spotId, spot, isManaged, bookingId, booking)
 
+  let componentId = spotId; let resource = 'spot'; let thunk = thunkDeleteSpot;
+  if (bookingId) {
+    componentId = bookingId; resource = 'booking'; thunk = thunkDeleteBooking;
+  }
   return (
     <>
     <div className="tileDiv"> <div className="tileNoButtonsDiv" onClick={handleTileClick} >
@@ -79,8 +82,8 @@ function SpotTile ({spotId, spot, isManaged, bookingId}) {
               buttonText="Delete"
               onButtonClick={handleDeleteClick}
               // onModalClose={??}
-              modalComponent={<SpotDeleteFormModal id={spotId}/>}
-              />    </div>
+              modalComponent={<ResourceDeleteFormModal id={componentId} resource={resource} thunkDeleteFunc={thunk} />}
+              /></div>
     }
   </div>
     </>

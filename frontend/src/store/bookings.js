@@ -18,7 +18,7 @@
 }
 */
 import { fetchData } from "./csrf";
-import { READ_USER_BOOKINGS } from "./commonActionCreators";
+import { CREATED_BOOKING, DELETED_BOOKING, READ_USER_BOOKINGS } from "./commonActionCreators";
 
 /*
 GetCurrentUser:
@@ -38,8 +38,6 @@ DeleteBooking
 
 const READ_SPOT_BOOKINGS = "bookings/READ_SPOT_BOOKINGS";
 // const READ_BOOKING = "bookings/READ_BOOKING";
-const DELETED_BOOKING = "bookings/DELETED_BOOKING";
-const CREATED_BOOKING = "bookings/CREATED_BOOKING";
 const UPDATED_BOOKING = "bookings/UPDATED_BOOKING";
 
 function readAllSpotBookings(bookings, spotId) {
@@ -64,6 +62,7 @@ function readAllUserBookings(bookings) {
 // }
 
 function deletedBooking(id) {
+    console.log("🚀 ~ deletedBooking ~ id:", id)
     return {
         type: DELETED_BOOKING,
         payload: id
@@ -109,12 +108,11 @@ export const thunkReadAllUserBookings = () => async (dispatch) => {
 // };
 
 export const thunkDeleteBooking = id => async dispatch => {
-    const response = await fetchData(`/api/bookings/${id}`, {
-        method: 'DELETE',
-    });
-    await response.json();
-    dispatch(deletedBooking(id));
-    return response;
+    console.log("🚀 ~ thunkDeleteBooking ~ id:", id)
+    const answer = await fetchData(`/api/bookings/${id}`, { method: 'DELETE' });
+    console.log("🚀 ~ thunkDeleteBooking ~ answer, errors:", answer, answer.errors)
+    if (!answer.errors) dispatch(deletedBooking(id));
+    return answer;
 };
 
 export const thunkCreateBooking = booking => async dispatch => {
@@ -152,15 +150,15 @@ const initialState = {
 };
 
 const bookingsReducer = (state = initialState, action) => {
-  console.log("🚀 ~ bookingsReducer ~ type, payload:", action.type, action.payload)
-  let newState;
+  if (!action.type.startsWith('@@'))
+    console.log("🚀 ~ bookingsReducer ~ type, payload:", action.type, action.payload)
+  let newState = {...state};
   switch (action.type) {
     case READ_SPOT_BOOKINGS: {
         const bookings = action.payload;
         if (!bookings || !bookings.length) return state;
         const normalized = {};
         bookings.forEach(s => normalized[s.id]=s)
-        newState = {...state};
         newState.spot = {...state.spot}
         newState.spot[bookings[0].spotId] = Object.keys(normalized);
         return newState;
@@ -170,35 +168,36 @@ const bookingsReducer = (state = initialState, action) => {
         if (!bookings || !bookings.length) return state;
         const normalized = {};
         bookings.forEach(b => normalized[b.id]=b)
-        newState = {...state};
         newState.id = {...state.id, ...normalized};
         newState.user = {...state.user}
         newState.user[bookings[0].userId] = Object.keys(normalized);
         return newState;
     }
     // case READ_BOOKING:
-    case CREATED_BOOKING: //eslint ignore
-    case UPDATED_BOOKING:{
+    case CREATED_BOOKING:{
+    const id = action.payload.id;
+    const userId = action.payload.userId;
+    const spotId = action.payload.spotId;
+    newState.id = {...state.id}
+    newState.id[id] = {...action.payload}
+    newState.user = {...state.user}
+    newState.user[userId] = [...state.user[userId], id]
+    newState.spot = {...state.spot}
+    newState.spot[spotId] = [...state.spot[spotId], id]
+    return newState;
+  }
+  case UPDATED_BOOKING:{
       const id = action.payload.id;
-      const userId = action.payload.userId;
-      const spotId = action.payload.spotId;
-      newState = {...state};
       newState.id = {...state.id}
       newState.id[id] = {...state.id[id], ...action.payload}
-      newState.user = {...state.user}
-      newState.user[userId] = [...state.user[userId]]
-      newState.user[userId].splice(newState.user[userId].indexOf(id),1)
-      newState.spot = {...state.spot}
-      newState.spot[spotId] = [...state.spot[spotId]]
-      newState.user[spotId].splice(newState.user[spotId].indexOf(id),1)
       return newState;
     }
     case DELETED_BOOKING: {
+      console.log("DELETING BOOKING id", action.payload)
       const oldBookingId = action.payload
       if (!Object.keys(state.id).includes(oldBookingId)) return state;
       const oldSpotId = state.id[oldBookingId].spotId;
       const oldUserId = state.id[oldBookingId].userId;
-      newState = {...state};
       newState.id = {...state.id};
       delete newState.id[oldBookingId]
       newState.spot = {...state.spot}
