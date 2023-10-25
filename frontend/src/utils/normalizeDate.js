@@ -26,9 +26,10 @@ function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
      * We assume the last endDate in dateTuples is no greater than
      * the lastDate.
      */
-    let possibleStart = addDays(ymd(new Date()), searchDelay)
+    let possibleStart = ymd(addDays(new Date(), searchDelay))
     let nextRangeStart = ymd(dateTuples[0][0])
-    let calculatedEnd = addDays(possibleStart, stayLength)
+    let calculatedEnd = ymd(addDays(possibleStart, stayLength))
+
     if (calculatedEnd <= nextRangeStart)
         return [possibleStart, calculatedEnd]
 
@@ -36,7 +37,7 @@ function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
         possibleStart = ymd(dateTuples[i][1])
         nextRangeStart = ymd(dateTuples[i + 1][0])
 
-        calculatedEnd = addDays(possibleStart, stayLength)
+        calculatedEnd = ymd(addDays(possibleStart, stayLength))
 
         if (calculatedEnd <= nextRangeStart)
             return [possibleStart, calculatedEnd]
@@ -44,7 +45,7 @@ function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
 
     // Check after the last booked range
     possibleStart = ymd(dateTuples[dateTuples.length - 1][1])
-    calculatedEnd = addDays(possibleStart, stayLength)
+    calculatedEnd = ymd(addDays(possibleStart, stayLength))
 
     return calculatedEnd <= lastDate ? [possibleStart, calculatedEnd] : null
 } /* if return null, try again with a smaller proposed stayLength */
@@ -60,7 +61,7 @@ function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
 // const lastDate = ymd(addDays(new Date(), 365))
 // const availableRange = findAvailableRange(dateTuples, stayLength, searchDelay, lastDate)
 
-// console.log("Available Range:", availableRange.map(date => ymd(date))
+// console.log("Available Range:", availableRange.map(date => ymd(date)))
 
 
 function typeCheck(date) {
@@ -102,10 +103,10 @@ function dayGT(d1, d2) {
 function dayLT(d1, d2) {
     return d1.getTime() < d2.getTime()
 }
-export function dayGTE(d1, d2) {
+function dayGTE(d1, d2) {
     return dayGT(d1, d2) || dayEQ(d1, d2)
 }
-export function dayLTE(d1, d2) {
+function dayLTE(d1, d2) {
     return dayLT(d1, d2) || dayEQ(d1, d2)
 }
 
