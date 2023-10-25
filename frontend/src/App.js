@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 
 import * as sessionActions from "./store/session";
 
+import BookingCalendar from "./components/BookingCalendar"
 import ManageBookings from "./components/ManageBookings";
 import ManageSpots from "./components/ManageSpots";
 import Navigation from "./components/Navigation";
@@ -36,6 +37,7 @@ function App() {
         <Route exact path="/spots/current" component={ManageSpots} />
         <Route exact path="/spots/new" component={SpotCreate} />
         <Route exact path="/spots/:id" component={SpotDetails} />
+        <Route exact path="/calendar" component={BookingCalendar} />  // TODO: will be modal and not come from main switch
         <Route exact path="/" component={SpotList} />
       </Switch>
       }

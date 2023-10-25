@@ -10,19 +10,7 @@ Change default page size back to 20 (from 50), and track how you do
   displayed through renders
 
 
-Subheading size too large
-Subheading weight too heavy
-Regular text too large
-Heading weight somewhat more
-Textarea needs to extend across
-L/R edges of most elements need to align
-Submit button needs to be centered and colored
-Remove DEFAULT button (LAST THING)
-Confirm spot image creation working NO
-Have reasonable image sizing (tiles should be 3x6)
-CSS Delete Spot modal
-CSS not-logged-in menu
-CSS sign up dialog form
+
 
 Adding Fake descriptive text for host
 Adding divider on Spot details

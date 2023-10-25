@@ -18,7 +18,7 @@
 }
 */
 import { fetchData } from "./csrf";
-import { CREATED_BOOKING, DELETED_BOOKING, READ_USER_BOOKINGS } from "./commonActionCreators";
+import { CREATED_BOOKING, DELETED_BOOKING, READ_SPOT_BOOKINGS, READ_USER_BOOKINGS } from "./commonActionCreators";
 
 /*
 GetCurrentUser:
@@ -26,7 +26,7 @@ GetCurrentUser:
 GetAllSpotBookings
   GET /api/spots/:id/bookings
 CreateSpotBooking
-  POST /api/spots/:id/bookings (start/end)
+  POST /api/spots/:id/bookings (userId/start/end)
 EditBooking
   PUT /api/bookings/:id (start/end)
 DeleteBooking
@@ -36,14 +36,13 @@ DeleteBooking
 
 */
 
-const READ_SPOT_BOOKINGS = "bookings/READ_SPOT_BOOKINGS";
 // const READ_BOOKING = "bookings/READ_BOOKING";
 const UPDATED_BOOKING = "bookings/UPDATED_BOOKING";
 
-function readAllSpotBookings(bookings, spotId) {
+function readAllSpotBookings(payload) {
     return {
         type: READ_SPOT_BOOKINGS,
-        payload: {bookings, spotId}
+        payload // bookings, spotId
     }
 }
 
@@ -83,29 +82,28 @@ function updatedBooking(booking) {
     }
 }
 
-export const thunkReadAllSpotBookings = () => async (dispatch) => {
-  const response = await fetchData("/api/bookings");
-  const data = await response.json();
-  dispatch(readAllSpotBookings(data.Bookings));
-  return response;
+export const thunkReadAllSpotBookings = spotId => async dispatch => {
+  console.log("🚀 ~ thunkReadAllSpotBookings ~ spotId:", spotId)
+  let bookings = await fetchData(`/api/spots/${spotId}/bookings`);
+  if (!bookings.errors) {
+    bookings = bookings.Bookings;
+    dispatch(readAllSpotBookings({bookings, spotId}));
+  console.log("🚀 ~ thunkReadAllSpotBookings ~ bookings:", bookings)
+  }
+  return bookings;
 };
 
-export const thunkReadAllUserBookings = () => async (dispatch) => {
+export const thunkReadAllUserBookings = () => async dispatch => {
   console.log("🚀 ~ entering thunkReadAllUserBookings ~");
-  const answer = await fetchData("/api/bookings/current");
-  console.log("🚀 ~ thunkReadAllUserBookings ~ answer:", answer)
-  if (answer && !answer.errors && answer.Bookings) {
-    console.log("DISPATCHING user bookings: answer", answer)
-    dispatch(readAllUserBookings(answer.Bookings));
-  } else console.log("NOT dispatching user bookings: answer", answer)
-  return answer;
+  let bookings = await fetchData("/api/bookings/current");
+  console.log("🚀 ~ thunkReadAllUserBookings ~ bookings:", bookings)
+  if (!bookings.errors) {
+    bookings = bookings.Bookings;
+    console.log("DISPATCHING user bookings: bookings", bookings)
+    dispatch(readAllUserBookings(bookings));
+  } else console.log("NOT dispatching user bookings: bookings", bookings)
+  return bookings;
 };
-
-// export const thunkReadBooking = id => async dispatch => {
-//     const answer = await fetchData(`/api/bookings/${id}`);
-//     if (!answer.errors) dispatch(readBooking(id));
-//     return answer;
-// };
 
 export const thunkDeleteBooking = id => async dispatch => {
     console.log("🚀 ~ thunkDeleteBooking ~ id:", id)
@@ -116,51 +114,42 @@ export const thunkDeleteBooking = id => async dispatch => {
 };
 
 export const thunkCreateBooking = booking => async dispatch => {
-  const { startDate, endDate } = booking;
-  const response = await fetchData("/api/bookings", {
+  const { spotId } = booking;
+  const answer = await fetchData(`/api/spots/${spotId}/bookings`, {
     method: "POST",
-    body: JSON.stringify({ /* TODO fill out */
-      startDate,
-      endDate,
-    }),
+    body: JSON.stringify(booking),
   });
-  const data = await response.json();
-  dispatch(createdBooking(data.booking));
-  return response;
+  if (!answer.errors) dispatch(createdBooking(answer));
+  return answer;
 };
 
 export const thunkUpdateBooking = booking => async dispatch => {
-  const { startDate, endDate } = booking;
-  const response = await fetchData(`/api/bookings/${booking.id}`, {
+  // const { startDate, endDate } = booking;
+  const answer = await fetchData(`/api/bookings/${booking.id}`, {
     method: "PUT",
-    body: JSON.stringify({ /* TODO fill out */
-      startDate,
-      endDate,
-    }),
+    body: JSON.stringify(booking),
   });
-  const data = await response.json();
-  dispatch(updatedBooking(data.booking));
-  return response;
+  if (!answer.errors) dispatch(updatedBooking(answer));
+  return answer;
 };
 
 const initialState = {
   id: {},
-  spot: {}, // or spotId=>bookingIdsArray
+  spot: {}, // or spotId=>DateTupleArray
   user: {} // or userId=>bookingIdsArray
 };
 
 const bookingsReducer = (state = initialState, action) => {
-  if (!action.type.startsWith('@@'))
+  // if (!action.type.startsWith('@@'))
     console.log("🚀 ~ bookingsReducer ~ type, payload:", action.type, action.payload)
   let newState = {...state};
   switch (action.type) {
-    case READ_SPOT_BOOKINGS: {
-        const bookings = action.payload;
+    case READ_SPOT_BOOKINGS: { // just dates, no id
+        const { bookings, spotId } = action.payload;
+        console.log("🚀 ~ readspotbookings in reducer ~ bookings, spotId:", bookings, spotId)
         if (!bookings || !bookings.length) return state;
-        const normalized = {};
-        bookings.forEach(s => normalized[s.id]=s)
-        newState.spot = {...state.spot}
-        newState.spot[bookings[0].spotId] = Object.keys(normalized);
+        newState.spot = {...state.spot, [spotId]:[]}
+        bookings.forEach(b => newState.spot[spotId].push([b.startDate,b.endDate]))
         return newState;
     }
     case READ_USER_BOOKINGS: {
@@ -177,13 +166,10 @@ const bookingsReducer = (state = initialState, action) => {
     case CREATED_BOOKING:{
     const id = action.payload.id;
     const userId = action.payload.userId;
-    const spotId = action.payload.spotId;
     newState.id = {...state.id}
     newState.id[id] = {...action.payload}
     newState.user = {...state.user}
     newState.user[userId] = [...state.user[userId], id]
-    newState.spot = {...state.spot}
-    newState.spot[spotId] = [...state.spot[spotId], id]
     return newState;
   }
   case UPDATED_BOOKING:{
@@ -195,14 +181,19 @@ const bookingsReducer = (state = initialState, action) => {
     case DELETED_BOOKING: {
       console.log("DELETING BOOKING id", action.payload)
       const oldBookingId = action.payload
-      if (!Object.keys(state.id).includes(oldBookingId)) return state;
       const oldSpotId = state.id[oldBookingId].spotId;
+      const hasBookingId = Object.keys(state.id).includes(oldBookingId)
+      const hasSpotId = Object.keys(state.spot).includes(oldSpotId)
+      if (!hasBookingId && !hasSpotId) return state;
+      if (hasBookingId) {
+        newState.id = {...state.id};
+        delete newState.id[oldBookingId];
+      }
+      if (hasSpotId) {
+        newState.spot = {...state.spot}
+        delete newState.spot[oldSpotId]
+      }
       const oldUserId = state.id[oldBookingId].userId;
-      newState.id = {...state.id};
-      delete newState.id[oldBookingId]
-      newState.spot = {...state.spot}
-      newState.spot[oldSpotId] = [...state.spot[oldSpotId]]
-      newState.spot[oldSpotId].splice(newState.spot[oldSpotId].indexOf(oldBookingId),1)
       newState.user = {...state.user}
       newState.user[oldUserId] = [...state.user[oldUserId]]
       newState.user[oldUserId].splice(newState.user[oldUserId].indexOf(oldBookingId), 1)

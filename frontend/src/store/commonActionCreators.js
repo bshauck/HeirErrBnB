@@ -17,4 +17,5 @@ export const UPDATED_SPOT_REVIEW_RATINGS = "reviews/UPDATED_SPOT_REVIEW_RATINGS"
 
 export const CREATED_BOOKING = "bookings/CREATED_BOOKING";
 export const DELETED_BOOKING = "bookings/DELETED_BOOKING";
+export const READ_SPOT_BOOKINGS = "bookings/READ_SPOT_BOOKINGS";
 export const READ_USER_BOOKINGS = "bookings/READ_USER_BOOKINGS";

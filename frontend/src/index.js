@@ -32,14 +32,14 @@ if (process.env.NODE_ENV !== "production") {
 function Root() {
   return (
     <ErrorBoundary fallback={<div>Error...</div>}>
-      <ModalProvider>
-        <Provider store={store}>
+      <Provider store={store}>
+        <ModalProvider>
           <BrowserRouter>
             <App />
             <Modal />
           </BrowserRouter>
-        </Provider>
-      </ModalProvider>
+        </ModalProvider>
+      </Provider>
     </ErrorBoundary>
   );
 }
