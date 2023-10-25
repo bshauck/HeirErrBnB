@@ -1,4 +1,3 @@
-
 /*
    {
      session: CD Spot user.spot, CD Review,
@@ -6,7 +5,6 @@
      reviews: // from all reviews for spot/user; CUD Review
      bookings:
      spotImages: // spotdetails only existing, CUD for Spot
-   //  reviewImages: // TODO reviews spot/user; CUD for Review
    },
    */
    /* session */ /*
@@ -104,7 +102,7 @@
              updatedAt
            },
        }
-     spot: { [spotId]: [idsOrderedBySpotAndAscFutureEndDatePerhaps], }
+     spot: { [spotId]: [[start,end],[start,end],] }
      user: { [userId]: [idsOrderedByUserAndAscFutureEndDatePerhaps], }
    }
    */
@@ -127,24 +125,6 @@
 }
 */
 
-/* reviewImages */ /*
-{ // spot/user reviews; CUD for Review
-  id:
-    {
-      [imageId]:
-        {
-          id,
-          revoewId,
-          url
-        }
-    }
-  review:
-    {
-      [reviewId]; [imageIds,]
-    }
-  }
-}
-*/
 
 
 
@@ -264,19 +244,3 @@ res =
         "previewUrl": "image url"
       },
     }
-
-
-// No booking or review image info yet
-
-
-/* Ponder
-    add numReviews=0, avgRating=null, reviews=[] to Spot
-      creation in frontend (edit too if not pre-existing)
-    possibly eventually API creation/edit
-
-    only SpotImage info is spotDetails
-    also only source of API numReviews
-      (could easily be added to API getAll/UserSpots)
-
-      add numReviews and avgRating to all
-*/

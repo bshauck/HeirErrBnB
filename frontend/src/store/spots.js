@@ -210,9 +210,9 @@ const spotsReducer = (state = initialState, action) => {
       newState.id = {...state.id, [id]: spot};
       return newState;
     }
-    case READ_SPOT: { /* old singleSpot */
+    case READ_SPOT: {
       const id = action.payload.id
-      const spot = action.payload
+      const spot = {...action.payload}
       const images = action.payload.SpotImages.map(s=>s.id)
       spot.images = images
       newState = {...state}
