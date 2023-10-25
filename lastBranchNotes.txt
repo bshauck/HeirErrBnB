@@ -1,27 +1,6 @@
 
 Last branch notes
 
-
-TUESDAY
-Redid Spot/Review deleteFormModal for reuse, so all 3 resources (adding booking) use same component with different props
-Retest all 3 resource deletions
-Improved error-handling and display on modal
-Delete Booking functionality in place
-DRYed readOfMultiple/Delete/Create of spots/reviews/bookings in session reducer
-Connected Delete for Bookings and tested
-
-TUESDAY AFTERNOON
-Initial default CreateBookingsPage
-Added route in App
-Connected Reserve button
-Added findAvailableRange to date utilities
-REVIEW NPM Calendar frameworks; picked React-Calendar
-https://www.npmjs.com/package/react-calendar
-Initial App route /calendar for testing calendar; will
-  change to modal after getting basic functionality
-  correct
-added react-calendar to npm packages used after getting Dan's permission
-
 WEDNESDAY
 Continue work on react-calendar
 

@@ -34,6 +34,8 @@ function BookingCalendar() {
     const tomorrow = addDays(today, 1)
     const yearOut = addDays(today, 365)
     const [value, setValue] = useState([today, tomorrow]);
+    const [activeStartDate, setActiveStartDate] = useState(today); // work around bug
+
 
     function handleChange(nextValue) {
       setValue(nextValue);
@@ -47,6 +49,13 @@ function BookingCalendar() {
            return disabledDates.find(dDate => isSameDay(dDate, date));
     }
 
+
+    const onActiveStartDateChange = data => {
+        if (data.action !== "onChange") {
+            setActiveStartDate(data.activeStartDate);
+        }
+    }
+
     /*
      * activeStartDate the day to begin showing calendar
      * allowPartialRange whether a range can only be partly filled in on return
@@ -57,7 +66,7 @@ function BookingCalendar() {
      * formatDay (if needed to override default formatting)
      * formatMonth (if needed to override default formatting)
      * formatMonthYear (if needed to override default formatting)
-     * goToRangeStartOnSelect
+     * goToRangeStartOnSelect (needed for bug control)
      * inputRef
      * locale
      * maxDate set for a year out; evetually Host sets per location
@@ -78,7 +87,7 @@ function BookingCalendar() {
    return (
        <div className="bookingCalendarDiv">
     <Calendar
-        activeStartDate={today}
+        activeStartDate={activeStartDate}
         allowPartialRange={true}
         defaultValue={value}
         calendarType="gregory"
