@@ -102,10 +102,10 @@ function dayGT(d1, d2) {
 function dayLT(d1, d2) {
     return d1.getTime() < d2.getTime()
 }
-export function dayGTE(d1, d2) {
+function dayGTE(d1, d2) {
     return dayGT(d1, d2) || dayEQ(d1, d2)
 }
-export function dayLTE(d1, d2) {
+function dayLTE(d1, d2) {
     return dayLT(d1, d2) || dayEQ(d1, d2)
 }
 
