@@ -77,7 +77,7 @@ function ymd(date) { // return a string of YYYY-MM-DD of the date
     return date.toISOString().split('T')[0]
 }
 
-export function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
+function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
     // date = typeCheck(date); // not required; within dayDate
     return new Date(ymd(date)).toISOString().replace('T', ' ').split('.')[0]
 }
@@ -86,7 +86,7 @@ function addDaysInPlace(dDate, numDays) { // mutates argument; returns numeric
     dDate.setDate(dDate.getDate() + numDays)
 }
 
-export function addDays(date, numDays) { // return a new date numDays in future
+function addDays(date, numDays) { // return a new date numDays in future
     const result = new Date(date);       // past with negative numDays
     addDaysInPlace(result, numDays);
     return result
