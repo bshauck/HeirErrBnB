@@ -8,7 +8,7 @@
 // can turn into such a millisecond value. That
 // function will return NaN if unable to parse argument.
 
-export function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
+function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
     /*
      * dateTuples is a sorted array of 2-element subarrays of
      * ascending start/end dates for already booked stays. stayLength
@@ -67,17 +67,17 @@ function typeCheck(date) {
     return (typeof date === 'string' || typeof date === 'number')
         ? new Date(date) : date
 }
-export function dayDate(date) { // return Date instance with local time 0
+function dayDate(date) { // return Date instance with local time 0
     date = typeCheck(date);
     return new Date(date.toDateString())
 }
 
-export function ymd(date) { // return a string of YYYY-MM-DD of the date
+function ymd(date) { // return a string of YYYY-MM-DD of the date
     date = typeCheck(date);
     return date.toISOString().split('T')[0]
 }
 
-export function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
+function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
     // date = typeCheck(date); // not required; within dayDate
     return new Date(ymd(date)).toISOString().replace('T', ' ').split('.')[0]
 }
@@ -86,7 +86,7 @@ function addDaysInPlace(dDate, numDays) { // mutates argument; returns numeric
     dDate.setDate(dDate.getDate() + numDays)
 }
 
-export function addDays(date, numDays) { // return a new date numDays in future
+function addDays(date, numDays) { // return a new date numDays in future
     const result = new Date(date);       // past with negative numDays
     addDaysInPlace(result, numDays);
     return result
@@ -152,3 +152,6 @@ because if a new range entirely OVERLAPS
 some existing range, then you need the original
 query as well.
 */
+
+
+module.exports = { addDays, dayDate, dayGTE, dayLTE, findAvailableRange, ymd, ymdt }
