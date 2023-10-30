@@ -1,0 +1,129 @@
+.react-calendar__tile {
+    flex-basis: 40px !important;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .initial-closing-date:not(.react-calendar__tile--active) {
+    background-color: rebeccapurple;
+    color: white;
+  }
+
+
+
+
+  body {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  #navigation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #nav-months {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 50px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .nav-month-btn {
+    border: 1px solid #1d1d1d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    width: 25px;
+  }
+
+  .change-date {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .change-date b {
+    margin-right: 6px;
+  }
+
+  .change-date span {
+    cursor: pointer;
+    margin-right: 6px;
+    color: blue;
+    text-decoration: underline;
+  }
+
+  .change-date span::after {
+    content: ",";
+  }
+
+  .change-date span:last-child::after {
+    content: "";
+  }
+
+
+
+
+
+
+  /*
+
+
+          <div id="navigation">
+          <div>
+            {format(activeStartDate, "MMMM")}, {format(activeStartDate, "yyyy")}
+          </div>
+          <div id="nav-months" style={{ width: 60 }}>
+            <NavButton
+              label="◀"
+              onClick={() =>
+                setActiveStartDate(sub(activeStartDate, { months: 1 }))
+              }
+            />
+            <NavButton
+              label="▶"
+              onClick={() =>
+                setActiveStartDate(add(activeStartDate, { months: 1 }))
+              }
+            />
+          </div>
+        </div>
+
+
+
+
+        <Calendar
+          activeStartDate={activeStartDate}
+          calendarType="US"
+          showNavigation={false}
+          onChange={onChange}
+          value={value}
+          tileClassName={({ date }) =>
+            closingDate?.toDateString() === date.toDateString()
+              ? "initial-closing-date"
+              : null
+          }
+        />
+      </div>
+
+      <h2>Change year / month:</h2>
+
+    <p class="change-date">
+      <b>Set to:</b>
+      <span
+        onClick={() => {
+          const now = new Date();
+          onChange(now);
+          setActiveStartDate(now);
+        }}
+      >
+        Today
+      </span>
+    </p>
+*/

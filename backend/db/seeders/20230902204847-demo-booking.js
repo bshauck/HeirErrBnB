@@ -1,7 +1,7 @@
 'use strict';
 const { Spot, User, sequelize, Sequelize } = require('../models');
 const { getRandomInt, seederBookingIds, seederSpotIds, seederUserIds } = require('../../utils/seeder');
-const { addDays, dayDate, ymd } = require('../../utils/normalizeDate')
+const { addDays, dayDate, ymd, ymdt } = require('../../utils/normalizeDate')
 const Op = Sequelize.Op;
 const options = {};
 options.tableName = 'Bookings';
@@ -38,45 +38,46 @@ module.exports = {
     while (numberOfBookingUserIds--)
       bookingUserIds.push(...(possibleBookingUserIds.splice(getRandomInt(0, possibleBookingUserIds.length-1), 1)));
     const generatedBookings = [];
-    const today = dayDate(new Date());
+    let startDate = addDays(dayDate(new Date()), -10);
+    let bookingSpotDates = {}
+    for (const id of spotIds) bookingSpotDates[id] = startDate
+
     for (const nextUserId of bookingUserIds) {
       let possibleSpots = await Spot.findAll({
         attributes: ['id'],
         where: [{ownerId: {[Op.ne]: nextUserId}},
                 {id: spotIds}]
       });
-      possibleSpots = possibleSpots.map(e=>e.id)
-      let numberOfPossibleSpots = possibleSpots.length;
+      let possibleSpotIds = possibleSpots.map(e=>e.id)
+      let subsetNumberPossibleSpotIds = getRandomInt(possibleSpotIds.length/4,(possibleSpotIds.length-1)/1.7);
       let bookingSpotIds = [];
-      while (numberOfPossibleSpots--)
-        bookingSpotIds.push(...(possibleSpots.splice(getRandomInt(0, possibleSpots.length-1), 1)));
+      while (subsetNumberPossibleSpotIds--)
+        bookingSpotIds.push(...(possibleSpotIds.splice(getRandomInt(0, possibleSpotIds.length-1), 1)));
       for (const nextBookingSpotId of bookingSpotIds) {
-        let timeMultiplier = getRandomInt(1,1000) <= 400 ? -1 : 1;
-        let startDate = new Date(today);
-        addDays(startDate, timeMultiplier * getRandomInt(1,60));
-        let endDate = new Date(startDate);
-        addDays(endDate, getRandomInt(1,5));
+        startDate = addDays(new Date(bookingSpotDates[nextBookingSpotId]), getRandomInt(0,4));
+        let endDate = addDays(startDate, getRandomInt(1,5));
+        bookingSpotDates[nextBookingSpotId] = endDate;
         generatedBookings.push({
           spotId: nextBookingSpotId,
           userId: nextUserId,
-          startDate: startDate.toISOString().split('.')[0].replace('T',' '),
-          endDate: endDate.toISOString().split('.')[0].replace('T',' ')
+          startDate: ymdt(startDate),
+          endDate: ymdt(endDate)
         });
   }}
     // await Booking.bulkCreate([  // we are doing bulkInsert to avoid validations
     await queryInterface.bulkInsert(options.tableName, [
-      {
-        spotId: spotIds[2],
-        userId: userIds[0],
-        startDate: '2023-09-20 12:00:00',
-        endDate: '2023-09-22 12:00:00',
-      },
-      {
-        spotId: spotIds[2],
-        userId: userIds[0],
-        startDate: '2023-10-20 12:00:00',
-        endDate: '2023-11-31 12:00:00',
-      },
+      // {
+      //   spotId: spotIds[2],
+      //   userId: userIds[0],
+      //   startDate: '2023-09-20 12:00:00',
+      //   endDate: '2023-09-22 12:00:00',
+      // },
+      // {
+      //   spotId: spotIds[2],
+      //   userId: userIds[0],
+      //   startDate: '2023-10-20 12:00:00',
+      //   endDate: '2023-11-31 12:00:00',
+      // },
       ...generatedBookings
     ], { /* validate: true */ }); // we turn off validation to allow
     // generation of old Bookings to enable certain API testing

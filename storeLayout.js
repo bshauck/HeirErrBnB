@@ -59,7 +59,6 @@
              // reserve button gets bookings
              images: [spotImageIds,], // spotDetails
              reviews: [reviewIds,], // allSpotReviews
-             // bookings: [bookingIds,], // perhaps only ids with future endDates
            },
        }
      // userQuery: { [userId]:[orderedSpotIdsBySomeInterestingCriteriaFromQuery], }
@@ -102,6 +101,7 @@
              updatedAt
            },
        }
+     edit: { [userId]: {[startDate|null, endDate|null]} }
      spot: { [spotId]: [[start,end],[start,end],] }
      user: { [userId]: [idsOrderedByUserAndAscFutureEndDatePerhaps], }
    }

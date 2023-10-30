@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { thunkReadAllUserBookings } from '../../store/bookings';
+import { thunkReadUserBookings } from '../../store/bookings';
+import * as sessionActions from "../../store/session";
 import SpotTile from '../SpotTile';
 
 const ManageBookings = () => {
@@ -17,11 +18,14 @@ const ManageBookings = () => {
       history.push("/")
     }
 
-    if (!user || !user.id) throw new Error("bad user info")
+    if (!user || !user.id) {
+      console.log(sessionActions) /* contemplating restore user...but it shouldn't go away */
+      throw new Error("bad user info")
+    }
 
     const [ref] = useState({current:{}});
     if (!bookingIds || !Array.isArray(bookingIds)) {
-      if (!ref.current[user.id]) ref.current[user.id] = dispatch(thunkReadAllUserBookings());
+      if (!ref.current[user.id]) ref.current[user.id] = dispatch(thunkReadUserBookings());
       return null;
     } else if (ref.current[user.id]) delete ref.current[user.id]
 

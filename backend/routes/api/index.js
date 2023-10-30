@@ -7,7 +7,6 @@ const spotsRouter = require('./spots.js');
 const usersRouter = require('./users.js');
 const { fitsAuthor, getCSRFToken, requireAuth, restoreUser } = require('../../utils/auth');
 const { Review, ReviewImage, Spot, SpotImage} = require('../../db/models');
-const csurf = require('csurf')
 
 /* this needs to be first for all middleware */
 // router.post('/session', sessionRouter)
@@ -40,10 +39,10 @@ async function deleteImage(req, res, next, imageModel, holderModel, upStr, downS
 }
 
 // Add a XSRF-TOKEN cookie
-if (process.env.NODE_ENV !== 'production')
+if (process.env.NODE_ENV !== 'productionxxx')
   router.get("/csrf/restore", async (req, res) => {
     const csrfToken = await getCSRFToken(req,res);
-    return res.json({/*'XSRF-Token': csrfToken*/})
+    return res.json({'XSRF-Token': csrfToken})
   });
 router.post('/test',
   (req, res) => res.json({ requestBody: req.body }));
