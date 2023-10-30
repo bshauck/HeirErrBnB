@@ -9,7 +9,7 @@ const router = require('express').Router();
 
 
 // DUPLICATED: refactor
-async function bookingOk(startDate, endDate, next, id) {
+async function bookingOk(startDate, endDate, next, spotId, id) {
     const specificErrText = "Sorry, this spot is already booked for the specified dates";
     const err = Error("Part of date range is already booked");
     startDate = dayDate(startDate);
@@ -19,21 +19,24 @@ async function bookingOk(startDate, endDate, next, id) {
     const errors = {};
     const conflict = await Booking.findOne({
     where: {startDate: {[Op.lt]: ymd(endDate)},
-            endDate: {[Op.gt]: ymd(startDate),
-            ...idClause}
-    }});
+            endDate: {[Op.gt]: ymd(startDate)},
+                spotId: {[Op.eq]: spotId},
+                ...idClause}
+    });
     if (conflict) {
         const conflict2 = await Booking.findOne({
             where: {startDate: {[Op.lte]: ymd(startDate)},
-                    endDate: {[Op.gt]: ymd(startDate),
-                    ...idClause}
-        }});
+                    endDate: {[Op.gt]: ymd(startDate)},
+                        spotId: {[Op.eq]: spotId},
+                        ...idClause}
+        });
         if (conflict2) {errors.startDate = "Start date conflicts with an existing booking"; err.message = specificErrText;}
         const conflict3 = await Booking.findOne({
             where: {startDate: {[Op.lt]: ymd(endDate)},
-                    endDate: {[Op.gte]: ymd(endDate),
+                    endDate: {[Op.gte]: ymd(endDate)},
+                    spotId: {[Op.eq]: spotId},
                     ...idClause}
-        }});
+        });
         if (conflict3) {errors.endDate = "End date conflicts with an existing booking"; err.message = specificErrText;}
     }
     if (conflict) {
@@ -75,22 +78,23 @@ router.route('/:spotId(\\d+)/bookings')
     .post(requireAuth, validateBooking, async (req, res, next) => {
       const spot = await Spot.findByPk(req.params.spotId);
       if (spot) { let booking;
-        if (fitsAuthor(req, next, spot.id, false)){
+        if (fitsAuthor(req, next, spot.ownerId, false)){
           let {startDate, endDate} = req.body;
           if (startDate && endDate) {
-            const ok = await bookingOk(startDate, endDate, next)
+            const ok = await bookingOk(startDate, endDate, next, spot.id)
             if (ok) {
                 booking = await Booking.create({
                     spotId: spot.id,
                     userId: req.user.id,
                     startDate: ymdt(startDate),
                     endDate: ymdt(endDate)
-          })} else return;
+          } )} else return;
           if (booking) return res.status(201).json(booking);
           else return res.status(500).json({message: 'Booking creation failed'});
-        }}
+        } else return res.status(400).json({message: `Booking creation failed: BAD DATES: start${startDate}/end${endDate}`})
+    } else return next(new Error('fitsAuthor failed on POST /spots/:id/bookings'))
       } else return res.status(404).json({message: "Spot couldn't be found"})
-      return next(new Error('POST /spots/:id/bookinngs error'))
+      return next(new Error('POST /spots/:id/bookinnnngs error'))
     });
 
 // now takes {urls: ["url1", "url2", ...]};

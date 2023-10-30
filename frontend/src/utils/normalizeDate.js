@@ -8,7 +8,7 @@
 // can turn into such a millisecond value. That
 // function will return NaN if unable to parse argument.
 
-export function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
+function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
     /*
      * dateTuples is a sorted array of 2-element subarrays of
      * ascending start/end dates for already booked stays. stayLength
@@ -26,33 +26,37 @@ export function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate
      * We assume the last endDate in dateTuples is no greater than
      * the lastDate.
      */
-    let possibleStart = addDays(ymd(new Date()), searchDelay)
-    let nextRangeStart = ymd(dateTuples[0][0])
-    let calculatedEnd = addDays(possibleStart, stayLength)
+    console.log("TUPLES: ", dateTuples)
+    let possibleStart = ymdt(addDays(new Date(), searchDelay))
+    let calculatedEnd = ymdt(addDays(possibleStart, stayLength))
+    if (!dateTuples.length) return [possibleStart, calculatedEnd]
+
+    let nextRangeStart = ymdt(dateTuples[0][0])
+
     if (calculatedEnd <= nextRangeStart)
         return [possibleStart, calculatedEnd]
 
     for (let i = 0; i < dateTuples.length - 1; i++) {
-        possibleStart = ymd(dateTuples[i][1])
-        nextRangeStart = ymd(dateTuples[i + 1][0])
+        possibleStart = ymdt(dateTuples[i][1])
+        nextRangeStart = ymdt(dateTuples[i + 1][0])
 
-        calculatedEnd = addDays(possibleStart, stayLength)
+        calculatedEnd = ymdt(addDays(possibleStart, stayLength))
 
         if (calculatedEnd <= nextRangeStart)
             return [possibleStart, calculatedEnd]
     }
 
     // Check after the last booked range
-    possibleStart = ymd(dateTuples[dateTuples.length - 1][1])
-    calculatedEnd = addDays(possibleStart, stayLength)
+    possibleStart = ymdt(dateTuples[dateTuples.length - 1][1])
+    calculatedEnd = ymdt(addDays(possibleStart, stayLength))
 
     return calculatedEnd <= lastDate ? [possibleStart, calculatedEnd] : null
 } /* if return null, try again with a smaller proposed stayLength */
 
 // const dateTuples = [
-//     ["2023-11-01", "2023-11-05"],
-//     ["2023-11-10", "2023-11-15"],
-//     ["2023-11-20", "2023-11-25"]
+//     ["2023-10-31", "2023-11-02"],
+//     ["2023-11-03", "2023-11-05"],
+//     ["2023-11-06", "2023-11-10"]
 // ];
 
 // const stayLength = 5 // number of overnights
@@ -60,24 +64,24 @@ export function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate
 // const lastDate = ymd(addDays(new Date(), 365))
 // const availableRange = findAvailableRange(dateTuples, stayLength, searchDelay, lastDate)
 
-// console.log("Available Range:", availableRange.map(date => ymd(date))
+// console.log("Available Range:", availableRange.map(date => ymd(date)))
 
 
 function typeCheck(date) {
     return (typeof date === 'string' || typeof date === 'number')
         ? new Date(date) : date
 }
-export function dayDate(date) { // return Date instance with local time 0
+function dayDate(date) { // return Date instance with local time 0
     date = typeCheck(date);
     return new Date(date.toDateString())
 }
 
-export function ymd(date) { // return a string of YYYY-MM-DD of the date
+function ymd(date) { // return a string of YYYY-MM-DD of the date
     date = typeCheck(date);
     return date.toISOString().split('T')[0]
 }
 
-export function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
+function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
     // date = typeCheck(date); // not required; within dayDate
     return new Date(ymd(date)).toISOString().replace('T', ' ').split('.')[0]
 }
@@ -86,7 +90,7 @@ function addDaysInPlace(dDate, numDays) { // mutates argument; returns numeric
     dDate.setDate(dDate.getDate() + numDays)
 }
 
-export function addDays(date, numDays) { // return a new date numDays in future
+function addDays(date, numDays) { // return a new date numDays in future
     const result = new Date(date);       // past with negative numDays
     addDaysInPlace(result, numDays);
     return result
@@ -96,22 +100,23 @@ export function addDays(date, numDays) { // return a new date numDays in future
    are already in dayDate format; dates in ymd
    format can use string comparisons
 */
-function dayGT(d1, d2) {
+function dateGT(d1, d2) {
     return d1.getTime() > d2.getTime()
 }
-function dayLT(d1, d2) {
+function dateLT(d1, d2) {
     return d1.getTime() < d2.getTime()
 }
-export function dayGTE(d1, d2) {
-    return dayGT(d1, d2) || dayEQ(d1, d2)
+function dateGTE(d1, d2) {
+    return dateGT(d1, d2) || dateEQ(d1, d2)
 }
-export function dayLTE(d1, d2) {
-    return dayLT(d1, d2) || dayEQ(d1, d2)
+function dateLTE(d1, d2) {
+    return dateLT(d1, d2) || dateEQ(d1, d2)
 }
 
-function dayEQ(d1, d2) {
+function dateEQ(d1, d2) {
     return d1.getTime() === d2.getTime()
 }
+
 
 /* Specifically for the Bookings conflict check,
 if we could just see if any conflict exists, as
@@ -152,3 +157,6 @@ because if a new range entirely OVERLAPS
 some existing range, then you need the original
 query as well.
 */
+
+
+module.exports = { addDays, dayDate, dateEQ, dateGT, dateGTE, dateLT, dateLTE, findAvailableRange, ymd, ymdt }

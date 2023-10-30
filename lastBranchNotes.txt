@@ -3,6 +3,50 @@ Last branch notes
 
 WEDNESDAY
 Continue work on react-calendar
+Pause react-calendar as Prime Calendar seems better
+  Dan agrees that is an ok package to use
+Some additional CSS for calendar and for CreateBookings page
+Create Booking working and tied to Request to Book button
+
+THURSDAY
+Fixed missed issues with bookings from Mod 4 backend.
+Issue with launching calendar on separate inline page
+  seems to log out current user
+Fixed rereading bookings for user every time
+    ManageBookings launched
+Modalize calendar
+Launch calendar with range selected
+Update create/update booking page from calendar
+
+Issue with generated bookings overlapping; for now, only future bookings with increasing dates.
+
+
+
+
+
+
+Better coloring for range; more visible; Black circle white text
+  for start / ends
+Need to CSS empty ManageBookings page, filled page,
+   and calendar
+Launch calendar with pre-disabled dates of other
+    future bookings
+On first click (potentialStartDate) disable all dates prior
+Disable (hide) prev/next buttons for paging through
+   calendar whenever minDate/maxDate is showing
+And hover highlighting when moving across dates
+Rename Calendar2 back to Calendar
+
+p-datepicker-prev (button for moving left; visibility: hidden when seeing minDate; same for -next and maxDate; set visible when moving away)
+add all dates earlier than first click as disabled; remove when endDate clicked (avoids the backwards range picking)
+onSelectDate(date) {
+  // deselect the date
+  this.calendar.deselectDate(date);
+}
+     setStartDate();
+     setStartDate(new Date());
+(may have to set date to undefined/null to cause an rerender on programmatic date change)
+
 
 Need to make modal Calendar to set Booking date range
 Connect Update to version of calendar
@@ -11,6 +55,8 @@ Perhaps colorize Booking dates which conflict with others. (we allow creating co
 Need to redo checks; not correctly ignoring id of updated booking with date checks
 Still need to DRY duplicated bookingOk check code
 
+
+Sat/Sun/Mon have 3-night min?
 MAP API
 First, create vetting and error reporting on Create/Update Spot form;
 fill in long lat for vetted addresses.
@@ -25,14 +71,10 @@ FOR profile dropdown:
     absolute with coords for dropdown menu
 
 
-redo seeding on production
 better spacing for signup/login
 more console.logs to remove
 drop shadow for login on modal
-change color for disabled login to white back black fore, then
-  to red back, white fore when active
-  (probably true for all red buttons is disabled)
-  drop shadow also changes to grey from black
+
 change color/border on hover for various things
 color seems bluish for many text items
 better line up on Spot Details page
@@ -43,69 +85,6 @@ create logging table for login's and attempts
 go through divs and add background as necessary
  change other tags to class and use background-color
   when you can instead of background
-
-
-To see all modals:
-Logout
-  Choose Sign Up
-  Choose Log In
-Login as franco
-Manage Spots
-  Choose Create Spot
-  Choose Update
-  Choose Delete
-Scroll to last Spot, and
- Click on Spot: Spot Details
-  Choose Post Your Review
-  (post a review)
-  Choose Delete
-  (click yes delete)
-
-modal aspects
-Log In .loginForm
-  white background rounded corners
-  positioned 20px below header line
-  input fields and button same width: 90% ish
-  input fields have light pink background
-  login button disabled: white background, grey text/shadow box
-  login button is red with white text black shadow box when active
-  errors in red below Log In title
-
-Sign Up .signupForm
-  Like Log In, just more fields
-
-Create Review modal
-  white background rounded corners
-    black thick border
-  textarea has pink background
-  Submit button disabled like Login
-
-Confirm Delete spot modal
-  Yes delete button like login button
-  No keep button dark grey background, otherwise like login
-Confirm Delete review modal
-  just like Confirm Delete spot
-
-
-
-Post Your Review button
-  grey with white text
-Delete Review button as above
-Create a New Spot (on Manage Spots) as above
-Update Spot/Delete (on Manage Spots) as above
-
-Reserve button red with white text and black shadow box
-  (like Login button, but no disabling)
-Create Spot as above
-Update Your Spot as above
-
-Signup is rounded, but has thick border.
-  Width and color and positioning need adjustment
-
-Only things with thick black border are detail spot callout box and Create Review Modal; but all have rounded corners
-All input fields and textareas have thicker black inset box border and pink backgrounds
-
-
 
 
 colors for default Airbnb page

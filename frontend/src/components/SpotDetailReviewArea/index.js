@@ -1,17 +1,14 @@
 // frontend/src/components/SpotDetailReviewArea/index.js
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 
-import { thunkReadAllReviews, thunkReadAllUserReviews } from "../../store/reviews";
+import { thunkReadSpotReviews, thunkReadAllUserReviews } from "../../store/reviews";
 import ReviewList from "../ReviewList"
 import OpenModalButton from "../OpenModalButton";
 import ReviewFormModal from "../ReviewFormModal";
 import StarRating from "../StarRating";
 
-/* check logged in user, and all reviews doesn't include his
-* and he isn't owner of the spot, then put a Post Your Review
-* button; so have to get reviewsBySpot
-*/
+
 function SpotDetailReviewArea({ spot }) {
     const user = useSelector(state => state.session.user);
     const userReviews = useSelector(state => state.session.reviews);
@@ -21,10 +18,6 @@ function SpotDetailReviewArea({ spot }) {
     let mayPost = false;
     let mayPostNoReviews = false;
 
-    useEffect(()=>{
-      if (!orderedReviews)
-      dispatch(thunkReadAllReviews(spot.id))
-    }, [dispatch,orderedReviews,spot.id]);
 
     function handlePostClick() {}
     /* here, user may have its userReviews id list, and
@@ -38,7 +31,7 @@ function SpotDetailReviewArea({ spot }) {
 
     if (!orderedReviews || !spotReviews) {
       if (!reviewRef.current[spot.id])
-        reviewRef.current[spot.id] = dispatch(thunkReadAllReviews(spot.id))
+        reviewRef.current[spot.id] = dispatch(thunkReadSpotReviews(spot.id))
       return null;
     } else if (Array.isArray(spotReviews))
     if (reviewRef.current[spot.id]) delete reviewRef.current[spot.id]

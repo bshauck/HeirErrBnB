@@ -1,7 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Calendar } from 'react-calendar';
-import { addDays, findAvailableRange, ymd } from '../../utils/normalizeDate';
 
+import OpenModalButton from '../OpenModalButton';
+
+import { addDays, dateEQ, dayDate, ymd} from '../../utils/normalizeDate';
+
+import "./try.css"
 
 /* Date utilities
  *
@@ -29,44 +34,92 @@ import { addDays, findAvailableRange, ymd } from '../../utils/normalizeDate';
  * and not allowing booking dates more than 1 year out.
  */
 
-function BookingCalendar() {
+function BookingCalendar({ onClick, tuples }) {
     const today = new Date()
+    const todayStr = ymd(today)
     const tomorrow = addDays(today, 1)
+    const weekOut = addDays(tomorrow, 7)
     const yearOut = addDays(today, 365)
-    const [value, setValue] = useState([today, tomorrow]);
-    const [activeStartDate, setActiveStartDate] = useState(today); // work around bug
+    const userId = useSelector(state => state.session.user.id)
 
+    const editDates = useSelector(state => state.bookings.edit[userId])
 
-    function handleChange(nextValue) {
-      setValue(nextValue);
+    const [dates, setDates] = useState(editDates ? editDates.slice() : [tomorrow, weekOut])
+    const [curDates, setCurDates] = useState(dates ? dates.slice() : [null, null]);
+    const [activeStartDate, setActiveStartDate] = useState(editDates ? firstDateOfMonth(editDates[0]) : null); // work around bug, can use this to page
+
+    useEffect(()=>{
+
+    }, [curDates, dates])
+
+    console.log("editDates in modal: ", editDates)
+    console.log("dates in modal: ", dates)
+    console.log("curDates in modal: ", curDates)
+    console.log("activeStartDate in modal: ", activeStartDate)
+
+    let value = editDates?.slice();
+    // if (dates) setValue(dates.slice());
+
+   function firstDateOfMonth(startDate) {
+    const dateStr = ymd(startDate)
+    return dayDate(dateStr.slice(0,8)+"01")
+ }
+
+    function dateOrNullEQ(v1, v2) {
+      return ((v1 === null && v2 === null) ||
+        (v1 instanceof Date && v2 instanceof Date && dateEQ(v1, v2)))
     }
+    /* gives [startDate, endDate|null], event */
 
-    let disabledDates = [] // filled based on Bookings
-
-    function isSameDay(d1, d2) {return false} // TODO
+    function handleActiveDateChange(val, _event) {
+      console.log("activedatechange: val", val)
+    }
+    function handleChange(nextValue, _event) {
+      const [start, end] = nextValue;
+      setDates(nextValue)
+      const [curStart, curEnd] = curDates;
+      console.log("setting start and end to ", start, end)
+      /* if new start, reset disabled */
+      if (dateOrNullEQ(start, curStart) && dateOrNullEQ(end, curEnd))
+        return;
+      setCurDates([start, end])
+      console.log("curDate ", curDates)
+    }
 
     function isTileDisabled({ date }) {
-           return disabledDates.find(dDate => isSameDay(dDate, date));
+      const onlyStartSelected = value[0] !== null && value[1] === null;
+      const dateStr = ymd(date)
+      /* have to book after today */
+      if (dateStr <= todayStr) return true;
+      /* first click is start, so 2nd click must be greater */
+      if (onlyStartSelected) {
+        if (dateStr < ymd(value[0])) return true;
+        /* can book ends on existing starts */
+//        return !tuples.every(([startStr, endStr]) => (dateStr <= startStr ||  dateStr > endStr))
+return false;
+      } else /* whether 0/2 selected, the next click is a start */
+        /* if we have a minimum stay, we'd adjust the following
+         * to ensure that the click was on a day that was at least
+         * that minimum away from an existing start
+         */
+ //       return !tuples.every(([startStr, endStr]) => (dateStr < startStr || dateStr >= endStr))
+ return false
     }
 
-
-    const onActiveStartDateChange = data => {
-        if (data.action !== "onChange") {
-            setActiveStartDate(data.activeStartDate);
-        }
-    }
 
     /*
      * activeStartDate the day to begin showing calendar
      * allowPartialRange whether a range can only be partly filled in on return
+     *   true so you can disable all dates to earlier than first click
      * calendarType sets start day-of-week and what is considered weekend
+     *   need 'gregory' for starting Sunday
      * className additional class names (String "class1 class2")
-     * defaultValue value to be shown; use value instead (use array of 2 dates)
+     * defaultValue use array of 2 dates; do NOT use value
      * defaultView see view
      * formatDay (if needed to override default formatting)
      * formatMonth (if needed to override default formatting)
      * formatMonthYear (if needed to override default formatting)
-     * goToRangeStartOnSelect (needed for bug control)
+     * goToRangeStartOnSelect=false (needed for bug control)
      * inputRef
      * locale
      * maxDate set for a year out; evetually Host sets per location
@@ -76,35 +129,55 @@ function BookingCalendar() {
      * onChange function called when user clicks a date
      * returnValue either start/end/range
      * selectRange want a start / end for a booking
-     * showDouble="true" Show two months at a time
+     * showDouble={true} Show two months at a time
      * tileClassName given to detailed item (day on month view)
      * tileContent custom content to display on tile
      * tileDisabled function to determine if date should be disabled
+     *   obviously all booked dates in tuples, but also all dates
+     *   earlier than start when only start selected
      * value value to show on calendar; use defaultValue to dynamically change
+     *   i.e., don't use this, use defaultValue
      * view how much is shown (use defaultView if need to change dynamically)
-     */
+     *   I.e., use view, do NOT use defaultView to keep on "month"
+    */
+   /*
+   unfortuantely, show double view forces ignoring show neighboring month
 
-   return (
-       <div className="bookingCalendarDiv">
-    <Calendar
-        activeStartDate={activeStartDate}
-        allowPartialRange={true}
-        defaultValue={value}
-        calendarType="gregory"
-        goToRangeStartOnSelect={false}
-        maxDate={yearOut}
-        maxDetail="month"
-        minDate={today}
-        minDetail="month"
-        onChange={handleChange}
-        returnValue="range"
-        selectRange={true}
-        showDoubleView={true}
-        tileClassName="date"
-        tileDisabled={isTileDisabled}
-        view="month"
-        />
-    </div>
+   defaultValue={value}
+   showDoubleView={true}
+   tileDisabled={isTileDisabled}
+   value={value}
+   */
+
+  return (
+    <>
+    <OpenModalButton
+        buttonText="Open Calendar"
+        onButtonClick={onClick}
+        modalComponent={
+          <Calendar
+          activeStartDate={activeStartDate}
+          allowPartialRange={true}
+          calendarType="gregory"
+          goToRangeStartOnSelect={false}
+          maxDate={yearOut}
+          maxDetail="month"
+          minDate={today}
+          minDetail="month"
+          onActiveDateChange={handleActiveDateChange}
+          onChange={handleChange}
+          returnValue="range"
+          selectRange={true}
+          showOtherMonthDays={false}
+          showNeighboringMonth={false}
+          showYearArrows={false}
+          tileClassName="date"
+          value={dates}
+          view="month"
+          />
+        }
+      />
+      </>
     )
 }
 

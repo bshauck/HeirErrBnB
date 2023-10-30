@@ -101,10 +101,12 @@ function unauthor(next, err) {
 
 /* Go to error handling if compare fails */
 const fitsAuthor = function (req, next, compare, result=true) {
+console.log("🚀 ~ file: auth.js:104 ~ fitsAuthor ~ val == compare: result", req.user.id, compare, result)
+
     if ((req.user.id === compare) === result)
       return true;
 
-    unauthor(next);
+    return unauthor(next);
 };
 
 async function getCSRFToken(req, res) {

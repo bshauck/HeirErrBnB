@@ -26,7 +26,6 @@
 
           images: [spotImageIds,],
           reviews: [reviewIds,],
-          bookings: [bookingIds,], // only ids with future endDates
         },
     }
   userQuery: { [userId]: [orderedSpotIdsBySomeInterestingCriteriaFromQuery], }

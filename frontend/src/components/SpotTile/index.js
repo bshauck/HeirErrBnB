@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import OpenModalButton from '../OpenModalButton';
 import StarRating from '../StarRating';
 import { thunkDeleteSpot, thunkReadSpot } from '../../store/spots';
-import { thunkDeleteBooking, thunkReadAllUserBookings } from '../../store/bookings';
+import { thunkDeleteBooking, thunkReadUserBookings } from '../../store/bookings';
 import { ymd } from '../../utils/normalizeDate'
 import ResourceDeleteFormModal from '../ResourceDeleteFormModal';
 
@@ -14,7 +14,7 @@ import ResourceDeleteFormModal from '../ResourceDeleteFormModal';
 const placeholderSrc = "https://placehold.co/200?text=Photo+needed&font=montserrat"
 
 function SpotTile ({spotId, spot, isManaged, bookingId}) {
-  console.log("🚀 ~ starting SpotTile ~ spotId, spot, isManaged, bookingId:", spotId, spot, isManaged, bookingId)
+  if (bookingId) console.log("🚀 ~ starting SpotTile ~ spotId, spot, isManaged, bookingId:", spotId, spot, isManaged, bookingId)
   const [ref] = useState({current:{spot:{},booking:{}}});
   const stateSpots = useSelector(state => state.spots.id)
   const history = useHistory();
@@ -29,8 +29,9 @@ function SpotTile ({spotId, spot, isManaged, bookingId}) {
   }
 
   function handleUpdateClick(e) {
-    if (!bookingId) // TODO
-      alert("need to invoke calendar")
+      history.push(bookingId
+        ? `/spots/${spotId}/bookings/${bookingId}/edit`
+        : `/spots/${spotId}/edit`)
   }
 
   function handleDeleteClick() {
@@ -43,7 +44,7 @@ function SpotTile ({spotId, spot, isManaged, bookingId}) {
   /* only hit db for bookingInfo if passed a bookingId */
   if (bookingId && (!booking || Object.values(booking).length < 2)) {
       if (!ref.current.booking || !ref.current.booking[bookingId])
-        ref.current.booking[bookingId] = dispatch(thunkReadAllUserBookings())
+        ref.current.booking[bookingId] = dispatch(thunkReadUserBookings())
       return null;
   } else if (bookingId && ref.current.booking && ref.current.booking[bookingId]) delete ref.current.booking[bookingId]
 
@@ -53,7 +54,7 @@ function SpotTile ({spotId, spot, isManaged, bookingId}) {
     return null;
   } else if (spotId && ref.current.spot && ref.current.spot[spotId]) delete ref.current.spot[spotId]
 
-  console.log("🚀 ~ RENDERING SpotTile ~ spotId, spot, isManaged, bookingId, booking:", spotId, spot, isManaged, bookingId, booking)
+  if (bookingId) console.log("🚀 ~ RENDERING SpotTile ~ spotId, spot, isManaged, bookingId, booking:", spotId, spot, isManaged, bookingId, booking)
 
   let componentId = spotId; let resource = 'spot'; let thunk = thunkDeleteSpot;
   if (bookingId) {

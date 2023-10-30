@@ -24,11 +24,17 @@ function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
      * no acceptable range is found.
      *
      * We assume the last endDate in dateTuples is no greater than
-     * the lastDate.
+     * the lastDate; once hosts are allowed to change how far in
+     * advance a location may be booked, this may change, or other
+     * steps taken (like removing any current bookings that are too
+     * far out).
      */
-    let possibleStart = addDays(ymd(new Date()), searchDelay)
+    let possibleStart = ymd(addDays(new Date(), searchDelay))
+    let calculatedEnd = ymd(addDays(possibleStart, stayLength))
+    if (!dateTuples.length) return [possibleStart, calculatedEnd]
+
     let nextRangeStart = ymd(dateTuples[0][0])
-    let calculatedEnd = addDays(possibleStart, stayLength)
+
     if (calculatedEnd <= nextRangeStart)
         return [possibleStart, calculatedEnd]
 
@@ -36,7 +42,7 @@ function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
         possibleStart = ymd(dateTuples[i][1])
         nextRangeStart = ymd(dateTuples[i + 1][0])
 
-        calculatedEnd = addDays(possibleStart, stayLength)
+        calculatedEnd = ymd(addDays(possibleStart, stayLength))
 
         if (calculatedEnd <= nextRangeStart)
             return [possibleStart, calculatedEnd]
@@ -44,7 +50,7 @@ function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
 
     // Check after the last booked range
     possibleStart = ymd(dateTuples[dateTuples.length - 1][1])
-    calculatedEnd = addDays(possibleStart, stayLength)
+    calculatedEnd = ymd(addDays(possibleStart, stayLength))
 
     return calculatedEnd <= lastDate ? [possibleStart, calculatedEnd] : null
 } /* if return null, try again with a smaller proposed stayLength */
@@ -60,7 +66,7 @@ function findAvailableRange(dateTuples, stayLength, searchDelay, lastDate) {
 // const lastDate = ymd(addDays(new Date(), 365))
 // const availableRange = findAvailableRange(dateTuples, stayLength, searchDelay, lastDate)
 
-// console.log("Available Range:", availableRange.map(date => ymd(date))
+// console.log("Available Range:", availableRange.map(date => ymd(date)))
 
 
 function typeCheck(date) {
@@ -77,7 +83,7 @@ function ymd(date) { // return a string of YYYY-MM-DD of the date
     return date.toISOString().split('T')[0]
 }
 
-export function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
+function ymdt(date) { // return string YYYY-MM-DD 00:00:00 of the date
     // date = typeCheck(date); // not required; within dayDate
     return new Date(ymd(date)).toISOString().replace('T', ' ').split('.')[0]
 }
@@ -86,7 +92,7 @@ function addDaysInPlace(dDate, numDays) { // mutates argument; returns numeric
     dDate.setDate(dDate.getDate() + numDays)
 }
 
-export function addDays(date, numDays) { // return a new date numDays in future
+function addDays(date, numDays) { // return a new date numDays in future
     const result = new Date(date);       // past with negative numDays
     addDaysInPlace(result, numDays);
     return result
@@ -96,20 +102,20 @@ export function addDays(date, numDays) { // return a new date numDays in future
    are already in dayDate format; dates in ymd
    format can use string comparisons
 */
-function dayGT(d1, d2) {
+function dateGT(d1, d2) {
     return d1.getTime() > d2.getTime()
 }
-function dayLT(d1, d2) {
+function dateLT(d1, d2) {
     return d1.getTime() < d2.getTime()
 }
-export function dayGTE(d1, d2) {
-    return dayGT(d1, d2) || dayEQ(d1, d2)
+function dateGTE(d1, d2) {
+    return dateGT(d1, d2) || dateEQ(d1, d2)
 }
-export function dayLTE(d1, d2) {
-    return dayLT(d1, d2) || dayEQ(d1, d2)
+function dateLTE(d1, d2) {
+    return dateLT(d1, d2) || dateEQ(d1, d2)
 }
 
-function dayEQ(d1, d2) {
+function dateEQ(d1, d2) {
     return d1.getTime() === d2.getTime()
 }
 
@@ -154,4 +160,4 @@ query as well.
 */
 
 
-module.exports = { addDays, dayDate, dayGTE, dayLTE, findAvailableRange, ymd, ymdt }
+module.exports = { addDays, dayDate, dateEQ, dateGT, dateGTE, dateLT, dateLTE, findAvailableRange, ymd, ymdt }

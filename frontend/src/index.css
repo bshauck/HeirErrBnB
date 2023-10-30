@@ -587,7 +587,8 @@ img.spotDetailsSmallImg:nth-of-type(4) {
 /* modal button colors/size */
 .confirmResourceDeleteModalP,
 .resourceNoDeleteButton,
-.resourceDeleteButton
+.resourceDeleteButton,
+.requestToBookButton
 {
     width: 250px;
 }
@@ -619,7 +620,8 @@ img.spotDetailsSmallImg:nth-of-type(4) {
 .reserveButton,
 .spotFormSubmitButton,
 .createReviewButton,
-.loginButton
+.loginButton,
+.requestToBookButton
 {
     margin-top: 10px;
     background-color: var(--aaRed);
@@ -695,4 +697,34 @@ button[disabled] {
 /* spot list */
 .tilePriceSpan {
     font-weight: bold ;
+}
+
+/* booking create TRIPS */
+.parentOfFloatDiv {
+    display: flex; /* 2 columns */
+    column-gap: 5vw;
+    margin: 5vw;
+}
+.spotThumbnailDiv {
+    display: flex; /* 2 columns */
+    justify-content: flex-start;
+    column-gap: 1vw;
+}
+.leftColumnDiv,.rightColumnDiv,.insuranceDiv,.titleAndStarsDiv {
+    display: flex;
+    flex-direction: column;
+}
+.datesEditDiv,.peaceCheckboxDiv,.ppnNightsRowDiv,.cleaningRowDiv,.serviceRowDiv,.taxesRowDiv,.insuredRowDiv,.totaledBookingDiv {
+    display: flex;
+    justify-content: space-between;
+}
+.rightColumnDiv {
+    min-width: 40vw;
+}
+.titleAndStarsDiv {
+    justify-content: space-between;
+}
+.bookingThumbnailImg {
+    height: 90px;
+    width: 100px;
 }

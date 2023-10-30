@@ -105,7 +105,7 @@ function updatedSpotReviewRatings(state, spotId) {
     }
 }
 
-export const thunkReadAllReviews = spotId => async dispatch => {
+export const thunkReadSpotReviews = spotId => async dispatch => {
   const url = `/api/spots/${spotId}/reviews`
   const answer = await fetchData(url)
   if (!answer.errors) {
