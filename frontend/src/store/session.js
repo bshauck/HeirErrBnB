@@ -204,7 +204,7 @@ const sessionReducer = (state = initialState, action) => {
 
 export const restoreUser = () => async dispatch => {
   const answer = await fetchData("/api/session");
-  if (answer.ok) dispatch(setUser(answer.user));
+  if (answer.user) dispatch(setUser(answer.user));
   return answer;
 };
 

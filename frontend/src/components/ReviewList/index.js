@@ -1,29 +1,29 @@
 // frontend/src/components/ReviewList/index.js
-import { useEffect, useRef } from 'react';
+import { /*useEffect, useRef*/  useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import ReviewTile from '../ReviewTile';
-import { thunkReadAllReviews } from '../../store/reviews';
+import { thunkReadSpotReviews } from '../../store/reviews';
 
-function ReviewList({ spot }) {
-    let reviewIds = useSelector(state => state.reviews.spotLatest[spot.id]);
-    const ref = useRef({});
+function ReviewList({ reviews, spot }) {
+    const { id } = useParams();
+    const spotId = spot.id || id;
+    let reviewIds = useSelector(state => state.reviews.spotLatest[spotId]);
     const dispatch = useDispatch()
 
-    useEffect(()=>{
-      if (!reviewIds) {
-          if (!ref.current[spot.id])
-            ref.current[spot.id] = dispatch(thunkReadAllReviews(spot.id))
-          return;
-      } else if (ref.current[spot.id]) delete ref.current[spot.id]
-    }, [reviewIds, dispatch, spot.id])
+
+    const ref = useState({current:{}});
+    if (!reviewIds) {
+      if (!ref.current[spotId]) ref.current[spotId] = dispatch(thunkReadSpotReviews(spotId))
+      return null;
+  } else if (ref.current && ref.current[spotId]) delete ref.current[spotId]
+
 
     // ok to have 0 reviews; may be new, etc.
     if (!Array.isArray(reviewIds)) {
-      return null
-    }
-    if (reviewIds.includes(null) || reviewIds.includes(undefined)) {
-      return null
+      if (Array.isArray(reviews)) reviewIds = reviews.map(r=>r.id)
+      else return null
     }
 
     return (

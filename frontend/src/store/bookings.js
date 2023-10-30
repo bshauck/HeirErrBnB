@@ -13,7 +13,8 @@
           updatedAt
         },
     }
-  spot: { [spotId]: [idsOrderedBySpotAndAscFutureEndDatePerhaps], }
+  edit: { [userId]: null | [startDate | null, endDate | null], }
+  spot: { [spotId]: [[start,end],[start,end],], }
   user: { [userId]: [idsOrderedByUserAndAscFutureEndDatePerhaps], }
 }
 */
@@ -38,6 +39,15 @@ DeleteBooking
 
 // const READ_BOOKING = "bookings/READ_BOOKING";
 const UPDATED_BOOKING = "bookings/UPDATED_BOOKING";
+const SET_CREATE_UPDATE_BOOKING = "bookings/SET_CREATE_UPDATE_BOOKING"
+
+
+export function setCreateUpdateBooking(userId, dates) {
+    return {
+        type: SET_CREATE_UPDATE_BOOKING ,
+        payload: {userId, dates}
+    }
+}
 
 function readAllSpotBookings(payload) {
     return {
@@ -93,10 +103,10 @@ export const thunkReadAllSpotBookings = spotId => async dispatch => {
   return bookings;
 };
 
-export const thunkReadAllUserBookings = () => async dispatch => {
-  console.log("🚀 ~ entering thunkReadAllUserBookings ~");
+export const thunkReadUserBookings = () => async dispatch => {
+  console.log("🚀 ~ entering thunkReadUserBookings ~");
   let bookings = await fetchData("/api/bookings/current");
-  console.log("🚀 ~ thunkReadAllUserBookings ~ bookings:", bookings)
+  console.log("🚀 ~ thunkReadUserBookings ~ bookings:", bookings)
   if (!bookings.errors) {
     bookings = bookings.Bookings;
     console.log("DISPATCHING user bookings: bookings", bookings)
@@ -114,12 +124,18 @@ export const thunkDeleteBooking = id => async dispatch => {
 };
 
 export const thunkCreateBooking = booking => async dispatch => {
+  console.log("🚀 ~ thunkCreateBooking ~ booking:", booking)
+
   const { spotId } = booking;
+  if (!spotId) throw new Error ("booking without spotId")
   const answer = await fetchData(`/api/spots/${spotId}/bookings`, {
     method: "POST",
     body: JSON.stringify(booking),
   });
-  if (!answer.errors) dispatch(createdBooking(answer));
+  if (!answer.errors) {
+    console.log("🚀 ~ thunkCreateBooking ~ answer:", answer)
+    dispatch(createdBooking(answer));
+  } else console.log("🚀 ~ thunkCreateBooking ~ answer.errors:", answer.errors)
   return answer;
 };
 
@@ -135,6 +151,7 @@ export const thunkUpdateBooking = booking => async dispatch => {
 
 const initialState = {
   id: {},
+  edit: {}, // on create/update put [userId]: {spotId: spotId, dates: [null,null]}, for dates
   spot: {}, // or spotId=>DateTupleArray
   user: {} // or userId=>bookingIdsArray
 };
@@ -147,7 +164,6 @@ const bookingsReducer = (state = initialState, action) => {
     case READ_SPOT_BOOKINGS: { // just dates, no id
         const { bookings, spotId } = action.payload;
         console.log("🚀 ~ readspotbookings in reducer ~ bookings, spotId:", bookings, spotId)
-        if (!bookings || !bookings.length) return state;
         newState.spot = {...state.spot, [spotId]:[]}
         bookings.forEach(b => newState.spot[spotId].push([b.startDate,b.endDate]))
         return newState;
@@ -169,7 +185,9 @@ const bookingsReducer = (state = initialState, action) => {
     newState.id = {...state.id}
     newState.id[id] = {...action.payload}
     newState.user = {...state.user}
-    newState.user[userId] = [...state.user[userId], id]
+    if (state.user[userId])
+      newState.user[userId] = [...state.user[userId], id]
+    else newState.user[userId] = [id];
     return newState;
   }
   case UPDATED_BOOKING:{
@@ -179,25 +197,35 @@ const bookingsReducer = (state = initialState, action) => {
       return newState;
     }
     case DELETED_BOOKING: {
-      console.log("DELETING BOOKING id", action.payload)
+      console.log("DELETED BOOKING id", action.payload)
       const oldBookingId = action.payload
       const oldSpotId = state.id[oldBookingId].spotId;
-      const hasBookingId = Object.keys(state.id).includes(oldBookingId)
-      const hasSpotId = Object.keys(state.spot).includes(oldSpotId)
-      if (!hasBookingId && !hasSpotId) return state;
-      if (hasBookingId) {
-        newState.id = {...state.id};
-        delete newState.id[oldBookingId];
-      }
-      if (hasSpotId) {
-        newState.spot = {...state.spot}
-        delete newState.spot[oldSpotId]
-      }
       const oldUserId = state.id[oldBookingId].userId;
-      newState.user = {...state.user}
-      newState.user[oldUserId] = [...state.user[oldUserId]]
-      newState.user[oldUserId].splice(newState.user[oldUserId].indexOf(oldBookingId), 1)
+      const oldStartDate = state.id[oldBookingId].startDate;
+
+      if (state.spot[oldSpotId]) {
+        newState.spot = {...state.spot}
+        newState.spot[oldSpotId] = [...state.spot[oldSpotId]]
+        newState.spot[oldSpotId].splice(newState.spot[oldSpotId]).findIndex(subarr => subarr[0]=== oldStartDate, 1)
+      }
+
+      if (state.user[oldUserId]) {
+        newState.user = {...state.user}
+        newState.user[oldUserId] = [...state.user[oldUserId]]
+        newState.user[oldUserId].splice(newState.user[oldUserId].indexOf(oldBookingId), 1)
+      }
+
+      newState.id = {...state.id};
+      delete newState.id[oldBookingId];
       return newState;
+    }
+    case SET_CREATE_UPDATE_BOOKING: {
+      const { userId, dates} = action.payload
+      newState.edit = {...state.edit}
+      newState.edit[userId] = Array.isArray(dates) && dates.length
+        ? [dates[0], dates[1]]
+        : dates
+      return newState
     }
     default:
       return state;

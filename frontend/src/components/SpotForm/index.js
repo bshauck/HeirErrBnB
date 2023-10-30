@@ -64,7 +64,6 @@ function SpotForm ({spot, formType}) {
       }
       setErrors(validations);
       if (Object.keys(validations).length === 0) {
-          const thunkFunc = isEdit ? thunkUpdateSpot : thunkCreateSpot;
           if (!isEdit) {
           const urls = [];
           if (supportUrl1) urls.push(supportUrl1)
@@ -72,10 +71,10 @@ function SpotForm ({spot, formType}) {
           if (supportUrl3) urls.push(supportUrl3)
           if (supportUrl4) urls.push(supportUrl4)
           spot.numReviews = 0; spot.avgRating = null; spot.reviews=[];
-          spot = await dispatch(thunkFunc(spot, {urls}))
+          spot = await dispatch(thunkCreateSpot(spot, {urls}))
           } else {
             if (!spot.avgRating) {spot.numReviews=0; spot.avgRating=null; spot.reviews=[];};
-            spot = await dispatch(thunkFunc(spot));
+            spot = await dispatch(thunkUpdateSpot(spot));
           }
           if (spot.errors) {
             setErrors({...spot.errors})
@@ -87,7 +86,6 @@ function SpotForm ({spot, formType}) {
             /* error in handling; throw to notice */
             throw new Error (`bug in ${isEdit?"edit":"create"} Spot`)
           }
-
         }
     };
 

@@ -18,7 +18,12 @@ function LoginFormModal() {
     setCredential("demo@user.io");
     setPassword("password");
     dispatch(thunkLogin({ "credential": "demo@user.io", "password": "password" }));
-    setTimeout(closeModal, 300)
+    setTimeout(loginSuccessEnding, 300)
+  }
+
+  function loginSuccessEnding() {
+    closeModal();
+    history.push("/");
   }
 
   const handleSubmit = (e) => {
@@ -26,7 +31,7 @@ function LoginFormModal() {
     setErrors({});
     return dispatch(thunkLogin({ credential, password }))
       .then(response => {
-        if (response.ok) return closeModal()
+        if (response.ok) return loginSuccessEnding()
         else throw response
       })
       .catch(data => {
@@ -34,8 +39,7 @@ function LoginFormModal() {
         if (data && data.errors) {
           setErrors(data.errors);
         } else {
-          closeModal();
-          history.push("/")
+          loginSuccessEnding()
         }
       });
   };

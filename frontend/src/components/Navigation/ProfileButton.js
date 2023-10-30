@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 
 import { thunkLogout } from '../../store/session';
-import { thunkReadAllUserBookings } from "../../store/bookings";
 import { thunkReadAllUserSpots } from "../../store/spots";
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
@@ -46,7 +45,6 @@ function ProfileButton({ user }) {
     };
     const manageBookings = (e) => {
       e.preventDefault();
-      dispatch(thunkReadAllUserBookings());
       closeMenu();
       history.push("/bookings/current");
     };
