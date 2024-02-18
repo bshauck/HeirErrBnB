@@ -58,7 +58,6 @@ function BookingCalendar({ onClick, tuples }) {
     console.log("activeStartDate in modal: ", activeStartDate)
 
     let value = editDates?.slice();
-    // if (dates) setValue(dates.slice());
 
    function firstDateOfMonth(startDate) {
     const dateStr = ymd(startDate)
