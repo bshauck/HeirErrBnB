@@ -100,10 +100,10 @@ function unauthor(next, err) {
 }
 
 /* Go to error handling if compare fails */
-const fitsAuthor = function (req, next, compare, result=true) {
+const fitsAuthor = function (req, next, compare, desiredResult=true) {
 console.log("🚀 ~ file: auth.js:104 ~ fitsAuthor ~ val == compare: result", req.user.id, compare, result)
 
-    if ((req.user.id === compare) === result)
+    if ((req.user.id === compare) === desiredResult)
       return true;
 
     return unauthor(next);
