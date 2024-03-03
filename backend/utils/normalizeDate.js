@@ -95,6 +95,30 @@ function addDays(date, numDays) { // return a new date numDays in future
     return result
 }
 
+function daysBetweenDatesInclusive(date1, date2) {  
+    // Calculate the difference in milliseconds
+    const msDifference = Math.abs(secondDate - firstDate);
+  
+    // Convert milliseconds to days and add 1 to make it inclusive
+    const numberOfDays = msDifference / (1000 * 60 * 60 * 24) + 1;
+  
+    return numberOfDays;
+  }
+
+  function daysInMonth(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    
+    // Get the first day of the next month
+    const firstDateOfNextMonth = new Date(year, month + 1, 1);
+    
+    // Subtract one day to get the last day of the given month
+    const lastDay = new Date(firstDayNextMonth - 1);
+    
+    return lastDay.getDate();
+  }
+  
+
 /* the following functions all assume d1 and d2
    are already in dayDate format; dates in ymd
    format can use string comparisons
@@ -159,3 +183,28 @@ query as well.
 
 
 module.exports = { addDays, dayDate, dateEQ, dateGT, dateGTE, dateLT, dateLTE, findAvailableRange, ymd, ymdt }
+
+RED HAT presentation on podman vs Docker
+red.ht/podman-desktop-slides
+github.com/redhat-developer/podman-desktop-demo
+
+Gigi Bekmatova Front End Engineer @ Samsara
+Xinyun Shen Software Engineer @ Samsara
+Parth Suhane Past: Software Engineer Intern @ Samsara
+Bradley Ting Software Engineer @ Samsara
+Yangyong Zhang Senior Machine Learning Engineer @ Samsara
+Jess Guenette Lead Business Talent Partner @ Samsara
+
+YALE
+Annie Z. Full Stack Engineer @ Samsara
+Allen Lu Senior Applied Scientist @ Samsara
+
+
+
+Jeffrey S. Software Engineer @ Autodesk
+Shikha Singh Software Engineer @ Autodesk
+Artur Kashperskiy Software Engineer @ Autodesk
+Ikshaku Goswami Software Development Engineer 2 @ Autodesk
+Reyna Nikolayev Software Development Engineer  @ Autodesk
+Tyler SmithSenior Software Engineer @ Autodesk
+Nathan Schrader Fullstack Engineer @ Autodesk
