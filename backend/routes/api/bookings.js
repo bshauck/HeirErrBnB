@@ -1,10 +1,10 @@
 const { validateEditBooking } = require('../../utils/validation');
 const { fitsAuthor, requireAuth, unauthor } = require('../../utils/auth');
 const { dayDate, ymd, ymdt } = require('../../utils/normalizeDate')
-const { Booking, Spot, SpotImage } = require('../../db/models');
+const { Booking, Spot } = require('../../db/models');
 const { Op } = require('sequelize');
 const { adjustPojo } = require('../../utils/pojo')
-const {bookingOk} = require('./bookingOk')
+const { bookingOk } = require('./bookingOk')
 
 const router = require('express').Router();
 
