@@ -1,9 +1,10 @@
-// gathering duplicated function into one file
 const { unauthor } = require('../../utils/auth');
 const { Booking } = require('../../db/models');
 const { Op } = require('sequelize');
 const {dayDate, ymd } = require('../../utils/normalizeDate');
 
+
+// Used in spot.js and bookings2.js
 async function bookingOk(startDate, endDate, next, spotId, id) {
     const specificErrText = "Sorry, this spot is already booked for the specified dates";
     const err = Error("Part of date range is already booked");
