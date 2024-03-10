@@ -14,6 +14,10 @@ the best way to handle this. */
 
 /* In order to use RTK Query, you must use RTK. */
 
+/* Read the following link for more information:
+https://redux.js.org/tutorials/essentials/part-7-rtk-query-basics */
+
+
   // 11 lines avoiding 2nd reqs can be narrowed to 9
   // if dispatch(thunk) returns truthy values
   const ref = useRef({});
