@@ -4,7 +4,7 @@
      spots:  // landing, details, CUD Spot
      reviews: // from all reviews for spot/user; CUD Review
      bookings:
-     spotImages: // spotdetails only existing, CUD for Spot
+     spotImages: // spot details only existing, CUD for Spot
    },
    */
    /* session */ /*
