@@ -12,6 +12,8 @@ doesn't go away just because a component remounts.
 /* Rather than the below approach, probably RTK Query is
 the best way to handle this. */
 
+/* In order to use RTK Query, you must use RTK. */
+
   // 11 lines avoiding 2nd reqs can be narrowed to 9
   // if dispatch(thunk) returns truthy values
   const ref = useRef({});
