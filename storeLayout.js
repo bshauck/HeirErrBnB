@@ -25,7 +25,7 @@
          // additional detail w/ current spots/review/bookings
          spots: [spotIds,],
          reviews: [reviewIds,], // all reviews of user
-         bookings: [bookingIds,], // TODO
+         bookings: [bookingIds,], // all bookings (booking ids) of user
          // spotQuery: [landingPageQueryParamString], // TODO
          // currentPage: 3 // last displayed page of info // TODO
        }
