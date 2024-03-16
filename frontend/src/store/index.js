@@ -13,7 +13,6 @@ import bookingsReducer from "./bookings";
   reviews:
   bookings:
   spotImages:
-//  reviewImages: // TODO remove
 },
 */
 
@@ -23,7 +22,6 @@ const rootReducer = combineReducers({
   reviews: reviewsReducer,
   bookings: bookingsReducer,
   spotImages: spotImagesReducer
-  // reviewImages: [] // TODO: remove
 });
 
 let enhancer;
