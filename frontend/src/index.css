@@ -112,11 +112,6 @@ h2 { /* all from css guidelines AA open */
     color: red ;
 }
 
-/* TODO temporary debug */
-/* div {
-    border: 2px orange solid;
-} */
-
 /* begin HEADER */
 /* all from css guidelines AA open */
 header {
@@ -297,9 +292,7 @@ li:has(.logoutButton) {
     display: flex;
     font-size: 22pt;
     justify-content: space-between;
-}
-
-
+}todo
 
 .spotDetailsReviewAreaDiv {
     margin-top: 3vh;
