@@ -708,12 +708,6 @@ Returns all the reviews written by the current user.
             "price": 123,
             "previewUrl": "image url"
           },
-          "ReviewImages": [
-            {
-              "id": 1,
-              "url": "image url"
-            }
-          ]
         }
       ]
     }
@@ -751,12 +745,6 @@ Returns all the reviews that belong to a spot specified by id.
             "firstName": "John",
             "lastName": "Smith"
           },
-          "ReviewImages": [
-            {
-              "id": 1,
-              "url": "image url"
-            }
-          ],
         }
       ]
     }
