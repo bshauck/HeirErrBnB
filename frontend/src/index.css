@@ -538,7 +538,6 @@ img.spotDetailsSmallImg:nth-of-type(4) {
     border-radius: 10px;
 }
 
-
 .signupForm,.loginForm {
     min-width: 30vw;
     display: flex;
@@ -547,7 +546,6 @@ img.spotDetailsSmallImg:nth-of-type(4) {
     gap: 20px;
     padding: 20px 0;
 }
-
 
 .signupInput,.loginCredentialInput,.loginPasswordInput
 {
@@ -558,8 +556,6 @@ img.spotDetailsSmallImg:nth-of-type(4) {
     width: 93%;
     box-shadow: 2px 2px;
 }
-
-
 
 .createReviewForm {
     margin: 15px;
