@@ -4,7 +4,7 @@
     --lightTeal: #E8F0FE; /* this doesn't look like teal at all */
     --aaDarkGray: #999999; /* this is really close to css darkgray a9a9a9 */
     --aaLightGray: #CCCCCC; /* this is really close to css lightgray d3d3d3 */
-    --aaRed: #FF5A5F; /* lighter than css red */
+    --aaRed: #FF5A5E; /* lighter than css red */
     --abnbRed: #ff385c; /* actual red used on airbnb */
     --defaultInputBackground: rgb(247,247,247) ;
     --headingSize: 24pt;
