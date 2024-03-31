@@ -8,7 +8,9 @@
 
 # How to setup fork
 
-Add description of the way to start a forked implementation
+Add description of the way to start a forked implementation.
+
+One of the first steps is to create appropriate .env, .env.d, and .env.p files. (You'll copy .env.d/.p onto .env based on whether you are doing development or production testing.)
 
 ## API Documentation
 
