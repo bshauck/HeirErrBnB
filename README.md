@@ -6,7 +6,7 @@
 
 [db-schema]: ./images/HeirErrBnB.png
 
-# How to setup fork
+# How to setup a local repository
 
 Add description of the way to start a forked implementation.
 
