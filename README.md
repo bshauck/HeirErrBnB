@@ -6,6 +6,10 @@
 
 [db-schema]: ./images/HeirErrBnB.png
 
+# How to setup fork
+
+Add description of the way to start a forked implementation
+
 ## API Documentation
 
 ## USER AUTHENTICATION/AUTHORIZATION
